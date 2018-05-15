@@ -826,7 +826,7 @@ var InvoiceField = React.createClass({
             <p> Items Total: </p>
             <div className="input-dolar">
               <span className="dolar">$</span>
-              <input type="text" readOnly="readonly" placeholder="$0.00" value={items_total.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][amount]'} />
+              <input type="text" readOnly="readonly" placeholder="$0.00" value={items_total.toFixed(2)} name={'594[invoices_attributes][' + x + '][amount]'} />
             </div>
           </div>
           <div className="alert">

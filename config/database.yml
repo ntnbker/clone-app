@@ -28,4 +28,3 @@ test:
 production:
   <<: *default
   database: production_real001
-

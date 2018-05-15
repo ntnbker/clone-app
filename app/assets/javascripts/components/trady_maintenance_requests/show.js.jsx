@@ -6,20 +6,40 @@ var TradySideBarMobile = React.createClass({
 	},
 
 	show: function(key) {
-		$('#actions-full').css({'height': 350 + (this.props.tenants.length || 0) * 40});
-		this.setState({showAction: true});
+		const height = $( window ).height();
+		if (key == 'general-action') {
+			this.setState({showGeneral: true});
+			return $('.sidebar').addClass('visible');
+		}
 	},
 
 	close: function() {
-		$('#actions-full').css({'height': 0});
-		this.setState({showAction: false});
+		if (!!this.state.showGeneral) {
+			this.setState({showGeneral: false});
+		}
+		$('.sidebar').removeClass('visible');
+	},
+
+	checkClose(e) {
+		const self = this;
+		const {className} = e.target;
+		dontCloseMe = !!DONT_CLOSE_WHEN_CLICK_ME_LIST.filter(element => className.includes(element))[0];
+
+		if (!dontCloseMe && self.state.showGeneral) {
+			e.target.click && e.target.click();
+			setTimeout(() => self.close(), 0);
+		}
 	},
 
 	componentDidMount: function() {
 		const self = this;
-		$(document).click(function() {
-			self.close();
-		})
+		$(document).on('click.sidebar', this.checkClose);
+		$(document).on('touchstart.sidebar', this.checkClose);
+	},
+
+	componentWillUnmount() {
+		$(document).unbind('click.sidebar');
+		$(document).unbind('touchstart.sidebar');
 	},
 
 	render: function() {
@@ -30,7 +50,7 @@ var TradySideBarMobile = React.createClass({
 			<div className="dontprint">
 				<div className="sidebar-mobile">
 					<div className="fixed">
-						<button
+						{/* <button
 							className={"actions trady-actions button-default " + (!!this.state.showAction && 'active')}
 							onClick={(key) => this.show('action')}
 						>
@@ -39,7 +59,15 @@ var TradySideBarMobile = React.createClass({
 							<span className="display-block">
 								{isAssignedTrady ? "CREATE INVOICE" : "CONTACT AGENT"}
 							</span>
+						</button> */}
+						<button
+							data-intro="Select 'Action' to action the maintenance request." data-position="top"
+							className={"button-default show-sidebar-menu " + (this.state.showGeneral && 'active')}
+							onClick={(key) => this.show('general-action')}
+						>
+							MENU
 						</button>
+						<div className="background" />
 					</div>
 				</div>
 				<div className="action-mobile">
@@ -881,6 +909,7 @@ var TradyMaintenanceRequest = React.createClass({
 							close={this.isClose}
 							quote_request={this.state.quote_request}
 							current_user={this.props.current_user}
+							isTrady={true}
 							sendMessageQuoteRequest={this.sendMessageQuoteRequest}
 						/>
 					)
@@ -1573,7 +1602,8 @@ var TradyMaintenanceRequest = React.createClass({
 		const hasApproved = quote_requests.some(quote_request => quote_request.quotes.some(quote => quote.status === 'Approved'));
 
 		return (
-			<div className="summary-container-index" id="summary-container-index">
+			<div className="summary-container-index new-ui-maintenance-request" id="summary-container-index">
+				<FixCSS />
 				<div className="main-summary dontprint">
 					{
 						(!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id) &&
@@ -1581,10 +1611,52 @@ var TradyMaintenanceRequest = React.createClass({
 								We are sorry to inform you that this job has been awarded to another company. We will contact you about future jobs, thank you for your time.
 							</div>
 					}
+					<div className="sidebar">
+						<div className="box-shadow flexbox flex-column">
+							{
+								/*
+
+									<TradyContact
+										agent={this.props.agent}
+										tenants={this.props.tenants}
+										landlord={this.state.landlord}
+										current_user={this.props.current_user}
+										assigned_trady={this.props.assigned_trady}
+										onModalWith={(modal) => this.onModalWith(modal)}
+										maintenance_request={this.state.maintenance_request}
+									/>*/
+							}
+							<GeneralAction
+								{...this.props}
+							/>
+						{
+							!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id ?
+								null
+								:
+								<div>
+									<TradyAction
+										trady={this.props.trady}
+										landlord={this.state.landlord}
+										invoices={this.props.invoices}
+										assigned_trady={this.props.assigned_trady}
+										signed_in_trady={this.props.signed_in_trady}
+										needShowCreateQuote={!!quote_requests.length}
+										onModalWith={(modal) => this.onModalWith(modal)}
+										invoice_pdf_files={this.props.invoice_pdf_files}
+										maintenance_request={this.state.maintenance_request}
+									/>
+								</div>
+						}
+						</div>
+					</div>
 					<div className="section">
 						<ItemMaintenanceRequest
+							isTrady={true}
 							gallery={this.state.gallery}
 							property={this.props.property}
+							tenants={this.props.tenants}
+							viewItem={(key, item) => this.viewItem(key, item)}
+							onModalWith={this.onModalWith}
 							maintenance_request={this.state.maintenance_request}
 							hide_note={!trady || trady.user_id !== this.props.current_user.id}
 							strike_approval={hasApproved}hasApproved
@@ -1607,22 +1679,24 @@ var TradyMaintenanceRequest = React.createClass({
 							/>
 						}
 						{
-							trady && trady.id === this.props.signed_in_trady.id && this.props.current_role &&
-								<AssignTrady
-									trady={trady}
-									current_role={this.props.current_role.role}
-									onModalWith={(modal) => this.onModalWith(modal)}
-									stop_invoice={stop_invoice}
-									stop_appointment={stop_appointment}
-									showAppointmentAlreadyMade={true}
-									viewTrady={(key, item) => this.viewItem(key, item)}
-								/>
+							// trady && trady.id === this.props.signed_in_trady.id && this.props.current_role &&
+							// 	<AssignTrady
+							// 		trady={trady}
+							// 		current_role={this.props.current_role.role}
+							// 		onModalWith={(modal) => this.onModalWith(modal)}
+							// 		stop_invoice={stop_invoice}
+							// 		stop_appointment={stop_appointment}
+							// 		showAppointmentAlreadyMade={true}
+							// 		viewTrady={(key, item) => this.viewItem(key, item)}
+							// 	/>
 						}
 						{ (!trady || trady.id === this.props.signed_in_trady.id) && quote_requests && quote_requests.length > 0 &&
 								<QuoteRequests
 									keyLandlord="trady"
 									landlord={this.state.landlord}
 									quote_requests={quote_requests}
+									assignedTrady={trady}
+									agent={this.props.agent || this.props.agency_admin}
 									onModalWith={this.onModalWith}
 									uploadImage={this.uploadImage}
 									current_user={this.props.current_user}
@@ -1644,84 +1718,6 @@ var TradyMaintenanceRequest = React.createClass({
 								/>
 						}
 					</div>
-					<div className="sidebar">
-					{
-						!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id ?
-							null
-							:
-							<div>
-								<TradyContact
-									agent={this.props.agent}
-									tenants={this.props.tenants}
-									landlord={this.state.landlord}
-									current_user={this.props.current_user}
-									assigned_trady={this.props.assigned_trady}
-									onModalWith={(modal) => this.onModalWith(modal)}
-									maintenance_request={this.state.maintenance_request}
-								/>
-								<TradyAction
-									trady={this.props.trady}
-									landlord={this.state.landlord}
-									invoices={this.props.invoices}
-									assigned_trady={this.props.assigned_trady}
-									signed_in_trady={this.props.signed_in_trady}
-									needShowCreateQuote={!!quote_requests.length}
-									onModalWith={(modal) => this.onModalWith(modal)}
-									invoice_pdf_files={this.props.invoice_pdf_files}
-									maintenance_request={this.state.maintenance_request}
-								/>
-							</div>
-					}
-
-						{
-							(appointments && appointments.length > 0) &&
-								<AppointmentRequest
-									appointments={appointments}
-									title="Work Order Appointments"
-									cancelAppointment={(value) => this.cancel(value)}
-									current_role={this.props.trady.user.current_role}
-									viewItem={(key, item) => this.viewItem(key, item)}
-									acceptAppointment={(value) => this.acceptAppointment(value)}
-									declineAppointment={(value) => this.decline(value)}
-								/>
-						}
-						{
-							(quote_appointments && quote_appointments.length > 0) &&
-								<AppointmentRequest
-									title="Appointments For Quotes"
-									appointments={quote_appointments}
-									cancelAppointment={(value) => this.cancel(value)}
-									current_role={this.props.trady.user.current_role}
-									viewItem={(key, item) => this.viewItem(key, item)}
-									acceptAppointment={(value) => this.acceptAppointment(value)}
-									declineAppointment={(value) => this.decline(value)}
-								/>
-						}
-					</div>
-					{
-						(appointments && appointments.length > 0) &&
-							<AppointmentRequestMobile
-								appointments={appointments}
-								title="Work Order Appointments"
-								cancelAppointment={(value) => this.cancel(value)}
-								current_role={this.props.trady.user.current_role}
-								viewItem={(key, item) => this.viewItem(key, item)}
-								acceptAppointment={(value) => this.acceptAppointment(value)}
-								declineAppointment={(value) => this.decline(value)}
-							/>
-					}
-					{
-						(quote_appointments && quote_appointments.length > 0) &&
-							<AppointmentRequestMobile
-								title="Appointments For Quotes"
-								appointments={quote_appointments}
-								cancelAppointment={(value) => this.cancel(value)}
-								current_role={this.props.trady.user.current_role}
-								viewItem={(key, item) => this.viewItem(key, item)}
-								acceptAppointment={(value) => this.acceptAppointment(value)}
-								declineAppointment={(value) => this.decline(value)}
-							/>
-					}
 				</div>
 				{
 					!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id ?

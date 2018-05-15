@@ -131,7 +131,7 @@ class LandlordsController < ApplicationController
     @landlord = Landlord.find_by(email:params[:landlord][:email])  
     maintenance_request = MaintenanceRequest.find_by(id:params[:landlord][:maintenance_request_id])
     property = maintenance_request.property
-    binding.pry
+    
     if @landlord.update(landlord_params)
         
       property.update_attribute(:landlord_id, @landlord.id)

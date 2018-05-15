@@ -123,85 +123,96 @@ var Invoices = React.createClass({
 	render: function() {
 		const self = this;
     const { current_role, invoices } = this.props;
+    const role = current_role && current_role.role;
     const pictures = this.getPictureImage(invoices);
 
 		const notPaid = invoices.filter((i) => !i.paid).length !== 0;
 
 		return (
-			<div className="quotes invoices m-t-xl" id="invoices">
-				<p>
-					<span className="index index-invoice">{invoices.length}</span>Invoice
-					{ current_role && current_role.role === 'Trady' && notPaid &&
-            <button type="button" className="btn btn-mark-as-paid" onClick={(item) => self.props.paymentReminder({})}>
-  										Remind Agent of Payment
-  					</button>
-          }
-				</p>
-				<div className="list-quote">
-				{
-					invoices.map(function(invoice, index) {
-						return (
-							<div className="item-quote row" key={index}>
-								<div className="user seven columns">
-									<span className="index quote index-invoice">{index + 1}</span>
-									<span className="icon-user">
-										<AvatarImage imageUri={pictures[index]} />
-									</span>
-									<div className="info">
-										<div className="name">
-											<span>{invoice.trady.name}</span>
-											{
-												invoice.paid == false
-                          ? invoice.active !== false
-                            ? <button className={'button-default status Declined'}>
-    														<span>Outstanding Payment</span>
-    													</button>
-                            : <button className={'button-default status Declined'}>
-                                <span>Do Not Pay</span>
-                              </button>
-													:
-													<button className={'button-default status Approved'}>
-														<span>Payment Scheduled</span>
-													</button>
-											}
-										</div>
-										<p className="description">
-											{invoice.trady && invoice.trady.company_name}<br />
-											{(invoice.trady && invoice.trady.trady_company) ? invoice.trady.trady_company.trading_name : null}
-										</p>
-									</div>
-								</div>
-								<div className="actions five columns content">
-									<p>
-										Total: <span>${invoice.amount}</span>
-									</p>
-									<p>
-										DUE: <span>{ moment(invoice.due_date).format('LL')}</span>
-									</p>
-								</div>
-								<div className="actions-quote">
+			<div className="quotes invoices m-t-xl box-shadow">
+      <h5 className="mr-title">
+        Invoice
+      </h5>
+      <div className="list-quote">
+      {
+        invoices.map(function(invoice, index) {
+          const { trady = {}, paid = false, active } = invoice;
+
+          return (
+            <div className="item-quote row item-quote-request" key={index}>
+              <div className="user seven columns trady-info-group">
+                <div className="trady-info">
+                  <span className="icon-user">
+                    <AvatarImage imageUri={pictures[index]} />
+                  </span>
+                  <div className="info">
+                    <div className="name">
+                      <span className="key">Name: </span>
+                      <span className="value">{trady.name}</span>
+                    </div>
+                    { trady.trady_company &&
+                      <div className="business-name">
+                        <span className="key">Business Name: </span>
+                        <span className="value">{trady.trady_company.trading_name}</span>
+                      </div>
+                    }
+                    <div className="company-name">
+                      <span className="key">Company Name: </span>
+                      <span className="value">{trady.company_name}</span>
+                    </div>
+                    <div className="invoice-status">
+                      <span className="key">Invoice Status: </span>
+                      {
+                        paid == false
+                          ? active !== false
+                            ? <button className={'button-default status Declined'}>Outstanding Payment</button>
+                            : <button className={'button-default status Declined'}>Do Not Pay</button>
+                          : <button className={'button-default status Approved'}>Payment Scheduled</button>
+                      }
+                    </div>
+                  </div>
+                </div>
+                <div className="contact-button">
+                  <div className="view-invoice">
+                    <button
+                      type="button"
+                      className="btn btn-view"
+                      onClick={(key, item) => self.props.viewInvoice('viewInvoice', invoice)}
+                    >
+                        View Invoice
+                    </button>
+                  </div>
                   {
-                    invoice.paid == false && invoice.active !== false &&
-                      <button type="button" className="btn btn-decline" onClick={(item) => self.props.viewInvoice('voidInvoice', invoice)}>
-                        Void Invoice
-                      </button>
+                    ['Agent', 'AgencyAdmin'].indexOf(role) !== -1 && !paid && active !== false &&
+                      <div className="payment-scheduled">
+                        <button type="button" className="btn payment-scheduled" onClick={(item) => self.props.markAsPaid(invoice)}>
+                          Payment Scheduled
+                        </button>
+                      </div>  
                   }
-									{
-										(current_role.role == 'Agent' || current_role.role == "AgencyAdmin" && invoice.paid == false && invoice.active !== false) &&
-											<button type="button" className="btn btn-mark-as-paid" onClick={(item) => self.props.markAsPaid(invoice)}>
-												Payment Scheduled
-											</button>
-									}
-									<button type="button" className="btn btn-view" onClick={(key, item) => self.props.viewInvoice('viewInvoice', invoice)}>
-										View Invoice
-									</button>
-								</div>
-							</div>
-						);
-					})
-				}
-				</div>
-			</div>
+                  { role === 'Trady' && !paid && active !== false &&
+                    <div className="payment-scheduled">
+                      <button type="button" className="btn payment-scheduled" onClick={(item) => self.props.paymentReminder({})}>
+                        Remind Agent of Payment
+                      </button>
+                    </div>
+                  }
+                  {
+                    paid == false && active !== false &&
+                      <div className="void-invoice">
+                        <button type="button" className="btn btn-decline" onClick={(item) => self.props.viewInvoice('voidInvoice', invoice)}>
+                          Void Invoice
+                        </button>
+                      </div>
+                  }
+                </div>
+              </div>
+            </div>
+          );
+        })
+      }
+      </div>
+    </div>
 		);
 	}
 });

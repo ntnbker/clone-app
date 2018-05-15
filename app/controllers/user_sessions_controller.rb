@@ -89,6 +89,7 @@ class UserSessionsController < ApplicationController
     else
       if current_user
         current_user.current_role.update_attribute(:role,nil)
+        logout
       end
       @role = params[:role_picked]
       @maintenance_request = maintenance_request 

@@ -1,6 +1,6 @@
 var ContentContact = React.createClass({
 	render: function() {
-		const selt = this;
+		const self = this;
 		const {landlord, tenants, assigned_trady} = this.props;
 		var tenantMobile = [];
 		if(tenants) {
@@ -36,13 +36,13 @@ var ContentContact = React.createClass({
 						</li>
 					}
 					<li>
-						<a onClick={() => selt.props.onModalWith('sendMessageLandlord')}>
+						<a onClick={() => self.props.onModalWith('sendMessageLandlord')}>
 							<i className="fa fa-commenting" aria-hidden="true" />
 							Message LandLord
 						</a>
 					</li>
 					<li>
-						<a onClick={() => selt.props.onModalWith('sendMessageTenant')}>
+						<a onClick={() => self.props.onModalWith('sendMessageTenant')}>
 							<i className="fa fa-commenting" aria-hidden="true" />
 							Message Tenants
 						</a>
@@ -50,7 +50,7 @@ var ContentContact = React.createClass({
 					{
 						assigned_trady &&
 						<li>
-							<a onClick={() => selt.props.onModalWith('sendMessageTrady')}>
+							<a onClick={() => self.props.onModalWith('sendMessageTrady')}>
 								<i className="fa fa-commenting" aria-hidden="true" />
 								Message Trady
 							</a>
@@ -72,7 +72,7 @@ var ContentContact = React.createClass({
 						</li>
 					}
 					<li>
-						<a onClick={() => selt.props.onModalWith('sendMessageTenant')}>
+						<a onClick={() => self.props.onModalWith('sendMessageTenant')}>
 							<i className="fa fa-commenting" aria-hidden="true" />
 							Message Tenants
 						</a>
@@ -80,7 +80,7 @@ var ContentContact = React.createClass({
 					{
 						assigned_trady &&
 						<li>
-							<a onClick={() => selt.props.onModalWith('sendMessageTrady')}>
+							<a onClick={() => self.props.onModalWith('sendMessageTrady')}>
 								<i className="fa fa-commenting" aria-hidden="true" />
 								Message Trady
 							</a>

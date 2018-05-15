@@ -8,37 +8,39 @@ var TenantSideBarMobile = React.createClass({
 
 	show: function(key) {
 		const height = $( window ).height();
-		if (key == 'detail') {
-			this.setState({showContact: false});
-			this.setState({showDetail: true});
-			$('#actions-full').css({'height': 200, 'border-width': 1});
-		} else {
-			this.setState({showContact: true});
-			this.setState({showDetail: false});
-			$('#contacts-full').css({'height': 150, 'border-width': 1});
+		if (key == 'general-action') {
+			this.setState({showGeneral: true});
+			return $('.sidebar').addClass('visible');
 		}
 	},
 
 	close: function() {
-		if ($('#actions-full').length > 0) {
-			if (this.state.showDetail) {
-				this.setState({showDetail: false});
-			}
-			$('#actions-full').css({'height': 0, 'border-width': 0});
+		if (!!this.state.showGeneral) {
+			this.setState({showGeneral: false});
 		}
-		if ($('#contacts-full').length > 0) {
-			if (this.state.showContact) {
-				this.setState({showContact: false});
-			}
-			$('#contacts-full').css({'height': 0, 'border-width': 0});
+		$('.sidebar').removeClass('visible');
+	},
+
+	checkClose(e) {
+		const self = this;
+		const {className} = e.target;
+		dontCloseMe = !!DONT_CLOSE_WHEN_CLICK_ME_LIST.filter(element => className.includes(element))[0];
+
+		if (!dontCloseMe && self.state.showGeneral) {
+			e.target.click && e.target.click();
+			setTimeout(() => self.close(), 0);
 		}
 	},
 
 	componentDidMount: function() {
 		const self = this;
-		$(document).click(function() {
-			self.close();
-		})
+		$(document).on('click.sidebar', this.checkClose);
+		$(document).on('touchstart.sidebar', this.checkClose);
+	},
+
+	componentWillUnmount() {
+		$(document).unbind('click.sidebar');
+		$(document).unbind('touchstart.sidebar');
 	},
 
 	render: function() {
@@ -46,7 +48,7 @@ var TenantSideBarMobile = React.createClass({
 			<div className="dontprint">
 				<div className="sidebar-mobile">
 					<div className="fixed">
-						<button
+						{/* <button
 							data-intro="Select 'Contact' to call or message." data-position="top"
 							className={"contact button-default " + (!!this.state.showContact && 'active')}
 							onClick={(key) => this.show('contact')}
@@ -59,7 +61,15 @@ var TenantSideBarMobile = React.createClass({
 							onClick={(key) => this.show('detail')}
 						>
 							EDIT MENU
+						</button> */}
+						<button
+							data-intro="Select 'Action' to action the maintenance request." data-position="top"
+							className={"button-default show-sidebar-menu " + (this.state.showGeneral && 'active')}
+							onClick={(key) => this.show('general-action')}
+						>
+							MENU
 						</button>
+						<div className="background" />
 					</div>
 				</div>
 				<div className="action-mobile">
@@ -754,98 +764,48 @@ var TenantMaintenanceRequest = React.createClass({
 	render: function() {
 		const {appointments, quote_appointments, landlord_appointments} = this.state;
 		return (
-			<div className="summary-container-index" id="summary-container-index">
-				<div className="main-summary dontprint">
+			<div className="summary-container-index new-ui-maintenance-request" id="summary-container-index">
+				<FixCSS />
+				<div className="main-summary dontprint">	
+					<div className="sidebar">
+						<div className="box-shadow flexbox flex-column">
+							{
+								/*
+								<TenantContact
+									current_user={this.props.current_user}
+									onModalWith={(modal) => this.onModalWith(modal)}
+								/>*/
+							}
+							<GeneralAction
+								{...this.props}
+							/>
+							<TenantDetail
+								current_user={this.props.current_user}
+								onModalWith={(modal) => this.onModalWith(modal)}
+							/>
+							{
+								(quote_appointments && quote_appointments.length > 0) &&
+									<AppointmentRequest
+										title="Appointments For Quotes"
+										appointments={quote_appointments}
+										cancelAppointment={(value) => this.cancel(value)}
+										current_role={this.props.tenant.user.current_role}
+										viewItem={(key, item) => this.viewItem(key, item)}
+										acceptAppointment={(value) => this.acceptAppointment(value)}
+										declineAppointment={(value) => this.decline(value)}
+									/>
+							}
+						</div>
+					</div>
 					<div className="section">
 						<ItemMaintenanceRequest
 							gallery={this.state.gallery}
 							property={this.props.property}
+							viewItem={(key, item) => this.viewItem(key, item)}
+							onModalWith={this.onModalWith}
 							maintenance_request={this.state.maintenance_request}
 						/>
 					</div>
-					<div className="sidebar">
-						<TenantContact
-							current_user={this.props.current_user}
-							onModalWith={(modal) => this.onModalWith(modal)}
-						/>
-						<TenantDetail
-							current_user={this.props.current_user}
-							onModalWith={(modal) => this.onModalWith(modal)}
-						/>
-						{
-							(appointments && appointments.length > 0) &&
-								<AppointmentRequest
-									appointments={appointments}
-									title="Work Order Appointments"
-									cancelAppointment={(value) => this.cancel(value)}
-									current_role={this.props.tenant.user.current_role}
-									viewItem={(key, item) => this.viewItem(key, item)}
-									acceptAppointment={(value) => this.acceptAppointment(value)}
-									declineAppointment={(value) => this.decline(value)}
-								/>
-						}
-						{
-							(quote_appointments && quote_appointments.length > 0) &&
-								<AppointmentRequest
-									title="Appointments For Quotes"
-									appointments={quote_appointments}
-									cancelAppointment={(value) => this.cancel(value)}
-									current_role={this.props.tenant.user.current_role}
-									viewItem={(key, item) => this.viewItem(key, item)}
-									acceptAppointment={(value) => this.acceptAppointment(value)}
-									declineAppointment={(value) => this.decline(value)}
-								/>
-						}
-						{
-							(landlord_appointments && landlord_appointments.length > 0) &&
-								<AppointmentRequest
-									title="Landlord Appointments"
-									appointments={landlord_appointments}
-									cancelAppointment={(value) => this.cancel(value)}
-									current_role={this.props.tenant.user.current_role}
-									viewItem={(key, item) => this.viewItem(key, item)}
-									acceptAppointment={(value) => this.acceptAppointment(value)}
-									declineAppointment={(value) => this.decline(value)}
-								/>
-						}
-
-					</div>
-					{
-						(appointments && appointments.length > 0) &&
-							<AppointmentRequestMobile
-								appointments={appointments}
-								title="Work Order Appointments"
-								cancelAppointment={(value) => this.cancel(value)}
-								current_role={this.props.tenant.user.current_role}
-								viewItem={(key, item) => this.viewItem(key, item)}
-								acceptAppointment={(value) => this.acceptAppointment(value)}
-								declineAppointment={(value) => this.decline(value)}
-							/>
-					}
-					{
-						(quote_appointments && quote_appointments.length > 0) &&
-							<AppointmentRequestMobile
-								title="Appointments For Quotes"
-								appointments={quote_appointments}
-								cancelAppointment={(value) => this.cancel(value)}
-								current_role={this.props.tenant.user.current_role}
-								viewItem={(key, item) => this.viewItem(key, item)}
-								declineAppointment={(value) => this.decline(value)}
-								acceptAppointment={(value) => this.acceptAppointment(value)}
-							/>
-					}
-					{
-						(landlord_appointments && landlord_appointments.length > 0) &&
-							<AppointmentRequestMobile
-								title="Landlord Appointments"
-								appointments={landlord_appointments}
-								cancelAppointment={(value) => this.cancel(value)}
-								current_role={this.props.tenant.user.current_role}
-								viewItem={(key, item) => this.viewItem(key, item)}
-								acceptAppointment={(value) => this.acceptAppointment(value)}
-								declineAppointment={(value) => this.decline(value)}
-							/>
-					}
 				</div>
 				<TenantSideBarMobile
 					current_user={this.props.current_user}

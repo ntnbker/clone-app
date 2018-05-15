@@ -1,77 +1,27 @@
 var ContentAction = React.createClass({
 	render: function() {
-		const hasLandlord = !!this.props.landlord;
-		const hasTenant = this.props.hasTenant;
-		const isNotAssigned = !this.props.assigned_trady;
-
 		return (
 			<ul>
-				<li>
-					<a onClick={() => this.props.onModalWith(hasLandlord ? 'confirm' : 'addAskLandlord')}>
-						<i className="fa fa-user" />
-						Ask Landlord for instructions
-					</a>
-				</li>
-				<li className="">
-					<a onClick={() => this.props.onModalWith('requestQuote')}>
-						<i className="fa fa-file-text" aria-hidden="true" />
-						Request quote
-					</a>
-				</li>
-				{
-					isNotAssigned &&
+				{(this.props.listActions || []).map(({isShow, icon, text, onClick}) => !!isShow &&
 					<li>
-						<a onClick={() => this.props.onModalWith('sendWorkOrder')}>
-							<i className="fa fa-send" aria-hidden="true" />
-							Send work order
+						<a
+							onClick={onClick}
+						>
+							<i aria-hidden="true" className={icon || "fa fa-user-plus"} />
+							{text}
 						</a>
 					</li>
-				}
-				{
-					hasLandlord ?
-						<li>
-							<a onClick={() => this.props.onModalWith('addLandlord')}>
-								<i aria-hidden="true" className="fa fa-user-plus" />
-								Change Landlord
-							</a>
-						</li>
-						:
-						<li>
-							<a onClick={() => this.props.onModalWith('addLandlord')}>
-								<i aria-hidden="true" className="fa fa-user-plus" />
-								Add Landlord
-							</a>
-						</li>
-				}
-				{
-					hasLandlord &&
-						<li>
-							<a onClick={() => this.props.onModalWith('editLandlord')}>
-								<i aria-hidden="true" className="fa fa-pencil" />
-								Edit landlord details
-							</a>
-						</li>
-				}
-				<li>
-					<a
-						onClick={() => {
-							this.props.viewItem(hasTenant ? 'showTenants' : 'addTenant');
-						}}
-					>
-						<i aria-hidden="true" className="fa fa-user-plus" />
-						Add/Edit/Remove Tenant
-					</a>
-				</li>
+				)}
 			</ul>
 		);
 	}
 });
 
-var Action = React.createClass({
+var ActionComponent = React.createClass({
 	getInitialState: function() {
 		return {
-			show: true
-		};
+			show: true,
+		}
 	},
 
 	showAction: function(e) {
@@ -81,8 +31,8 @@ var Action = React.createClass({
 	render: function() {
 		return (
 			<div className="item" data-intro="Select 'Action' to action the maintenance request." data-position="left">
-				<div className="header action">
-					<a>Actions:</a>
+				<div className="header action general-action-title">
+					{this.props.text}
 					<i
 						aria-hidden="true"
 						onClick={this.showAction}
@@ -92,11 +42,7 @@ var Action = React.createClass({
 				<div className="content" id="actions-content">
 					{ this.state.show &&
 							<ContentAction
-								landlord={this.props.landlord}
-								hasTenant={this.props.hasTenant}
-								assigned_trady={this.props.assigned_trady}
-								viewItem={this.props.viewItem}
-								onModalWith={(modal) => this.props.onModalWith(modal)}
+								listActions={this.props.listActions}
 							/>
 					}
 				</div>
@@ -124,6 +70,169 @@ var ActionMobile = React.createClass({
 							viewItem={this.props.viewItem}
 							hasTenant={this.props.hasTenant}
 							assigned_trady={this.props.assigned_trady}
+							show_assign={this.props.show_assign}
+							onModalWith={(modal) => this.props.onModalWith(modal)}
+						/>
+					</div>
+				</div>
+			</div>
+		);
+	}
+})
+
+var Action = React.createClass({
+	getInitialState: function() {
+		const hasLandlord = !!this.props.landlord;
+		const hasTenant = this.props.hasTenant;
+		const isNotAssigned = !this.props.assigned_trady;
+		
+		return {
+			listActions: [{
+				icon: 'fa fa-sticky-note',
+				text: 'Approval Note',
+				onClick: () => this.props.onModalWith('approveJob'),
+				isShow: this.props.show_assign,
+			// }, {
+			// 	icon: 'fa fa-plus-square-o',
+			// 	text: 'Assign To',
+			// 	onClick: () => this.props.onModalWith('assignTo'),
+			// 	isShow: this.props.show_assign,
+			// }, {
+			// 	icon: 'fa fa-pencil-square-o',
+			// 	text: 'Edit Maintenance Request',
+			// 	onClick: () => this.props.onModalWith('editMaintenanceRequest'),
+			// 	isShow: this.props.show_assign,
+			// }, {
+			// 	icon: 'fa fa-bars',
+			// 	text: 'Update Status',
+			// 	onClick: () => this.props.onModalWith('updateMRStatus'),
+			// 	isShow: this.props.show_assign,
+			// }, {
+			// 	icon: 'fa fa-files-o',
+			// 	text: 'Duplicate Maintenance Request',
+			// 	onClick: () => this.props.onModalWith('duplicateMR'),
+			// 	isShow: this.props.show_assign,
+			// }, {
+			// 	icon: 'fa fa-files-o',
+			// 	text: 'Split Maintenance Request',
+			// 	onClick: () => this.props.onModalWith('splitMR'),
+			// 	isShow: this.props.show_assign,
+			}, {
+				icon: 'fa fa-user',
+				text: 'Ask Landlord For Instructions',
+				onClick: () => this.props.onModalWith(hasLandlord ? 'confirm' : 'addAskLandlord'),
+				isShow: true,
+			}, {
+				icon: 'fa fa-file-text',
+				text: 'Request Quote',
+				onClick: () => this.props.onModalWith('requestQuote'),
+				isShow: true,
+			}, {
+				icon: 'fa fa-send',
+				text: 'Send Work Order',
+				onClick: () => this.props.onModalWith('sendWorkOrder'),
+				isShow: isNotAssigned,
+			}, ]
+		};
+	},
+
+	render: function() {
+		return <ActionComponent text="Maintenance Request" listActions={this.state.listActions} />
+	}
+});
+
+var AgentLandlordAction = React.createClass({
+	getInitialState: function() {
+		const hasLandlord = !!this.props.landlord;
+
+		return {
+			listActions: [{
+				icon: 'fa fa-user',
+				text: 'Ask Landlord For Instructions',
+				onClick: () => this.props.onModalWith(hasLandlord ? 'confirm' : 'addAskLandlord'),
+				isShow: true,
+			}, {
+				icon: 'fa fa-user-plus',
+				text: hasLandlord ? 'Change Landlord' : 'Add Landlord',
+				onClick: () => this.props.onModalWith('addLandlord'),
+				isShow: true,
+			}, {
+				icon: 'fa fa-pencil',
+				text: 'Edit Landlord Details',
+				onClick: () => this.props.onModalWith('editLandlord'),
+				isShow: hasLandlord,
+			}]
+		};
+	},
+
+	render: function() {
+		return <ActionComponent text="Landlord" listActions={this.state.listActions} />
+	}
+});
+
+var AgentTradyAction = React.createClass({
+	getInitialState: function() {
+		const isNotAssigned = !this.props.assigned_trady;
+
+		return {
+			listActions: [{
+				icon: 'fa fa-file-text',
+				text: 'Request Quote',
+				onClick: () => this.props.onModalWith('requestQuote'),
+				isShow: true,
+			}, {
+				icon: 'fa fa-send',
+				text: 'Send Work Order',
+				onClick: () => this.props.onModalWith('sendWorkOrder'),
+				isShow: isNotAssigned,
+			}, ]
+		};
+	},
+
+	render: function() {
+		return <ActionComponent text="Trady" listActions={this.state.listActions} />
+	}
+});
+
+var AgentTenantAction = React.createClass({
+	getInitialState: function() {
+		const hasTenant = this.props.hasTenant;
+
+		return {
+			listActions: [{
+				icon: 'fa fa-user-plus',
+				text: 'Add/Edit/Remove Tenant',
+				onClick: () => this.props.onModalWith(hasTenant ? 'showTenants' : 'addTenant'),
+				isShow: true,
+			}]
+		};
+	},
+
+	render: function() {
+		return <ActionComponent text="Landlord" listActions={this.state.listActions} />
+	}
+});
+
+var ActionMobile = React.createClass({
+	render: function() {
+		return (
+			<div className="actions-full" id="actions-full">
+				<div className="item">
+					<div className="header action" id="action" >
+						<a>Actions:</a>
+						<i
+							aria-hidden="true"
+							className="fa fa-close"
+							onClick={this.props.close}
+						/>
+					</div>
+					<div className="content">
+						<ContentAction
+							landlord={this.props.landlord}
+							viewItem={this.props.viewItem}
+							hasTenant={this.props.hasTenant}
+							assigned_trady={this.props.assigned_trady}
+							show_assign={this.props.show_assign}
 							onModalWith={(modal) => this.props.onModalWith(modal)}
 						/>
 					</div>

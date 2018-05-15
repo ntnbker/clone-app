@@ -89,6 +89,7 @@ class InvoicesController < ApplicationController
     @invoice = Invoice.find_by(id:params[:id])
     #@invoices = @ledger.invoices
     @maintenance_request = MaintenanceRequest.find_by(id: params[:maintenance_request_id])
+    
     if  @maintenance_request.property.landlord != nil
       @landlord = Landlord.find_by(id:@maintenance_request.property.landlord.id)
     end

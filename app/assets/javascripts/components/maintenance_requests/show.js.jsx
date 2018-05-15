@@ -313,47 +313,46 @@ var SideBarMobile = React.createClass({
 	getInitialState: function() {
 		return {
 			showAction: false,
-			showContact: false
+			showContact: false,
+			showGeneral: false,
 		};
 	},
 
 	show: function(key) {
 		const height = $( window ).height();
-		if(key == 'action') {
-			this.setState({showAction: true});
-			this.setState({showContact: false});
-			if($('#actions-full')) {
-				$('#actions-full').css({'height': 300, 'border-width': 1});
-			}
-		}else {
-			this.setState({showAction: false});
-			this.setState({showContact: true});
-			if($('#contacts-full')) {
-				$('#contacts-full').css({'height': 300, 'border-width': 1});
-			}
+		if (key == 'general-action') {
+			this.setState({showGeneral: true});
+			return $('.sidebar').addClass('visible');
 		}
 	},
 
 	close: function() {
-		if(!!this.state.showAction) {
-			this.setState({showAction: false});
+		if (!!this.state.showGeneral) {
+			this.setState({showGeneral: false});
 		}
-		if(!!this.state.showContact) {
-			this.setState({showContact: false});
-		}
-		if($('#actions-full')) {
-			$('#actions-full').css({'height': 0, 'border-width': 0});
-		}
-		if($('#contacts-full')) {
-			$('#contacts-full').css({'height': 0, 'border-width': 0});
+		$('.sidebar').removeClass('visible');
+	},
+
+	checkClose(e) {
+		const self = this;
+		const {className} = e.target;
+		dontCloseMe = !!DONT_CLOSE_WHEN_CLICK_ME_LIST.filter(element => className.includes(element))[0];
+
+		if (!dontCloseMe && self.state.showGeneral) {
+			e.target.click && e.target.click();
+			self.close();
 		}
 	},
 
 	componentDidMount: function() {
 		const self = this;
-		$(document).click(function() {
-			self.close();
-		})
+		$(document).on('click.sidebar', this.checkClose);
+		$(document).on('touchstart.sidebar', this.checkClose);
+	},
+
+	componentWillUnmount() {
+		$(document).unbind('click.sidebar');
+		$(document).unbind('touchstart.sidebar');
 	},
 
 	render: function() {
@@ -362,7 +361,7 @@ var SideBarMobile = React.createClass({
 			<div className="dontprint">
 				<div className="sidebar-mobile">
 					<div className="fixed">
-						<button
+						{/* <button
 							id="contact" data-intro="Select 'Contact' to call or message." data-position="top"
 							className={"contact button-default " + (showContact && 'active')}
 							onClick={(key) => this.show('contact')}
@@ -375,10 +374,18 @@ var SideBarMobile = React.createClass({
 							onClick={(key) => this.show('action')}
 						>
 							ACTIONS MENU
+						</button> */}
+						<button
+							data-intro="Select 'Action' to action the maintenance request." data-position="top"
+							className={"button-default show-sidebar-menu " + (this.state.showGeneral && 'active')}
+							onClick={(key) => this.show('general-action')}
+						>
+							MENU
 						</button>
+						<div className="background" />
 					</div>
 				</div>
-				<div className="action-mobile">
+				{/* <div className="action-mobile">
 					<ActionMobile
 						close={this.close}
 						hasTenant={this.props.hasTenant}
@@ -393,7 +400,7 @@ var SideBarMobile = React.createClass({
 						assigned_trady={this.props.assigned_trady}
 						onModalWith={(modal) => this.props.onModalWith(modal)}
 					/>
-				</div>
+				</div> */}
 			</div>
 		);
 	}
@@ -1244,7 +1251,7 @@ var MaintenanceRequest = React.createClass({
 		};
 	},
 
-	isClose: function() {
+	isClose: function(e) {
 		if(this.state.isModal == true) {
 			this.setState({
 				isModal: false,
@@ -3000,15 +3007,44 @@ var MaintenanceRequest = React.createClass({
 						/>
 					)
 
-				case 'voidInvoice':
+				case 'updateMRStatus':
 					return (
-						<ModalVoidInvoice
-							voidInvoice={this.voidInvoice}
-							text={"Are you sure want to void this invoice? Voiding this invoice will mark the invoice with a DO NOT PAY status. An email will be sent to the tradie to inform them you have voided and rejected this invoice along with the reason why it was voided."}
-							invoice={this.state.invoice}
+						<UpdateStatusModal
+							existLandlord={!!this.state.landlord}
+							existQuoteRequest={!!this.state.quote_requests.length}
+							existTradyAssigned={!!this.state.trady}
+							onModalWith={this.onModalWith}
+							viewItem={this.viewItem}
 							close={this.isClose}
 						/>
 					)
+
+					case 'assignTo':
+						return (
+							<AssignModal
+								onModalWith={this.onModalWith}
+								all_agents={this.props.all_agents}
+								all_agency_admins={this.props.all_agency_admins}
+								viewItem={this.viewItem}
+								close={this.isClose}
+							/>
+						)
+
+					case 'showSettings':
+						return (
+							<ModalShowSettings
+								onModalWith={this.onModalWith}
+								close={this.isClose}
+							/>
+						)
+
+					case 'showLandlordSettings':
+						return (
+							<ShowLandlordSettings
+								onModalWith={this.onModalWith}
+								close={this.isClose}
+							/>
+						)
 
 				default:
 					return null;
@@ -3142,8 +3178,49 @@ var MaintenanceRequest = React.createClass({
 		const hasApproved = quote_requests.some(quote_request => quote_request.quotes.some(quote => quote.status === 'Approved'));
 
 		return (
-			<div className="summary-container-index" id="summary-container-index">
+			<div className="summary-container-index new-ui-maintenance-request" id="summary-container-index">
 				<div className="main-summary dontprint">
+					<div className="sidebar">
+						<div className="box-shadow flexbox flex-column">
+							{
+								/*<Contact
+									tenants={tenants}
+									landlord={this.state.landlord}
+									current_user={this.props.current_user}
+									assigned_trady={trady || this.props.assigned_trady}
+									onModalWith={(modal) => this.onModalWith(modal)}
+								/>*/
+							}
+							<GeneralAction
+								{...this.props}
+								current_role={this.props.current_user_role}
+								showSearchBar={true}
+								searchText={this.props.searchText}
+							/>
+							<Action
+								show_assign={this.props.current_user_show_quote_message}
+								onModalWith={(modal) => this.onModalWith(modal)}
+								landlord={this.state.landlord}
+								hasTenant={this.state.tenants.length}
+								viewItem={this.viewItem}
+							/>
+							{/* <AgentLandlordAction
+								onModalWith={this.onModalWith}
+								viewItem={this.viewItem}
+								landlord={this.state.landlord}
+							/>
+							<AgentTradyAction
+								onModalWith={this.onModalWith}
+								viewItem={this.viewItem}
+								assigned_trady={trady || this.props.assigned_trady}
+							/>
+							<AgentTenantAction
+								onModalWith={this.onModalWith}
+								viewItem={this.viewItem}
+								hasTenant={this.state.tenants.length}
+							/> */}
+						</div>
+					</div>
 					<div className="section">
 						<ItemMaintenanceRequest
 							status={this.state.status}
@@ -3156,8 +3233,12 @@ var MaintenanceRequest = React.createClass({
 							existTradyAssigned={!!trady}
 							all_agency_admins={this.props.all_agency_admins}
 							viewItem={(key, item) => this.viewItem(key, item)}
+							tenants={this.state.tenants}
+							onModalWith={this.onModalWith}
 							assignToUser={(email) => this.assignToUser(email)}
 							maintenance_request={this.state.maintenance_request}
+							landlord={this.state.landlord}
+							isShowLandlord={true}
 							show_assign={this.props.current_user_show_quote_message}
 							strike_approval={hasApproved}
 						/>
@@ -3179,13 +3260,13 @@ var MaintenanceRequest = React.createClass({
 								/>
 						}
 						{
-							this.state.trady &&
-								<AssignTrady
-									trady={this.state.trady}
-									current_role={this.props.current_user_role}
-									onModalWith={(modal) => this.onModalWith(modal)}
-									viewTrady={(key, item) => this.viewItem(key, item)}
-								/>
+							// this.state.trady &&
+							// 	<AssignTrady
+							// 		trady={this.state.trady}
+							// 		current_role={this.props.current_user_role}
+							// 		onModalWith={(modal) => this.onModalWith(modal)}
+							// 		viewTrady={(key, item) => this.viewItem(key, item)}
+							// 	/>
 						}
 						{
 							quote_requests && quote_requests.length > 0
@@ -3195,8 +3276,8 @@ var MaintenanceRequest = React.createClass({
 									quote_requests={quote_requests}
 									onModalWith={this.onModalWith}
 									landlord={this.state.landlord}
+									current_role={this.props.current_user_role}
 									current_user={this.props.current_user}
-									current_user_role={this.props.current_user_role}
 									updateStatusQuote={this.updateStatusQuote}
 									sendEmailLandlord={this.sendEmailLandlord}
 									uploadImage={this.uploadImage}
@@ -3206,91 +3287,8 @@ var MaintenanceRequest = React.createClass({
 								/>
 							: ''
 						}
-						{	false && (quote_requests && quote_requests.length > 0) &&
-						 		<Quotes
-							 		quotes={this.state.quote_requests}
-							 		onModalWith={this.onModalWith}
-							 		landlord={this.state.landlord}
-							 		current_user={this.props.current_user}
-							 		updateStatusQuote={this.updateStatusQuote}
-							 		sendEmailLandlord={this.sendEmailLandlord}
-							 		viewQuote={this.viewItem}
-							 		current_user_show_quote_message={this.props.current_user_show_quote_message}
-						 		/>
-					 	}
-					</div>
-					<div className="sidebar">
-						<Contact
-							tenants={tenants}
-							landlord={this.state.landlord}
-							current_user={this.props.current_user}
-							assigned_trady={trady || this.props.assigned_trady}
-							onModalWith={(modal) => this.onModalWith(modal)}
-						/>
-						<Action
-							landlord={this.state.landlord}
-							hasTenant={!!this.state.tenants.length}
-							onModalWith={(modal) => this.onModalWith(modal)}
-							viewItem={this.viewItem}
-							assigned_trady={trady || this.props.assigned_trady}
-						/>
-						{
-							(work_order_appointments && work_order_appointments.length > 0) &&
-								<AppointmentRequest
-									appointments={work_order_appointments}
-									title="Work Order Appointments"
-									current_role={current_user_role}
-									viewItem={(key, item) => this.viewItem(key, item)}
-								/>
-						}
-						{
-							(quote_appointments && quote_appointments.length > 0) &&
-								<AppointmentRequest
-									title="Appointments For Quotes"
-									current_role={current_user_role}
-									appointments={quote_appointments}
-									viewItem={(key, item) => this.viewItem(key, item)}
-								/>
-						}
-						{
-							(landlord_appointments && landlord_appointments.length > 0) &&
-								<AppointmentRequest
-									title="Landlord Appointments"
-									current_role={current_user_role}
-									appointments={landlord_appointments}
-									viewItem={(key, item) => this.viewItem(key, item)}
-								/>
-						}
 						<Activity logs={this.props.logs} />
 					</div>
-					{
-						(work_order_appointments && work_order_appointments.length > 0) &&
-							<AppointmentRequestMobile
-								title="Work Order Appointments"
-								current_role={current_user_role}
-								appointments={work_order_appointments}
-								viewItem={(key, item) => this.viewItem(key, item)}
-							/>
-					}
-					{
-						(quote_appointments && quote_appointments.length > 0) &&
-							<AppointmentRequestMobile
-								title="Appointments For Quotes"
-								current_role={current_user_role}
-								appointments={quote_appointments}
-								viewItem={(key, item) => this.viewItem(key, item)}
-							/>
-					}
-					{
-						(landlord_appointments && landlord_appointments.length > 0) &&
-							<AppointmentRequestMobile
-								title="Landlord Appointments"
-								current_role={current_user_role}
-								appointments={landlord_appointments}
-								viewItem={(key, item) => this.viewItem(key, item)}
-							/>
-					}
-					<ActivityMobile logs={this.props.logs} />
 				</div>
 				<SideBarMobile
 					tenants={tenants}
@@ -3309,6 +3307,7 @@ var MaintenanceRequest = React.createClass({
 	render: function() {
 		return (
 			<div>
+        <FixCSS />
 				{ this.summary() }
 			</div>
 		);

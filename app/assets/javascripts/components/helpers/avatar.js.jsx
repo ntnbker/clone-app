@@ -22,6 +22,7 @@ AvatarImage = React.createClass({
       <img
         id="avatar"
         alt="Avatar Image"
+        onClick={this.props.onClick || (() => {})}
         {...this.props}
         src={imageUri}
         onError={this.handleError}

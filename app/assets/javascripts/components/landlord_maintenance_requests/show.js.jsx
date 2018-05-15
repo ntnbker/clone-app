@@ -8,33 +8,39 @@ var LandlordSideBarMobile = React.createClass({
 
 	show: function(key) {
 		const height = $( window ).height();
-		if(key == 'action') {
-			this.setState({showAction: true});
-			this.setState({showContact: false});
-			$('#actions-full').css({'height': 270, 'border-width': 1});
-		}else {
-			this.setState({showAction: false});
-			this.setState({showContact: true});
-			$('#contacts-full').css({'height': 270, 'border-width': 1});
+		if (key == 'general-action') {
+			this.setState({showGeneral: true});
+			return $('.sidebar').addClass('visible');
 		}
 	},
 
 	close: function() {
-		if($('#actions-full').length > 0) {
-			this.setState({showAction: false});
-			$('#actions-full').css({'height': 0, 'border-width': 0});
+		if (!!this.state.showGeneral) {
+			this.setState({showGeneral: false});
 		}
-		if($('#contacts-full').length > 0) {
-			this.setState({showContact: false});
-			$('#contacts-full').css({'height': 0, 'border-width': 0});
+		$('.sidebar').removeClass('visible');
+	},
+
+	checkClose(e) {
+		const self = this;
+		const {className} = e.target;
+		dontCloseMe = !!DONT_CLOSE_WHEN_CLICK_ME_LIST.filter(element => className.includes(element))[0];
+
+		if (!dontCloseMe && self.state.showGeneral) {
+			e.target.click && e.target.click();
+			setTimeout(() => self.close(), 0);
 		}
 	},
 
 	componentDidMount: function() {
 		const self = this;
-		$(document).click(function() {
-			self.close();
-		})
+		$(document).on('click.sidebar', this.checkClose);
+		$(document).on('touchstart.sidebar', this.checkClose);
+	},
+
+	componentWillUnmount() {
+		$(document).unbind('click.sidebar');
+		$(document).unbind('touchstart.sidebar');
 	},
 
 	render: function() {
@@ -42,7 +48,7 @@ var LandlordSideBarMobile = React.createClass({
 			<div className="dontprint">
 				<div className="sidebar-mobile">
 					<div className="fixed">
-						<button
+						{/* <button
 							data-intro="Select 'Contact' to call or message." data-position="top"
 							className={"contact button-default " + (!!this.state.showContact && 'active')}
 							onClick={(key) => this.show('contact')}
@@ -55,7 +61,15 @@ var LandlordSideBarMobile = React.createClass({
 							onClick={(key) => this.show('action')}
 						>
 							ACTIONS MENU
+						</button> */}
+						<button
+							data-intro="Select 'Action' to action the maintenance request." data-position="top"
+							className={"button-default show-sidebar-menu " + (this.state.showGeneral && 'active')}
+							onClick={(key) => this.show('general-action')}
+						>
+							MENU
 						</button>
+						<div className="background" />
 					</div>
 				</div>
 				<div className="action-mobile">
@@ -957,12 +971,40 @@ var LandlordMaintenanceRequest = React.createClass({
 		const hasApproved = quote_requests.some(quote_request => quote_request.quotes.some(quote => quote.status === 'Approved'));
 
 		return (
-			<div className="summary-container-index" id="summary-container-index">
+			<div className="summary-container-index new-ui-maintenance-request" id="summary-container-index">
+				<FixCSS />
 				<div className="main-summary dontprint">
+					<div className="sidebar">
+						<div className="box-shadow flexbox flex-column">
+							{
+								/*
+							<LandlordContact
+								agent={this.props.agent}
+								landlord={this.state.landlord}
+								onModalWith={(modal) => this.onModalWith(modal)}
+								current_user={this.props.current_user}
+								maintenance_request={this.state.maintenance_request}
+							/>*/
+							}
+							<GeneralAction
+								{...this.props}
+							/>
+							<LandlordAction
+								landlord={this.state.landlord}
+								requestQuote={this.requestQuote}
+								onModalWith={(modal) => this.onModalWith(modal)}
+								maintenance_request={this.state.maintenance_request}
+							/>
+						</div>
+					</div>
 					<div className="section">
 						<ItemMaintenanceRequest
 							gallery={this.props.gallery}
 							property={this.props.property}
+							onModalWith={this.onModalWith}
+							landlord={this.state.landlord}
+							viewItem={(key, item) => this.viewItem(key, item)}
+							tenants={this.state.tenants}
 							maintenance_request={this.state.maintenance_request}
 							strike_approval={hasApproved}
 						/>
@@ -996,48 +1038,8 @@ var LandlordMaintenanceRequest = React.createClass({
 									viewQuote={this.viewItem}
 								/>
 						}
+						<Activity logs={this.props.logs} />
 					</div>
-					<div className="sidebar">
-						<LandlordContact
-							agent={this.props.agent}
-							landlord={this.state.landlord}
-							onModalWith={(modal) => this.onModalWith(modal)}
-							current_user={this.props.current_user}
-							maintenance_request={this.state.maintenance_request}
-						/>
-						<LandlordAction
-							landlord={this.state.landlord}
-							requestQuote={this.requestQuote}
-							onModalWith={(modal) => this.onModalWith(modal)}
-							maintenance_request={this.state.maintenance_request}
-						/>
-						{
-							(appointments && appointments.length > 0) &&
-								<AppointmentRequest
-									title="Landlord Appointments"
-									appointments={appointments}
-									cancelAppointment={(value) => this.cancel(value)}
-									viewItem={(key, item) => this.viewItem(key, item)}
-									declineAppointment={(value) => this.decline(value)}
-									acceptAppointment={(value) => this.acceptAppointment(value)}
-									current_role={this.props.signed_in_landlord.user.current_role}
-								/>
-						}
-						<ActivityMobile logs={this.props.logs} />
-					</div>
-					{
-						(appointments && appointments.length > 0) &&
-							<AppointmentRequestMobile
-								appointments={appointments}
-								title="Landlord Appointments"
-								cancelAppointment={(value) => this.cancel(value)}
-								viewItem={(key, item) => this.viewItem(key, item)}
-								declineAppointment={(value) => this.decline(value)}
-								acceptAppointment={(value) => this.acceptAppointment(value)}
-								current_role={this.props.signed_in_landlord.user.current_role}
-							/>
-					}
-					<ActivityMobile logs={this.props.logs} />
 				</div>
 				<LandlordSideBarMobile
 					agent={this.props.agent}

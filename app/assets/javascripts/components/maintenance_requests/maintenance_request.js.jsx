@@ -1,3 +1,6 @@
+// Use it for close sidebar in MR show page on mobile
+var DONT_CLOSE_WHEN_CLICK_ME_LIST = ['input-search', 'fa-angle-right', 'fa-angle-down', 'general-action-title', 'show-sidebar-menu'];
+
 var Carousel = React.createClass({
 	getInitialState: function() {
 		const gallery = this.props.gallery.length > 0 ? this.props.gallery : [];
@@ -48,8 +51,8 @@ var Carousel = React.createClass({
 		var sliderDetail = $('#slider-detail')
 		if(sliderDetail.length > 0) {
 			this.setWidth(sliderDetail.width())
-
 			$( window ).resize(function() {
+				var sliderDetail = $('#slider-detail')
 				self.setWidth(sliderDetail.width());
 			});
 
@@ -134,62 +137,60 @@ var Carousel = React.createClass({
 	}
 });
 
-var Assigns = React.createClass({
-	render: function() {
-		const assigns = this.props.assigns;
-		return (
-			<ul>
-				{
-					assigns.map((item, key) => {
-						if(item.name || item.first_name){
-							return (
-								<li key={item.id}>
-									<a onClick={(key, data) => this.props.viewItem('confirmAssign', item.email)}>
-										{ item.name ? item.name : item.first_name + " " + item.last_name }
-									</a>
-								</li>
-							);
-						}
-
-					})
-				}
-			</ul>
-		);
-	}
-});
-
-var DropDownStatus = React.createClass({
-	viewItem: function(status) {
-		this.props.viewItem('confirmUpdateStatus', status);
+var FixCSS = React.createClass({
+	getInitialState() {
+    return {};
 	},
 
-	render: function() {
-		return (
-			<ul>
-				{
-					this.props.data.map((item, key) => {
-						return (
-							<li key={key} onClick={(status) => this.viewItem(item)}>
-								{item.title}
-							</li>
-						);
-					})
-				}
-			</ul>
-		);
-	}
+  componentDidMount() {
+		const self = this;
+		$('.layout').addClass('new-ui');
+		self.resizeSidebar();
+
+		$(window).bind('resize.new_ui orientationchange.new_ui', self.resizeSidebar);
+		$('#main > div.alert').bind('remove.new_ui', self.resizeSidebar);
+	},
+	
+	resizeSidebar() {
+		$('.sidebar > .box-shadow').css({height: ''});
+		let screenHeight = $(window).height();
+		let sidebarHeight = $('.sidebar').height();
+		if (window.innerWidth < 1024) {
+			$('.sidebar').css({height: screenHeight});
+			$('.sidebar > .box-shadow').css({height: Math.max(screenHeight, sidebarHeight)});
+		} else {
+			let menuHeight = 65;
+			let footerHeight = 58;
+			let spaceHeight = 55;
+			let alertHeight = $("#main > div.alert").height() || 0;
+			let sidebarHeight = screenHeight - menuHeight - footerHeight - spaceHeight - alertHeight;
+			console.log(sidebarHeight, alertHeight);
+			$('.sidebar').css({height: sidebarHeight});
+			$('.sidebar > .box-shadow').css({height: sidebarHeight});
+		}
+		$('.list-quote .contact-button > div').hide().show(0);
+	},
+
+  componentWillUnmount() {
+		$('.layout').removeClass('new-ui');
+		$('.sidebar').css({height: ''});
+		$(window).unbind('resize.new_ui orientationchange.new_ui');
+		$('#main > div.alert').unbind('remove.new_ui', self.resizeSidebar);
+  },
+  
+  render() {
+    return <div className="display-none" />
+  }
 });
 
-var ButtonHeaderMR = React.createClass({
-	getInitialState: function() {
+var UpdateStatusModal = React.createClass({
+	getInitialState() {
 		const {standBy, actionRequired, awaitingAction} = this.filterHideField(this.props);
 
 		return {
-			isShow: false,
-			isShowStatus: false,
 			standBy,
 			actionRequired,
-			awaitingAction,
+			awaitingAction
 		};
 	},
 
@@ -306,6 +307,137 @@ var ButtonHeaderMR = React.createClass({
 		})
 	},
 
+	render() {
+		const {standBy, actionRequired, awaitingAction} = this.state;
+
+		return <div className="modal-custom fade update-status-modal">
+			<div className="modal-dialog">
+				<div className="modal-content">
+					<div className="modal-header">
+						<button
+							type="button"
+							className="close"
+							data-dismiss="modal"
+							aria-label="Close"
+							onClick={this.props.close}
+						>
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h4 className="modal-title text-center">Update Status</h4>
+					</div>
+					<div className="modal-body">
+						<div className="dropdown-assign">
+							<p>Stand By</p>
+							<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={standBy}/>
+						</div>
+						<div className="dropdown-assign">
+							<p className="awaiting">Action Required</p>
+							<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={actionRequired}/>
+						</div>
+						<div className="dropdown-assign">
+							<p className="awaiting">Awaiting Action</p>
+							<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={awaitingAction}/>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>;
+	}
+});
+
+var AssignModal = React.createClass({
+	getInitialState() {
+		return {};
+	},
+
+	render() {
+		const {all_agency_admins, all_agents} = this.props;
+
+		return <div className="modal-custom fade update-status-modal">
+			<div className="modal-dialog">
+				<div className="modal-content">
+					<div className="modal-header">
+						<button
+							type="button"
+							className="close"
+							data-dismiss="modal"
+							aria-label="Close"
+							onClick={this.props.close}
+						>
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h4 className="modal-title text-center">Assign To</h4>
+					</div>
+					<div className="modal-body">
+						<div className="dropdown-assign">
+							<p>Agency Administrators</p>
+							<Assigns assigns={all_agency_admins} viewItem={(key, item) => this.props.viewItem(key, item)} />
+						</div>
+						<div className="dropdown-assign">
+							<p className="agent">Agents</p>
+							<Assigns assigns={all_agents} viewItem={(key, item) => this.props.viewItem(key, item)} />
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>;
+	}
+});
+
+var Assigns = React.createClass({
+	render: function() {
+		const assigns = this.props.assigns;
+		return (
+			<ul>
+				{
+					assigns.map((item, key) => {
+						if(item.name || item.first_name){
+							return (
+								<li key={item.id}>
+									<a onClick={(key, data) => this.props.viewItem('confirmAssign', item.email)}>
+										{ item.name ? item.name : item.first_name + " " + item.last_name }
+									</a>
+								</li>
+							);
+						}
+
+					})
+				}
+			</ul>
+		);
+	}
+});
+
+var DropDownStatus = React.createClass({
+	viewItem: function(status) {
+		this.props.viewItem('confirmUpdateStatus', status);
+	},
+
+	render: function() {
+		return (
+			<ul>
+				{
+					this.props.data.map((item, key) => {
+						return (
+							<li key={key} onClick={(status) => this.viewItem(item)}>
+								{item.title}
+							</li>
+						);
+					})
+				}
+			</ul>
+		);
+	}
+});
+
+var ButtonHeaderMR = React.createClass({
+	getInitialState: function() {
+		return {
+			isShow: false,
+			isShowStatus: false,
+		};
+	},
+
 	show: function(key) {
 		switch(key) {
 			case 'assign':
@@ -348,32 +480,28 @@ var ButtonHeaderMR = React.createClass({
 		}
 	},
 
-	componentDidMount: function() {
-	},
-
 	render: function() {
 		const all_agents = this.props.all_agents;
 		const all_agency_admins = this.props.all_agency_admins;
-		const {standBy, actionRequired, awaitingAction} = this.state;
 		return (
-			<div className="actions">
-				<button className="button-primary edit-detail" onClick={(key) => this.props.viewItem('approveJob')}>
+			<div className="button-header-mr box-shadow">
+				<button type="button" className="edit-detail" onClick={(key) => this.props.viewItem('approveJob')}>
 					<span>
 						Approval Note
 					</span>
 				</button>
-				<button className="button-primary edit-detail" onClick={(key) => this.props.viewItem('splitMR')}>
+				{/* <button type="button" className="edit-detail" onClick={(key) => this.props.viewItem('splitMR')}>
 					<span>
 						Split
 					</span>
 				</button>
-				<button className="button-primary edit-detail" onClick={(key) => this.props.viewItem('duplicateMR')}>
+				<button type="button" className="edit-detail" onClick={(key) => this.props.viewItem('duplicateMR')}>
 					<span>
 						Duplicate
 					</span>
-				</button>
-				<div id="update-status">
-					<button className="button-primary update-status" onClick={(key) => this.show('status')}>
+				</button> */}
+				{/* <div id="update-status">
+					<button type="button" className="update-status" onClick={(key) => this.show('status')}>
 						Update status
 					</button>
 					<div
@@ -383,29 +511,17 @@ var ButtonHeaderMR = React.createClass({
 						tabIndex="2"
 						onBlur={() => this.close('status')}
 					>
-						<div>
-							<p>Stand By</p>
-							<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={standBy}/>
-						</div>
-						<div>
-							<p className="awaiting">Action Required</p>
-							<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={actionRequired}/>
-						</div>
-						<div>
-							<p className="awaiting">Awaiting Action</p>
-							<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={awaitingAction}/>
-						</div>
 					</div>
-				</div>
-				<button className="button-primary edit-detail" onClick={(key) => this.props.viewItem('editMaintenanceRequest')}>
+				</div> */}
+				{/* <button type="button" className="edit-detail" onClick={(key) => this.props.viewItem('editMaintenanceRequest')}>
 					<i className="fa fa-pencil" aria-hidden="true" />
 					<span>
 						Edit Details
 					</span>
 				</button>
 				<div className="assign">
-					<button
-						className="button-primary assign-to"
+					<button type="button"
+						className="assign-to"
 						id="assign-to"
 						ref={elem => this.assignBtn = elem}
 						onClick={key => this.show('assign')}
@@ -433,7 +549,7 @@ var ButtonHeaderMR = React.createClass({
 							<Assigns assigns={all_agents} viewItem={(key, item) => this.props.viewItem(key, item)} />
 						</div>
 					</div>
-				</div>
+				</div> */}
 			</div>
 		);
 	}
@@ -494,64 +610,32 @@ var ItemMaintenanceRequest = React.createClass({
 		const n = d.getTimezoneOffset();
 		const date = new Date(maintenance.created_at);
 		let created_at = moment(date).add(-n/60).fromNow();
-		
+
 		return (
-			<div className="post">
-				<div className="info">
-					<div className="info-title">
-						{
-							props.show_assign &&
-								<div className="title">
-									<button className="button-primary" type="">{status && status.agent_status}</button>
-								</div>
-						}
-						<div className="author">
-							<i className="fa fa-map-marker" aria-hidden="true" />
-							<span className="address">
-								{this.props.property.property_address}.
-							</span>
-							<a className="time">
-								{created_at}
-							</a>
-							<a>|</a>
-							<a className="name-author">{maintenance.service_type}</a>
-						</div>
-					</div>
-					{
-						props.show_assign &&
-							<ButtonHeaderMR
-								all_agents={props.all_agents}
-								all_agency_admins={props.all_agency_admins}
-								existLandlord={props.existLandlord}
-								existQuoteRequest={props.existQuoteRequest}
-								existTradyAssigned={props.existTradyAssigned}
-								viewItem={(key, item) => this.props.viewItem(key, item)}
-							/>
-					}
-				</div>
-				<div className="content">
-					<div className="description">
-						<p className="m-b-n">Job Description:</p>
-						<p>{maintenance.maintenance_description}</p>
-					</div>
-					{ !this.props.hide_note && maintenance.preapproved_note
-						? <div className="vailability pre-approved-note">
-								<p className="header">Approval Note: </p>
-								<p className="description">
-                  <span className={'approval-note ' + (strike_approval ? 'strike' : '')}>
-                    {maintenance.preapproved_note}
-                  </span>
-                  {strike_approval && "As per quote approved"}
-                </p>
-							</div>
-						: ''
-					}
-					<div className="vailability">
-							<p className="header">Tenant Availability and Access Instructions: </p>
-							<p className="description">{maintenance.availability_and_access}</p>
-					</div>
-					<Carousel gallery={this.props.gallery} />
-				</div>
+			<div className="item-maintenance-request">
+				{
+					false && props.show_assign &&
+						<ButtonHeaderMR
+							all_agents={props.all_agents}
+							all_agency_admins={props.all_agency_admins}
+							existLandlord={props.existLandlord}
+							existQuoteRequest={props.existQuoteRequest}
+							existTradyAssigned={props.existTradyAssigned}
+							viewItem={(key, item) => this.props.viewItem(key, item)}
+						/>
+				}
+				<MaintenaceRequestDetail {...this.props} />
+				<TenantContactButton {...this.props} />
+				{ props.show_assign && 
+					<button
+						type="button"
+						className="show-settings"
+						onClick={() => this.props.onModalWith('showSettings')}
+					>
+						<i className="fa fa-cog" aria-hidden="true" />
+						Settings
+					</button>
+				}
 			</div>
 		);
 	}
@@ -849,3 +933,242 @@ var ModalConfirmUpdateStatus = React.createClass({
 		);
 	}
 });
+
+var MaintenaceRequestDetail = React.createClass({
+	getInitialState() {
+		return {};
+	},
+
+	render() {
+		const {
+			show_assign, status, maintenance_request, hide_note, strike_approval
+		} = this.props;
+
+		return (
+			<div className="mr-detail box-shadow">
+				<h5 className="mr-title">
+					Maintenance Request Details 
+					{show_assign && 
+						<span 
+							className="edit-detail" 
+							onClick={() => this.props.onModalWith('editMaintenanceRequest')}
+						>
+							(Edit Details)
+						</span>
+					}
+				</h5>
+				<MaintenanceRequestInformation {...this.props} />
+				<div className="content">
+					<div className="description">
+						<h5 className="m-b-n mr-title">Job Description:</h5>
+						<p className="job-description">{maintenance_request.maintenance_description}</p>
+					</div>
+					{ !hide_note && maintenance_request.preapproved_note
+						? <div className="vailability pre-approved-note">
+								<p className="header small-weight">Approval Note: </p>
+								<p className="description job-description">
+                  <span className={'approval-note ' + (strike_approval ? 'strike' : '')}>
+                    {maintenance_request.preapproved_note}
+                  </span>
+                  {strike_approval && "As per quote approved"}
+                </p>
+							</div>
+						: ''
+					}
+				</div>
+				<div className="mr-photo">
+					<Carousel gallery={this.props.gallery} />
+				</div>
+				<div className="add-photo contact-button">
+					<div className="add-photo-button">
+						<button
+							type="button"
+							className=""
+							onClick={() => this.props.onModalWith('addPhoto')}
+						>
+							Add Photo
+						</button>
+					</div>
+				</div>
+			</div>
+		)
+	}
+})
+
+var MaintenanceRequestInformation = React.createClass({
+	render() {
+		const {maintenance_request, status, property, show_assign} = this.props;
+
+		const n = new Date().getTimezoneOffset();
+		const date = new Date(maintenance_request.created_at);
+		let created_at = moment(date).add(-n/60).fromNow();
+
+		return (
+			<div className="mr-information">
+				{
+					show_assign &&
+					<div className="mr-information">
+						<span className="key">Status: </span>
+						<span className="data status">{status && status.agent_status}</span>
+						<span 
+							className="update-status"
+							onClick={() => this.props.onModalWith('updateMRStatus')}
+						>
+							(Update Status)
+						</span>
+					</div>
+				}
+				<div className="mr-information">
+					<span className="key">Address: </span>
+					<span className="data address">
+						<i className="fa fa-map-marker" aria-hidden="true" />
+						{property.property_address}
+					</span>
+				</div>
+				<div className="mr-information">
+					<span className="key">Submitted: </span>
+					<span className="data time">
+						{created_at}
+					</span>
+				</div>
+				<div className="mr-information">
+					<span className="key">Service Required: </span>
+					<span className="data service">
+						{maintenance_request.service_type}
+					</span>
+				</div>
+			</div>
+		)
+	}
+})
+
+var TenantContactButton = React.createClass({
+	render() {
+		const {tenants = [], maintenance_request, landlord, isShowLandlord, show_assign, isTrady} = this.props;
+		return (
+			<div className="box-shadow">
+				{isShowLandlord && 
+					<div className="landlord-information">
+						<h5 className="mr-title">Landlord Details
+							{show_assign && landlord && 
+								<span 
+									className="edit-detail" 
+									onClick={() => this.props.onModalWith('showLandlordSettings')}
+								>
+									(Edit Landlord)
+								</span>
+							}
+						</h5>
+						{ !landlord 
+							? <div className="no-landlord-text">
+									No landlord available for this property
+								</div>
+							:	!isTrady && <div className="landlord-detail">
+									<div className="landlord-name">
+										<span className="key">Name: </span>
+										<span className="value">{landlord.name}</span>
+									</div>
+									<div className="phone">
+										<span className="key">Phone Number: </span>
+										<span className="value">{landlord.mobile}</span>
+									</div>
+								</div>
+						}
+						{ !!landlord 
+							? <div className="landlord-contact-button contact-button">
+									{ !isTrady && 
+										<div className="phone">
+											<button
+												type="button"
+												className="call-landlord"
+												onClick={() => this.callLandlord.click()}
+											>
+												<a
+													className="display-none"
+													href={"tel:" + landlord.mobile}
+													ref={e => this.callLandlord = e}
+												/>
+												<i className="fa fa-phone" aria-hidden="true" />
+												Landlord - {landlord.name}
+											</button>
+										</div>
+									}
+									<div className="message">
+										<button 
+											type="button" 
+											className="message-landlord" onClick={() => this.props.onModalWith('sendMessageLandlord')}
+										>
+											<i className="fa fa-commenting" aria-hidden="true" />
+											Landlord - {landlord.name}
+										</button>
+									</div>
+								</div>
+							: <div className="landlord-contact-button contact-button">
+									<div className="add-landlord">
+										<button 
+											type="button"
+											onClick={() => this.props.onModalWith('addLandlord')}
+										>
+											<i className="fa fa-plus" aria-hidden="true" />
+											Add Landlord
+										</button>
+									</div>
+								</div>
+						}
+					</div>
+				}
+				<div className="tenant-information">
+					<h5 className="mr-title">Tenant Details
+							{show_assign && 
+								<span 
+									className="edit-detail" 
+									onClick={() => this.props.onModalWith(tenants.length ? 'showTenants' : 'addTenant')}
+								>
+									(Edit Tenants)
+								</span>
+							}
+						</h5>
+					<div className="vailability">
+						<p className="header small-weight">Tenant Availability and Access Instructions: </p>
+						<p className="job-description">{maintenance_request.availability_and_access}</p>
+					</div>
+					{tenants.map(tenant => (
+						<div className="tenant-detail">
+							<div className="phone-desktop">
+								<div className="phone">
+									<span className="key">Phone Number: </span>
+									<span className="value">{tenant.mobile}</span>
+								</div>
+							</div>
+							<div className="contact-button">
+								<div className="phone">
+									<button
+										type="button"
+										className="call-tenant"
+										onClick={() => this[`tenantPhone${tenant.id}`].click()}
+									>
+										<a
+											href={`tel:${tenant.mobile}`}
+											ref={e => this[`tenantPhone${tenant.id}`] = e}
+											className="display-none"
+										/>
+										<i className="fa fa-phone" aria-hidden="true" />
+										Tenant - {tenant.name}
+									</button>
+								</div>
+								{ !isTrady && 
+									<div className="message">
+										<button className="message-landlord" onClick={() => this.props.onModalWith('sendMessageTenant')}>
+											<i className="fa fa-commenting" aria-hidden="true" />
+											Tenant - {tenant.name}
+										</button>
+									</div>
+								}
+							</div>
+						</div>
+					))}
+				</div>
+			</div>
+		)
+	}
+})

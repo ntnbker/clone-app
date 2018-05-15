@@ -35,6 +35,8 @@
   %body
     
     = render 'shared/spinner'
+    - if content_for? :expanded
+      = render 'shared/messages'
     
     %div.layout
       %header
@@ -42,10 +44,9 @@
           = render 'shared/nav', {:expanded => true}
         - else
           = render 'shared/nav'
-        = render 'shared/messages'
-
       %section.content.clearfix.content-custom#main
-
+        - if !content_for? :expanded
+          = render 'shared/messages'
         = yield
 
 

@@ -277,6 +277,7 @@ var Header = React.createClass({
     const {
       profile = '',
     } = images && images.length && images[0] || {};
+    const isAgent = ['AgencyAdmin', 'Agent'].includes(role);
 
     return (
       <nav className="header-expanded">
@@ -306,9 +307,9 @@ var Header = React.createClass({
           }
         </MobileMenu>
         <div className={"container " + (expanded ? 'full-header' : '')} >
-          <div className={"column header-custom " + (e && "forhome")}>
+          <div className={"column header-custom " + (e && "forhome ")}>
             <div className="logo">
-              <img src="/assets/logo.png" alt="logo" />
+              <img src="/assets/logo.png" alt="logo" onClick={() => location.href = '/'} />
               <a href={props.root_path}> MaintenanceApp </a>
             </div>
             {
@@ -316,7 +317,7 @@ var Header = React.createClass({
               ? (
                   !expanded
                   ?
-                    <div className="header-right">
+                    <div className={"header-right " + (isAgent && " agent ")}>
                       { this.search() }
                       <div className="menu-bar dropdown-custom">
                         <button type="button" className="btn-menu" onClick={this.showMenu}>

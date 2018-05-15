@@ -10,7 +10,23 @@ body {
   height: 100%;
 
 }
+.flexbox {
+  @include flexbox;
 
+  &.flex-column {
+    @include flex-direction(column);
+  }
+  &.justify-center {
+    @include justify-content(center);
+  }
+  &.justify-space {
+    @include justify-content(space-between);
+    @include justify-content(justify);
+  }
+  &.align-center {
+    @include align-items(center);
+  }
+}
 .description-data {
   background-color: #71C796;
   color: white;
@@ -160,6 +176,7 @@ span.approval-note {
 }
 .logo {
   margin: auto 0 auto 0;
+  cursor: pointer;
 }
 
 input, textarea, select {
@@ -212,6 +229,7 @@ header {
           position: relative;
           margin: auto;
           max-width: 300px;
+          min-width: 300px;
           height: 35px;
           border-radius: 20px;
           background: #313E46;
@@ -269,6 +287,7 @@ header {
             font-size: 20px;
             padding-left: 10px;
             line-height: 55px;
+            margin: auto;
             i {
               // @include flexbox;
               line-height: 55px;
@@ -314,7 +333,7 @@ header {
         @include align-items(center);
         @include justify-content(flex-end);
         -ms-flex-align: center;
-        margin: auto 0;
+        margin: auto 5px;
         // margin-top: 22.5px;
 
         height: 100%;
@@ -780,12 +799,17 @@ footer {
   .footer-other {
     text-align: center;
     background-color: #3d4b54;
-    padding: 20px 0 10px;
+    padding: 5px 0;
     color: #fff;
 
     .footer-custom {
       margin: auto;
       max-width: 960px;
+      text-align: center;
+
+      > * {
+        display: inline-block;
+      }
     }
 
     .footer-social {
@@ -964,5 +988,3 @@ footer {
     position: absolute;
   }
 }
-
-

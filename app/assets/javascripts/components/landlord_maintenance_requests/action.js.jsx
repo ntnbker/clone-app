@@ -21,27 +21,21 @@ var ContentLandlordAction = React.createClass({
 						Request quote
 					</a>
 				</li>
-				<li>
-					<a onClick={() => this.props.onModalWith('createAppointmentFixMyself')}>
-						<i className="icon-send" aria-hidden="true" />
-						Fix Myself
-					</a>
-				</li>
-				<li>
-					<a onClick={() => this.props.onModalWith('markIssueResolved')}>
-						<i className="fa fa-check" aria-hidden="true" />
-						Mark As Issue Resolved
-					</a>
-				</li>
+        <li>
+          <a onClick={() => this.props.onModalWith('createAppointmentFixMyself')}>
+            <i className="fa fa-send" aria-hidden="true" />
+            Fix Myself
+          </a>
+        </li>
 				<li>
 					<a onClick={() => this.props.onModalWith('approveJob')}>
-						<i className="icon-send" aria-hidden="true" />
+						<i className="fa fa-send" aria-hidden="true" />
 						Approve Job
 					</a>
 				</li>
 				<li>
 					<a onClick={() => this.props.onModalWith('defere')}>
-						<i className="icon-send" aria-hidden="true" />
+						<i className="fa fa-send" aria-hidden="true" />
 						Defer
 					</a>
 				</li>
@@ -64,8 +58,8 @@ var LandlordAction = React.createClass({
 	render: function() {
 		return (
 			<div className="item"  data-intro="This is Action" data-position="left">
-				<div className="header action">
-					<a>Actions:</a>
+				<div className="header action general-action-title">
+					<a>Maintenance Request</a>
 					<i
 						aria-hidden="true"
 						onClick={this.showAction}
