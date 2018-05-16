@@ -4,7 +4,7 @@ var CreactOrUploadQuote = React.createClass({
 			<li>
 				<a href={this.props.link}>
 					<i className="fa fa-file-text" aria-hidden="true" />
-					Create Quote
+					Send Quote
 				</a>
 			</li>
 		);

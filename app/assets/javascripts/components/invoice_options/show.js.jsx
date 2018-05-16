@@ -39,7 +39,7 @@ var InvoiceOption = React.createClass({
             <div className="option-content">
               <h4 className="optionheader text-center">Option 2</h4>
               <p className="optiondescription">
-                Easily make invoices using our platform by clicking the <b>Create Invoice</b> button below.
+                Easily make invoices using our platform by clicking the <b>Send Invoice</b> button below.
               </p>
             </div>
             <div className="invoice-button center-invoice-button">

@@ -26,7 +26,7 @@ var QuoteOption = React.createClass({
             className="button-submit"
             onClick={() => location.href = trady_company_path}
           >
-            Create Quote
+            Send Quote
           </button>
         </div>
       </form>
