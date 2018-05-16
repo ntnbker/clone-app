@@ -60,7 +60,7 @@ var ButtonCreateQuote = React.createClass({
           style={{display: 'none'}}
           ref={(elem) => this.link = elem}
         />
-        Create Quote
+        Send Quote
       </button>
     );
   }
@@ -1683,7 +1683,7 @@ var ShowTradyActions = React.createClass({
 									data-dismiss="modal"
 								>
 								 <i className="fa fa-user" aria-hidden="true" /> 
-								 	Create Quote
+								 	Send Quote
 								</button>
 								<button
 									type="button"
@@ -1692,7 +1692,7 @@ var ShowTradyActions = React.createClass({
 									data-dismiss="modal"
 								>
 									<i className="fa fa-user" aria-hidden="true" /> 
-									Create Invoice
+									Send Invoice
 								</button>
 							</div>
             </div>

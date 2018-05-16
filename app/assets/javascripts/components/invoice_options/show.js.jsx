@@ -48,7 +48,7 @@ var InvoiceOption = React.createClass({
                 className="button-submit"
                 onClick={() => location.href = create_invoice}
               >
-                Create Invoice
+                Send Invoice
               </button>
             </div>
           </div>
