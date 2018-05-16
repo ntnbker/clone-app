@@ -1,8 +1,9 @@
 class InvoiceItem < ApplicationRecord
   belongs_to :invoice, inverse_of: :invoice_items
-  validates_presence_of :item_description, :amount
+  #validates_presence_of :item_description, :amount
 
-  
+  validates :amount, :presence => true
+  validates :item_description, :presence => true
   validates :amount, :numericality => true
   validates :hours, :numericality => true
 
