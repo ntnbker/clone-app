@@ -17,6 +17,19 @@ var QuoteField = React.createClass({
     }
   },
 
+  componentWillMount() {
+    const {content: quote, params: {changeFee}, x} = this.props;
+    if (!quote) return;
+
+    const {pricing_type, min_price, max_price, amount} = quote;
+
+    let valueFee = pricing_type !== 'Range' ? amount : {
+      min: min_price,
+      max: max_price
+    }
+    changeFee(valueFee, pricing_type, x);
+  },
+
   validateDescription: function(errors) {
     const error = errors['quote_items.item_description'];
     return error && error.length && !this.item_description.value ? error[0] : '';
