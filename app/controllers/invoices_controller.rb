@@ -239,16 +239,17 @@ class InvoicesController < ApplicationController
     unless maintenance_request.invoices.where(paid:false).count >= 1 && maintenance_request.uploaded_invoices.where(paid:false).count >= 1
       maintenance_request.action_status.update_columns(agent_status:"Jobs Completed", trady_status:"Job Complete")
       #we needs to grab all the quote requests from this MR. Any Quote Request that does not belong to the trady assigned, that has no quote_id we mark expired.
-      quote_requests = maintenance_request.quote_requests
-      assigned_trady = maintenance_request.trady
+      QuoteRequest.expire(maintenance_request.id)
+      # quote_requests = maintenance_request.quote_requests
+      # assigned_trady = maintenance_request.trady
 
-      quote_requests.each do |quote_request|
-        if quote_request.quote_id == nil && quote_request.trady_id != assigned_trady.id
-          quote_request.update_attribute(:expired, true)
+      # quote_requests.each do |quote_request|
+      #   if quote_request.quote_id == nil && quote_request.trady_id != assigned_trady.id
+      #     quote_request.update_attribute(:expired, true)
          
-        end 
+      #   end 
 
-      end 
+      # end 
 
 
 

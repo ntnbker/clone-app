@@ -20,6 +20,28 @@ class QuoteRequest < ApplicationRecord
   end
 
 
+  def self.expire(maintenance_request_id)
+    quote_requests = self.where(maintenance_request_id:maintenance_request_id).includes(maintenance_request:[:trady])
+
+    #assigned_trady = maintenance_request.trady
+    if quote_requests.count >= 1 
+      quote_requests.each do |quote_request|
+        assigned_trady = quote_request.maintenance_request.trady
+        
+        if quote_request.quote_id == nil && quote_request.trady_id != assigned_trady.id
+          quote_request.update_attribute(:expired, true)
+         
+        end 
+
+      end 
+    else
+      #do nothing
+
+    end
+
+
+  end
+
 
 
 

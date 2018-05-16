@@ -20,6 +20,7 @@ class LandlordActionsController < ApplicationController
   def issue_resolved
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     maintenance_request.action_status.update_attribute(:agent_status, "Jobs Completed")
+    QuoteRequest.expire(maintenance_request.id)
     landlord = current_user.landlord 
     
     AgentNoticeLandlordHasResolvedIssueWorker.perform_async(maintenance_request.id)
