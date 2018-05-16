@@ -89,7 +89,7 @@ var TradySideBarMobile = React.createClass({
 								className="button-default show-sidebar-menu create-quote"
 								onClick={this.createClick}
 							>
-								NEW QUOTE{ isAssignedTrady ? " / INVOICE" : ""}
+								SEND QUOTE{ isAssignedTrady ? " / INVOICE" : ""}
 							</button>
 						}
 						<div className="background" />
