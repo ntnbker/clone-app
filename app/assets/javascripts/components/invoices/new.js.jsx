@@ -363,9 +363,9 @@ var InvoiceItemField = React.createClass({
   getInitialState : function() {
     var invoice_item = this.props.content;
     var pricing_type = invoice_item ? invoice_item.pricing_type : 'Fixed Cost';
-    var hours_input  = pricing_type !== 'Hourly'         ? false               : true;
-    var amount       = invoice_item                         ? invoice_item.amount || invoice_item.min_price : 0;
-    var numofhours   = (invoice_item && invoice_item.hours) ? invoice_item.hours  : 1;
+    var hours_input  = pricing_type == 'Hourly';
+    var amount       = invoice_item ? invoice_item.amount || invoice_item.min_price : '';
+    var numofhours   = (invoice_item && invoice_item.hours) ? invoice_item.hours : pricing_type === 'Hourly' ? '' : 1;
 
     return {
       remove      : this.props.params.remove,
@@ -373,7 +373,7 @@ var InvoiceItemField = React.createClass({
       hours_input : hours_input,
       amount      : amount,
       numofhours  : numofhours,
-      totalamount : amount * numofhours,
+      totalamount : amount * numofhours || 0,
       errorsForm  : {},
     }
   },
@@ -402,7 +402,7 @@ var InvoiceItemField = React.createClass({
         if (!this.amount.value) {
           filterError['amount'] = amountError[0];
         }
-        else if (AMOUNT_REGEX.test(this.amount.value) || this.amount.value === '0') {
+        else if (!AMOUNT_REGEX.test(this.amount.value) || this.amount.value === '0') {
           filterError['amount'] = amountError.reverse()[0];
         }
       }
@@ -412,7 +412,7 @@ var InvoiceItemField = React.createClass({
         if (!this.hours.value) {
           filterError['hours'] = hoursError[0];
         }
-        else if (AMOUNT_REGEX.test(this.hours.value) || this.hours.value === '0') {
+        else if (!AMOUNT_REGEX.test(this.hours.value) || this.hours.value === '0') {
           filterError['hours'] = hoursError.reverse()[0];
         }
       }
@@ -437,6 +437,7 @@ var InvoiceItemField = React.createClass({
 
   updatePrice(amount) {
     const selectedValue = $(`[name='${`ledger[invoices_attributes][${this.props.params.x}][invoice_items_attributes][${this.props.x}][pricing_type]`}']`).val();
+    if (amount === '') amount = 0;
 
     if (!isNaN(amount)) {
       this.props.params.updatePrice(amount - this.state.totalamount, selectedValue === 'Hourly');
@@ -446,21 +447,19 @@ var InvoiceItemField = React.createClass({
   onPricing(event) {
     var pricing_type = event.target.value;
     const self = this;
+    const isHourly = pricing_type === 'Hourly';
 
-    this.setState({pricing_type: pricing_type});
+    this.setState({pricing_type});
 
-    if (pricing_type == "Hourly") {
-      this.setState({hours_input: true, numofhours: 1});
-    } else {
-      this.setState({
-        hours_input: false,
-        numofhours: 1,
-      }, () => {
-        self.onHours({target: {value: 1}});
-      });
-    }
+    this.setState({
+      hours_input: isHourly,
+      numofhours: isHourly ? '' : 1,
+      amount: '',
+    }, () => {
+      self.onHours({target: {value: isHourly ? '' : 1}});
+    })
 
-    self.props.params.updateHourly(false, self.state.totalamount, pricing_type === 'Hourly');
+    self.props.params.updateHourly(false, self.state.totalamount, isHourly);
   },
 
   onAmount(event) {
@@ -560,7 +559,7 @@ var InvoiceItemField = React.createClass({
             ref={e => this.amount = e}
             id="amount"
             onChange={this.onAmount}
-            value={amount != undefined ? amount : ''}
+            value={amount}
             className={"text-center " +  (!!hours_input ? 'hour price ' : '') + (errors['amount'] ? 'border_on_error ' : '')}
             name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][amount]'}
           />
@@ -571,7 +570,7 @@ var InvoiceItemField = React.createClass({
                 onChange={this.onHours}
                 ref={e => this.hours = e}
                 placeholder="Number of Hours"
-                defaultValue={numofhours > 0 ? numofhours : 0}
+                defaultValue={numofhours}
                 className={"text-center " + (hours_input && 'hour ') + (errors['hours'] ? 'border_on_error ' : '')}
                 name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][hours]'}
               />
@@ -740,7 +739,6 @@ var InvoiceField = React.createClass({
         </div>
       )
     }
-
 
     return <div className="invoicefield">
       <input
