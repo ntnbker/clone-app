@@ -1651,7 +1651,7 @@ var ShowTradyActions = React.createClass({
     location.href = `/quote_options?maintenance_request_id=${maintenance_request_id}&trady_id=${trady_id}`;
   },
 
-  createQuote() {
+  createInvoice() {
     const {maintenance_request_id, trady_id} = this.props;
     location.href = `/invoice_options?maintenance_request_id=${maintenance_request_id}&trady_id=${trady_id}`
   },
