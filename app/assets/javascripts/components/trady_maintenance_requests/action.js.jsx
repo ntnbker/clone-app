@@ -4,7 +4,7 @@ var CreactOrUploadQuote = React.createClass({
 			<li>
 				<a href={this.props.link}>
 					<i className="fa fa-file-text" aria-hidden="true" />
-					Create Quote
+					Send Quote
 				</a>
 			</li>
 		);
@@ -17,7 +17,7 @@ var CreateOrUploadInvoice = React.createClass({
 			<li>
 				<a onClick={(modal) => this.props.onModalWith('viewConfirm')}>
 					<i className="fa fa-send" aria-hidden="true" />
-					Create or Upload Invoice
+					Send or Upload Invoice
 				</a>
 			</li>
 		);

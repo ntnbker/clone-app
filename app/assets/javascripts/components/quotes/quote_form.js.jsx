@@ -132,7 +132,7 @@ var QuoteSentSuccess = React.createClass({
             className="button-primary green"
             onClick={() => location.href = quote_options_path}
           >
-            Create Another Quote
+            Send Another Quote
           </button>
         </div>
       </form>
