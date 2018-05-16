@@ -386,6 +386,14 @@ $color-text: #83878C;
           }
         }
       }
+      @media (max-width: 399px) {
+        .fixed {
+          
+          button {
+            font-size: 10px;
+          }
+        }
+      }
     }
     .item-maintenance-request {
       position: relative;
