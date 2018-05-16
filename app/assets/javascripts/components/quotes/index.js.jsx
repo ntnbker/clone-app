@@ -733,7 +733,7 @@ var QuoteRequests = React.createClass({
                       : ''
                     }
                     { true
-                      ? <div>
+                      ? <div className="upload-quote">
                           <ModalImageUpload
                             className="btn btn-default"
                             {...self}

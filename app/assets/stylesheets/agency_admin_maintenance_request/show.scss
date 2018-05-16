@@ -687,12 +687,18 @@ $color-text: #83878C;
         &.stop-reminder {
           background-color: #e34f4f;
           color: white;
-          font-size: 11px;
+          font-size: 13px;
 
           &:hover {
             background-color: #c14343;
             border-color: #c14343;
           }
+        }
+        &.upload-quote {
+          background-color: #7DC691;
+          border-color: #7DC691;
+          color: white;
+          font-size: 13px;
         }
         &.cancel-work-order, &.void-invoice {
           background-color: $color-red;
@@ -961,6 +967,13 @@ $color-text: #83878C;
           }
         }
       }
+      .contact-button {
+        > div {
+          &.stop-reminder, &.upload-quote {
+            font-size: 11px;
+          }
+        }
+      }
       .item-quote-request {
         .quote-status, .invoice-status {
           button {
@@ -970,6 +983,16 @@ $color-text: #83878C;
       }
       .quotes p {
         font-size: 14px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .contact-button {
+        > div {
+          &.stop-reminder, &.upload-quote {
+            font-size: 8px;
+          }
+        }
       }
     }
   }
