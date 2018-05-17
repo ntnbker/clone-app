@@ -410,7 +410,7 @@ var QuoteFields = React.createClass({
         />
 
         <div className="text-center">
-          <div className="m-t-lg">Enter your own invoice reference eg: Quote-001</div>
+          <div className="m-t-lg">Enter your own quote reference eg: Quote-001</div>
           <input 
             type="text" 
             className="text-center" 
