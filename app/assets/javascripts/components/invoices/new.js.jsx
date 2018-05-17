@@ -760,15 +760,16 @@ var InvoiceField = React.createClass({
         <div>
           <FieldList existingContent={invoice_items} SampleField={InvoiceItemField} params={{x:x, updatePrice:this.calcInvoiceTotal, updateHourly: this.calcHourlyTotal, remove:remove}} flag="invoice" errors={errors} />
           <div className="text-center m-t-lg">
+            <div>Enter your own invoice reference eg: Inv-001</div>
             <input
-            type="text"
-            className="text-center"
-            ref={elem => this.reference = elem}
-            placeholder="Trady Invoice Reference"
-            defaultValue={invoice && invoice.trady_invoice_reference}
-            onChange={() => this.setState({errorReference: ''})}
-            name={'ledger[invoices_attributes][' + x + '][trady_invoice_reference]' }
-            style={errorReference ? {borderColor: 'red'} : {}}
+              type="text"
+              className="text-center"
+              ref={elem => this.reference = elem}
+              placeholder="Trady Invoice Reference"
+              defaultValue={invoice && invoice.trady_invoice_reference}
+              onChange={() => this.setState({errorReference: ''})}
+              name={'ledger[invoices_attributes][' + x + '][trady_invoice_reference]' }
+              style={errorReference ? {borderColor: 'red'} : {}}
             />
           </div>
           <p id="errorbox" className="error">{errorReference || ''}</p>

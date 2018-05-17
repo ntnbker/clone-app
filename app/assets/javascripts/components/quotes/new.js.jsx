@@ -410,7 +410,14 @@ var QuoteFields = React.createClass({
         />
 
         <div className="text-center">
-        <input type="text" className="m-t-lg text-center" defaultValue={quote && quote.trady_quote_reference} name="quote[trady_quote_reference]" placeholder="Quote Reference Number"/>
+          <div className="m-t-lg">Enter your own invoice reference eg: Quote-001</div>
+          <input 
+            type="text" 
+            className="text-center" 
+            defaultValue={quote && quote.trady_quote_reference} 
+            name="quote[trady_quote_reference]" 
+            placeholder="Quote Reference Number"
+          />
         </div>
 
         {/*<label className="quote_tax">
