@@ -12,11 +12,8 @@ class InsurancesController < ApplicationController
 
     if @insurance.save
       insurance_image = @image.as_json(methods: :image_url)
-      respond_to do |format|
-        format.json {render :json=>{:insurance_image=>insurance_image}}
-      end 
       flash[:success] = "Thank you for adding your insurance to your registration."
-      redirect_to new_license_path(trady_id:params[:insurance][:trady_id])
+      redirect_to new_license_path(trady_id:params[:insurance][:trady_id], role:"Trady", maintenance_request_id:params[:insurance][:maintenance_request_id])
     else
       respond_to do |format|
         format.json {render :json=>{:error=>@insurance.errors}}
