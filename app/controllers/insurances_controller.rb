@@ -8,6 +8,7 @@ class InsurancesController < ApplicationController
 
   
   def create
+    binding.pry
     @insurance = Insurance.new(insurance_params)
 
     if @insurance.save
@@ -25,7 +26,7 @@ class InsurancesController < ApplicationController
   private
 
   def insurance_params
-    params.require(:insurance).permit(:trady_id, :insurance_company, :policy_number, :policy_expiry_date, :image_data, :insurance_id)
+    params.require(:picture).permit(:trady_id, :insurance_company, :policy_number, :policy_expiry_date, :image, :insurance_id)
   end
 
 end 

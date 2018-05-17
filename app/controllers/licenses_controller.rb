@@ -26,7 +26,7 @@ class LicensesController < ApplicationController
   private
 
   def license_params
-     params.require(:license).permit(:trady_id,  :image_data, :license_id)
+     params.require(:picture).permit(:trady_id,  :image, :license_id)
   end
 
 end 
