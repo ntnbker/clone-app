@@ -17,6 +17,7 @@ class InsurancesController < ApplicationController
     else
       respond_to do |format|
         format.json {render :json=>{:error=>@insurance.errors}}
+        format.html render :new
       end
     end 
   end
