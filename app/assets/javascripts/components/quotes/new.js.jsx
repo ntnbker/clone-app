@@ -416,7 +416,7 @@ var QuoteFields = React.createClass({
             className="text-center" 
             defaultValue={quote && quote.trady_quote_reference} 
             name="quote[trady_quote_reference]" 
-            placeholder="Quote Reference Number"
+            placeholder="Quote Reference"
           />
         </div>
 

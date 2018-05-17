@@ -765,7 +765,7 @@ var InvoiceField = React.createClass({
               type="text"
               className="text-center"
               ref={elem => this.reference = elem}
-              placeholder="Trady Invoice Reference"
+              placeholder="Invoice Reference"
               defaultValue={invoice && invoice.trady_invoice_reference}
               onChange={() => this.setState({errorReference: ''})}
               name={'ledger[invoices_attributes][' + x + '][trady_invoice_reference]' }
