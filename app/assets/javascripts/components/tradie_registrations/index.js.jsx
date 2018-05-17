@@ -98,6 +98,7 @@ var TradyLicenseAndInsurance = React.createClass({
     return {
       text: '',
       gallery: null,
+      errors: []
     }
   },
 
@@ -117,17 +118,24 @@ var TradyLicenseAndInsurance = React.createClass({
     // if (!gallery) return;
     
     $.ajax({
-      type: 'POST',
+      type: self.props.isEdit ? 'PUT' : 'POST',
       url: self.props.isLicense ? '/licenses' : '/insurances',
       beforeSend: function (xhr) {
         xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
       },
       data: {
-        [self.props.isLicense ? 'license' : 'insurance']: JSON.stringify(gallery || {}),
-        trady_id: self.props.trady_id
+        picture: {
+          image: JSON.stringify(gallery || {}),
+          trady_id: self.props.trady_id,
+          license_id: self.props.license_id,
+          insurance_company: self.insurance_company.value, 
+          policy_number: self.policy_number.value, 
+          policy_expiry_date: self.policy_expiry_date.value, 
+          insurance_id: self.props.insurance_id
+        }
       },
       success(res) {
-
+        self.setState({errors: res.errors || {}});
       },
       error(err) {
 
@@ -135,14 +143,74 @@ var TradyLicenseAndInsurance = React.createClass({
     });
   },
 
+  removeError: function({ target: { id } }) {
+    let errors     = Object.assign({}, this.state.errors);
+    if (errors[id]) {
+      errors[id] = false;
+      this.setState({ errors });
+    }
+  },
+
+  renderError: function(error) {
+    return <p id="errorbox" className="error">{error && error[0] ? error[0] : ''}</p>;
+  },
+
   render() {
-    const {gallery} = this.state;
+    const {gallery, errors} = this.state;
+    const {isLicense} = this.props;
+    const renderErrorFunc = this.renderError;
+    const removeErrorFunc = this.removeError;
+
     return (
       <div>
         <form role="form" className="form-horizontal" id="upload-license-insurance" onSubmit={this.onSubmit} >
           <div className="upload-description">
             {this.state.text}
           </div>
+          {!isLicense && <div className="form-group">
+            <div className="col-sm-10 text-center">
+              <input
+
+                type="text"
+                id="insurance_company"
+                placeholder="Insurance Company"
+                defaultValue={this.props.insurance_company}
+                ref={(ref) => this.insurance_company = ref}
+                className={"form-control " + (errors['insurance_company'] ? "has-error" : "")}
+                onChange={removeErrorFunc}
+              />
+              {renderErrorFunc(errors['insurance_company'])}
+            </div>
+          </div>}
+          {!isLicense && <div className="form-group">
+            <div className="col-sm-10 text-center">
+              <input
+
+                type="text"
+                id="policy_number"
+                placeholder="Policy Number"
+                defaultValue={this.props.policy_number}
+                ref={(ref) => this.policy_number = ref}
+                className={"form-control " + (errors['policy_number'] ? "has-error" : "")}
+                onChange={removeErrorFunc}
+              />
+              {renderErrorFunc(errors['policy_number'])}
+            </div>
+          </div>}
+          {!isLicense && <div className="form-group">
+            <div className="col-sm-10 text-center">
+              <input
+                type="text"
+                id="policy_expiry_date"
+                placeholder="Policy Expiry Date"
+                defaultValue={this.props.policy_expiry_date}
+                ref={(ref) => this.policy_expiry_date = ref}
+                className={"form-control " + (errors['policy_expiry_date'] ? "has-error" : "")}
+                onChange={removeErrorFunc}
+              />
+              {renderErrorFunc(errors['policy_expiry_date'])}
+            </div>
+          </div>}
           { gallery &&
               <div className="image text-center">
                 <img id="avatar" src={gallery.image_url} alt="Avatar Image"/>
