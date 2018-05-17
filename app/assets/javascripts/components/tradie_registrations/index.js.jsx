@@ -123,7 +123,7 @@ var TradyLicenseAndInsurance = React.createClass({
         xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
       },
       data: {
-        licenses: JSON.stringify(gallery || {}),
+        [self.props.isLicense ? 'license' : 'insurance']: JSON.stringify(gallery || {}),
         trady_id: self.props.trady_id
       },
       success(res) {
