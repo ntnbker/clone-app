@@ -2,7 +2,8 @@ var QuoteField = React.createClass({
   getInitialState : function() {
     var quote = this.props.content;
     var pricing_type = quote ? quote.pricing_type : 'Fixed Cost';
-    var hours_input = pricing_type == 'Fixed Cost' ? false : true;
+    var hours_input = pricing_type == 'Hourly';
+    var isRange = pricing_type === 'Range';
     return {
       remove : false,
       pricing_type: pricing_type,
@@ -11,10 +12,23 @@ var QuoteField = React.createClass({
       amount_error: '',
       min_price_error: '',
       max_price_error: '',
-      amount: quote ? quote.amount : 0,
-      min_price: quote ? quote.min_price : 0,
-      max_price: quote ? quote.max_price : 0,
+      amount: quote ? quote.amount : isRange ? 0 : '',
+      min_price: quote ? quote.min_price : isRange ? '' : 0,
+      max_price: quote ? quote.max_price : isRange ? '' : 0,
     }
+  },
+
+  componentWillMount() {
+    const {content: quote, params: {changeFee}, x} = this.props;
+    if (!quote) return;
+
+    const {pricing_type, min_price, max_price, amount} = quote;
+
+    let valueFee = pricing_type !== 'Range' ? amount : {
+      min: min_price,
+      max: max_price
+    }
+    changeFee(valueFee, pricing_type, x);
   },
 
   validateDescription: function(errors) {
@@ -28,7 +42,7 @@ var QuoteField = React.createClass({
     const amount = this.amount && this.amount.value || '';
 
     if (amount === '') return error.filter(e => e.includes('blank'))[0];
-    if (AMOUNT_REGEX.test(amount)) return error.filter(e => e.includes('number'))[0];
+    if (!AMOUNT_REGEX.test(amount)) return error.filter(e => e.includes('number'))[0];
     return '';
   },
 
@@ -38,7 +52,7 @@ var QuoteField = React.createClass({
     const min_price = this.min_price && this.min_price.value || '';
 
     if (min_price === '') return error[0];
-    if (AMOUNT_REGEX.test(min_price)) return error.filter(e => e.includes('number'))[0];
+    if (!AMOUNT_REGEX.test(min_price)) return error.filter(e => e.includes('number'))[0];
     return '';
   },
 
@@ -48,7 +62,7 @@ var QuoteField = React.createClass({
     const max_price = this.max_price && this.max_price.value || '';
 
     if (max_price === '') return error[0];
-    if (AMOUNT_REGEX.test(max_price)) return error.filter(e => e.includes('number'))[0];
+    if (!AMOUNT_REGEX.test(max_price)) return error.filter(e => e.includes('number'))[0];
     return '';
   },
 
@@ -69,15 +83,16 @@ var QuoteField = React.createClass({
     // Reset value to 0 when remove the quote item
     const defaultValue = pricing_type !== 'Range' ? 0 : {min: 0, max: 0};
 
-    changeFee(defaultValue, pricing_type, this.props.x);
+    changeFee(defaultValue, pricing_type, x);
     this.setState({remove: true});
   },
 
   onPricing(event) {
     const {params: {changeFee}, x} = this.props;
     const {pricing_type} = this.state;
+    const isRange = pricing_type === 'Range';
     // Reset value to 0 when change to other price type
-    const defaultValue = pricing_type !== 'Range' ? 0 : {min: 0, max: 0};
+    const defaultValue = isRange ? {min: 0, max: 0} : 0;
     changeFee(defaultValue, pricing_type, x);
 
     var new_pricing_type = event.target.value;
@@ -85,9 +100,9 @@ var QuoteField = React.createClass({
       pricing_type: new_pricing_type,
       hours_input: new_pricing_type === 'Hourly',
     }
-    update.min_price = 0;
-    update.max_price = 0;
-    update.amount = 0;
+    update.min_price = new_pricing_type === 'Range' ? '' : 0;
+    update.max_price = new_pricing_type === 'Range' ? '' : 0;
+    update.amount = new_pricing_type === 'Range' ? 0 : '';
 
     this.setState(update);
   },
@@ -138,7 +153,7 @@ var QuoteField = React.createClass({
               ref={value => this.item_description = value}
               id={'quote_quote_items_attributes_' + x + '_item_description'}
               name={'quote[quote_items_attributes][' + x + '][item_description]'}
-              onChange={() => removeErrorFunc()}
+              onChange={() => this.setState({item_description_error: ''})}
             />
             {renderErrorFunc(currentState['item_description_error'])}
           </div>
@@ -395,7 +410,14 @@ var QuoteFields = React.createClass({
         />
 
         <div className="text-center">
-        <input type="text" className="m-t-lg text-center" defaultValue={quote && quote.trady_quote_reference} name="quote[trady_quote_reference]" placeholder="Quote Reference Number"/>
+          <div className="m-t-lg">Enter your own quote reference eg: Quote-001</div>
+          <input 
+            type="text" 
+            className="text-center" 
+            defaultValue={quote && quote.trady_quote_reference} 
+            name="quote[trady_quote_reference]" 
+            placeholder="Quote Reference"
+          />
         </div>
 
         {/*<label className="quote_tax">

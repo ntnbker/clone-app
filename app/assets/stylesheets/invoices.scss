@@ -857,12 +857,14 @@ $color-text: #83878C;
 		@include flexbox;
 		margin-top: 10px;
 		select {
-      @include flex(3);
-			margin-right: 1%;
+      @include flex(1);
+      margin: auto 1%;
 		}
 		input {
       @include flex(1);
-			margin-left: 1%;
+      margin: auto 1%;
+      padding: 6px 3px;
+      width: auto;
 		}
 		// .hour {
 		// 	&.input {
@@ -917,6 +919,15 @@ $color-text: #83878C;
       button {
         max-width: 150px;
         padding: 0 5px;
+      }
+    }
+    .amount {
+      @include flex-direction(column);
+      select {
+        margin: auto 0;
+      }
+      input {
+        margin: 10px 0;
       }
     }
   }
