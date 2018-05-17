@@ -819,6 +819,7 @@ var InvoiceField = React.createClass({
             </div>
           </div>
         </div>
+        <p id="errorbox" className="text-center error">{errorDate || ''}</p>
         <hr />
         <div className="field">
           <div className="alert">
@@ -885,7 +886,6 @@ var InvoiceField = React.createClass({
               </div>
             </div>
           }
-          <p id="errorbox" className="text-center error">{errorDate || ''}</p>
         </div>
 
         <input type="hidden" value={remove} name={'ledger[invoices_attributes][' + x + '][_destroy]'}/>
