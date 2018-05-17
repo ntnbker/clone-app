@@ -73,7 +73,7 @@ var TradyRegistrationForm = React.createClass({
         return <ServiceList {...this.props} />;
       case 'license':
       return <TradyLicenseAndInsurance {...this.props} />;
-      case 'service':
+      case 'insurance':
       return <TradyLicenseAndInsurance {...this.props} />;
     }
   },
