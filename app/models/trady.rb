@@ -5,6 +5,7 @@ class Trady < ApplicationRecord
   belongs_to :user, inverse_of: :trady
   belongs_to :trady_company
   has_one :customer_profile
+  has_one :insurance
   has_many :agency_tradies
   has_many :agencies, through: :agency_tradies
   has_many :maintenance_requests
