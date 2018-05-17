@@ -315,4 +315,14 @@ Rails.application.routes.draw do
   resources :recruits, only: [:new, :create, :index, :show]
   post "quote_request_for_recruit" => "recruits#quote_request"
 
+  ###########################################################
+  ##########INSURANCE RESOURCES/ROUTES#####
+  ###########################################################
+  resources :insurances, only: [:new, :create, :edit, :update]
+
+  ###########################################################
+  ##########LICENSE RESOURCES/ROUTES#####
+  ###########################################################
+  resources :licenses, only: [:new, :create, :edit, :update]
+
  end
