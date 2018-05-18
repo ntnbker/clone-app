@@ -319,7 +319,10 @@ var TradyLicenseAndInsurance = React.createClass({
               <div className="browse-wrap">
                 <div className="title" id="title-upload">
                   <i className="fa fa-upload" />
-                  Choose your{isLicense ? ' license' : ' insurance'}
+                  {isLicense 
+                    ? "Upload Image/PDF of professional license"
+                    : "Upload Image/PDF of license insurance certificate of currency/work cover"
+                  }
                 </div>
                 <input
                   type="file"
