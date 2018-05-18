@@ -201,23 +201,25 @@ var TradyLicenseAndInsurance = React.createClass({
   onSubmit(e) {
     e.preventDefault();
     const self = this;
-    const {file} = this.state;
+    const {file, haveDocument} = this.state;
     const {isEdit, isLicense, license_id, insurance_id} = this.props;
     // if (!file) return this.setState({error: {image: ['Please upload a file']}});
     const data = {
       trady_id: self.props.trady_id,
       maintenance_request_id: self.props.maintenance_request_id,
+      image: file && JSON.stringify(file),
     }
     if (isEdit) {
       if (isLicense) data.license_id = license_id;
       else data.insurance_id = insurance_id;
     }
 
-    // if (!isLicense) {
-    //   data.insurance_company = self.insurance_company.value;
-    //   data.policy_number = self.policy_number.value;
-    //   data.policy_expiry_date = self.policy_expiry_date.value;
-    // }
+    if (!isLicense) {
+      data.insured = !!haveDocument;
+    }
+    else {
+      data.licensed = !!haveDocument;
+    }
 
     $.ajax({
       type: self.props.isEdit ? 'PUT' : 'POST',
@@ -226,10 +228,7 @@ var TradyLicenseAndInsurance = React.createClass({
         xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
       },
       data: {
-        [isLicense ? 'license' : 'insurance']: data,
-        picture: {
-          image: file && JSON.stringify(file),
-        },
+        picture: data,
       },
       success(res) {
         self.setState({error: res.error || {}});
@@ -307,7 +306,10 @@ var TradyLicenseAndInsurance = React.createClass({
             </div>
           </div>} */}
           <div className="do-you-have text-center">
-            Do you have business insurance?
+            {isLicense 
+              ? "Are you a licensed professional?"
+              : "Do you have business insurance?"
+            }
             <div className="radio-same-address">
               <label className="radio-option">No
                 <input
