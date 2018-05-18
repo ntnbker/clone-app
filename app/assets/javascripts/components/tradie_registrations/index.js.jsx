@@ -103,8 +103,10 @@ var TradyLicenseAndInsurance = React.createClass({
   },
 
 	_handleChangeFile: function (e) {
-		const self = this;
-		this.setState({errorFile: ''});
+    const self = this;
+    const {error} = this.state;
+    error.image = '';
+		this.setState({error});
 		const files = e.target.files;
 		let file = files[0];
 
@@ -200,7 +202,7 @@ var TradyLicenseAndInsurance = React.createClass({
     const self = this;
     const {file} = this.state;
     const {isEdit, isLicense, license_id, insurance_id} = this.props;
-    if (!file) return;
+    if (!file) return this.setState({error: {image: ['Please upload a file']}});
     const data = {
       trady_id: self.props.trady_id,
       maintenance_request_id: self.props.maintenance_request_id,
