@@ -13,6 +13,13 @@ class LicensesController < ApplicationController
     @role = "Trady"
     @license = License.new(license_params)
 
+    if params[:picture][:insured] == true
+      @license.perform_presence_validation = true
+    else
+      @license.perform_presence_validation = false
+    end 
+
+
     if @license.save
       license_image = @image.as_json(methods: :image_url)
       flash[:success] = "Thank you for adding your license to your registration."

@@ -13,7 +13,15 @@ class InsurancesController < ApplicationController
     @maintenance_request_id= params[:picture][:maintenance_request_id]
     @role = "Trady"
     @insurance = Insurance.new(insurance_params)
-    binding.pry
+    
+    if params[:picture][:insured] == true
+      @insurance.perform_presence_validation = true
+    else
+      @insurance.perform_presence_validation = false
+    end 
+
+
+
     if @insurance.save
       insurance_image = @image.as_json(methods: :image_url)
       flash[:success] = "Thank you for adding your insurance to your registration."
