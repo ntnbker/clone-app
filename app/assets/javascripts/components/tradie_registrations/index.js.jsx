@@ -98,7 +98,7 @@ var TradyLicenseAndInsurance = React.createClass({
     return {
       text: '',
       file: null,
-      errors: []
+      error: []
     }
   },
 
@@ -229,7 +229,7 @@ var TradyLicenseAndInsurance = React.createClass({
         },
       },
       success(res) {
-        self.setState({errors: res.errors || {}});
+        self.setState({error: res.error || {}});
       },
       error(err) {
 
@@ -238,10 +238,10 @@ var TradyLicenseAndInsurance = React.createClass({
   },
 
   removeError: function({ target: { id } }) {
-    let errors     = Object.assign({}, this.state.errors);
-    if (errors[id]) {
-      errors[id] = false;
-      this.setState({ errors });
+    let error     = Object.assign({}, this.state.error);
+    if (error[id]) {
+      error[id] = false;
+      this.setState({ error });
     }
   },
 
@@ -250,7 +250,7 @@ var TradyLicenseAndInsurance = React.createClass({
   },
 
   render() {
-    const {file, errors} = this.state;
+    const {file, error} = this.state;
     const {isLicense} = this.props;
     const renderErrorFunc = this.renderError;
     const removeErrorFunc = this.removeError;
@@ -269,10 +269,10 @@ var TradyLicenseAndInsurance = React.createClass({
                 placeholder="Insurance Company"
                 defaultValue={this.props.insurance_company}
                 ref={(ref) => this.insurance_company = ref}
-                className={"form-control " + (errors['insurance_company'] ? "has-error" : "")}
+                className={"form-control " + (error['insurance_company'] ? "has-error" : "")}
                 onChange={removeErrorFunc}
               />
-              {renderErrorFunc(errors['insurance_company'])}
+              {renderErrorFunc(error['insurance_company'])}
             </div>
           </div>}
           {!isLicense && <div className="form-group">
@@ -283,10 +283,10 @@ var TradyLicenseAndInsurance = React.createClass({
                 placeholder="Policy Number"
                 defaultValue={this.props.policy_number}
                 ref={(ref) => this.policy_number = ref}
-                className={"form-control " + (errors['policy_number'] ? "has-error" : "")}
+                className={"form-control " + (error['policy_number'] ? "has-error" : "")}
                 onChange={removeErrorFunc}
               />
-              {renderErrorFunc(errors['policy_number'])}
+              {renderErrorFunc(error['policy_number'])}
             </div>
           </div>}
           {!isLicense && <div className="form-group">
@@ -297,10 +297,10 @@ var TradyLicenseAndInsurance = React.createClass({
                 placeholder="Policy Expiry Date"
                 defaultValue={this.props.policy_expiry_date}
                 ref={(ref) => this.policy_expiry_date = ref}
-                className={"form-control " + (errors['policy_expiry_date'] ? "has-error" : "")}
+                className={"form-control " + (error['policy_expiry_date'] ? "has-error" : "")}
                 onChange={removeErrorFunc}
               />
-              {renderErrorFunc(errors['policy_expiry_date'])}
+              {renderErrorFunc(error['policy_expiry_date'])}
             </div>
           </div>}
           <div className="file-upload text-center">
@@ -329,6 +329,7 @@ var TradyLicenseAndInsurance = React.createClass({
               </div>
           }
           </div>
+          {renderErrorFunc(error['image'])}
           <div className="buttons">
             <button type="submit" className="button-primary green option-button">
               Submit
