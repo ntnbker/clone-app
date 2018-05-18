@@ -1,4 +1,5 @@
 $color-text: #83878C;
+$color-red: #e34f4f;
 
 .upload-file {
   color: $color-text;
@@ -6,6 +7,12 @@ $color-text: #83878C;
 		display: block;
     width: 100%;
     color: $color-text;
+  }
+  .remove-text {
+    color: $color-red;
+    &:hover {
+      color: red;
+    }
   }
 	.browse-wrap {
 		top: 0;

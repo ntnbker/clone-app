@@ -212,11 +212,11 @@ var TradyLicenseAndInsurance = React.createClass({
       else data.insurance_id = insurance_id;
     }
 
-    if (!isLicense) {
-      data.insurance_company = self.insurance_company.value;
-      data.policy_number = self.policy_number.value;
-      data.policy_expiry_date = self.policy_expiry_date.value;
-    }
+    // if (!isLicense) {
+    //   data.insurance_company = self.insurance_company.value;
+    //   data.policy_number = self.policy_number.value;
+    //   data.policy_expiry_date = self.policy_expiry_date.value;
+    // }
 
     $.ajax({
       type: self.props.isEdit ? 'PUT' : 'POST',
@@ -263,7 +263,7 @@ var TradyLicenseAndInsurance = React.createClass({
           <div className="upload-description">
             {this.state.text}
           </div>
-          {!isLicense && <div className="form-group">
+          {/* {!isLicense && <div className="form-group">
             <div className="col-sm-10 text-center">
               <input
                 type="text"
@@ -304,7 +304,7 @@ var TradyLicenseAndInsurance = React.createClass({
               />
               {renderErrorFunc(error['policy_expiry_date'])}
             </div>
-          </div>}
+          </div>} */}
           <div className="file-upload text-center">
           {
             file && file.id ?
@@ -313,7 +313,7 @@ var TradyLicenseAndInsurance = React.createClass({
                   {file.metadata.filename}
                 </span>
                 <i className="fa fa-file-o" />
-                <span onClick={this.removeFile}>Remove</span>
+                <span className="remove-text" onClick={this.removeFile}>Remove</span>
               </div>
               :
               <div className="browse-wrap">
