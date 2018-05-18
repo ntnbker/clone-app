@@ -13,6 +13,14 @@ class InsurancesController < ApplicationController
     @maintenance_request_id= params[:picture][:maintenance_request_id]
     @role = "Trady"
     @insurance = Insurance.new(insurance_params)
+    
+    if params[:picture][:insured] == true
+      @insurance.perform_presence_validation = true
+    else
+      @insurance.perform_presence_validation = false
+    end 
+
+
 
     if @insurance.save
       insurance_image = @image.as_json(methods: :image_url)
@@ -29,7 +37,7 @@ class InsurancesController < ApplicationController
   private
 
   def insurance_params
-    params.require(:picture).permit(:trady_id, :insurance_company, :policy_number, :policy_expiry_date, :image, :insurance_id)
+    params.require(:picture).permit(:trady_id,:role,:insured, :insurance_company, :policy_number, :policy_expiry_date, :image, :insurance_id, :maintenance_request_id)
   end
 
 end 
