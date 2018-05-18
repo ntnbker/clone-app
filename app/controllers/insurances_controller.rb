@@ -9,6 +9,9 @@ class InsurancesController < ApplicationController
   
   def create
     
+    @trady_id = params[:picture][:trady_id]
+    @maintenance_request_id= params[:picture][:maintenance_request_id]
+    @role = "Trady"
     @insurance = Insurance.new(insurance_params)
 
     if @insurance.save
@@ -18,7 +21,7 @@ class InsurancesController < ApplicationController
     else
       respond_to do |format|
         format.json {render :json=>{:error=>@insurance.errors}}
-        format.html render :new
+        format.html {render :new}
       end
     end 
   end
