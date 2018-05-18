@@ -1,7 +1,7 @@
 var TradyRegistrationForm = React.createClass({
   getInitialState : function() {
     const {step} = this.props;
-    const level = ['terms-and-conditions', 'trady', 'trady-company', 'service', 'license', 'insurance'];
+    const level = ['terms-and-conditions', 'trady', 'trady-company', 'service', 'insurance', 'license'];
 
     return {
       errors: {},
@@ -34,8 +34,8 @@ var TradyRegistrationForm = React.createClass({
         {this.labelTitle(2, <p>User<br />Registration</p>, level > 1)}
         {this.labelTitle(3, <p>Company<br />Registration</p>, level > 2)}
         {this.labelTitle(4, <p>Services<br />Available</p>, level > 3)}
-        {this.labelTitle(5, <p>Upload<br />License</p>, level > 4)}
-        {this.labelTitle(6, <p>Upload<br />Insurance</p>, level > 5)}
+        {this.labelTitle(5, <p>Upload<br />Insurance</p>, level > 4)}
+        {this.labelTitle(6, <p>Upload<br />License</p>, level > 5)}
       </div>
     )
   },
@@ -97,26 +97,125 @@ var TradyLicenseAndInsurance = React.createClass({
   getInitialState() {
     return {
       text: '',
-      gallery: null,
+      file: null,
       errors: []
     }
   },
 
-  uploadImage(images, callback) {
-    if (!images || !images.length) {
-      return callback('Image Not Found');
-    }
+	_handleChangeFile: function (e) {
+		const self = this;
+		this.setState({errorFile: ''});
+		const files = e.target.files;
+		let file = files[0];
 
-    this.setState({gallery: images[0]});
-    return callback();
-  },
+		var filename = files[0];
+		const options = {
+			extension: filename.name.match(/(\.\w+)?$/)[0],
+			_: Date.now(),
+		}
+
+		// start upload file into S3
+		$.getJSON('/images/cache/presign', options, function (result) {
+			var fd = new FormData();
+			$.each(result.fields, function (key, value) {
+				fd.append(key, value);
+			});
+			fd.append('file', file);
+			$.ajax({
+				type: 'POST',
+				url: result['url'],
+				enctype: 'multipart/form-data',
+				processData: false,
+				contentType: false,
+				data: fd,
+				xhr: function () {
+					var xhr = new window.XMLHttpRequest();
+					xhr.upload.addEventListener("loadstart", function (evt) {
+						if ($('.progress').length == 0) {
+							$('<div class="progress" style="width: 80%;"><div class="progress-bar" style="width: ' + 0 + '%"></div></div>').insertAfter("#input-file");
+						}
+
+						if (/Edge/i.test(navigator.userAgent)) {
+							var percentComplete = 0;
+							var loop = 0;
+							let inn = setInterval(() => {
+								percentComplete += Math.ceil((51200 * ++loop) / file.size * 100);
+								if (percentComplete >= 100) {
+									clearInterval(inn);
+								} else {
+									$('#title-upload').html('Uploading ' + percentComplete + '%');
+									$('.progress .progress-bar').css('width', percentComplete + '%');
+								}
+							}, 500)
+						}
+					})
+					xhr.upload.addEventListener("progress", function (evt) {
+						if (evt.loaded > 0 && evt.total > 0) {
+							var percentComplete = Math.ceil(evt.loaded / evt.total * 100);
+							var progress = $('.progress');
+							if (progress.length !== 0) {
+								$('.progress .progress-bar').css('width', percentComplete + '%');
+							}
+							$('#title-upload').html('Uploading ' + percentComplete + '%');
+						}
+					}, false);
+					return xhr;
+				},
+				success: function (res) {
+					setTimeout(function () {
+						$('#title-upload').html('<i class="fa fa-upload" /> Choose PDF to upload');
+						$('.progress').remove();
+					}, 0);
+					var filePDF = {
+						id: result.fields.key.match(/cache\/(.+)/)[1],
+						storage: 'cache',
+						metadata: {
+							size: file.size,
+							filename: file.name.match(/[^\/\\]*$/)[0],
+							mime_type: file.type
+						}
+					};
+					self.updateFile(filePDF);
+				}
+			});
+		});
+	},
+
+	updateFile: function (filePDF) {
+		this.setState({
+			file: filePDF
+		});
+	},
+
+	removeFile: function (index) {
+		$('#input-file').val('');
+		this.setState({
+			file: {},
+			error: '',
+		});
+	},
 
   onSubmit(e) {
     e.preventDefault();
     const self = this;
-    const {gallery} = this.state;
-    // if (!gallery) return;
-    
+    const {file} = this.state;
+    const {isEdit, isLicense, license_id, insurance_id} = this.props;
+    if (!file) return;
+    const data = {
+      trady_id: self.props.trady_id,
+      maintenance_request_id: self.props.maintenance_request_id,
+    }
+    if (isEdit) {
+      if (isLicense) data.license_id = license_id;
+      else data.insurance_id = insurance_id;
+    }
+
+    if (!isLicense) {
+      data.insurance_company = self.insurance_company.value;
+      data.policy_number = self.policy_number.value;
+      data.policy_expiry_date = self.policy_expiry_date.value;
+    }
+
     $.ajax({
       type: self.props.isEdit ? 'PUT' : 'POST',
       url: self.props.isLicense ? '/licenses' : '/insurances',
@@ -124,15 +223,10 @@ var TradyLicenseAndInsurance = React.createClass({
         xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
       },
       data: {
+        [isLicense ? 'license' : 'insurance']: data,
         picture: {
-          image: JSON.stringify(gallery || {}),
-          trady_id: self.props.trady_id,
-          license_id: self.props.license_id,
-          insurance_company: self.insurance_company.value, 
-          policy_number: self.policy_number.value, 
-          policy_expiry_date: self.policy_expiry_date.value, 
-          insurance_id: self.props.insurance_id
-        }
+          image: JSON.stringify(file || {}),
+        },
       },
       success(res) {
         self.setState({errors: res.errors || {}});
@@ -156,13 +250,13 @@ var TradyLicenseAndInsurance = React.createClass({
   },
 
   render() {
-    const {gallery, errors} = this.state;
+    const {file, errors} = this.state;
     const {isLicense} = this.props;
     const renderErrorFunc = this.renderError;
     const removeErrorFunc = this.removeError;
 
     return (
-      <div>
+      <div className="upload-file">
         <form role="form" className="form-horizontal" id="upload-license-insurance" onSubmit={this.onSubmit} >
           <div className="upload-description">
             {this.state.text}
@@ -170,7 +264,6 @@ var TradyLicenseAndInsurance = React.createClass({
           {!isLicense && <div className="form-group">
             <div className="col-sm-10 text-center">
               <input
-
                 type="text"
                 id="insurance_company"
                 placeholder="Insurance Company"
@@ -185,7 +278,6 @@ var TradyLicenseAndInsurance = React.createClass({
           {!isLicense && <div className="form-group">
             <div className="col-sm-10 text-center">
               <input
-
                 type="text"
                 id="policy_number"
                 placeholder="Policy Number"
@@ -211,21 +303,36 @@ var TradyLicenseAndInsurance = React.createClass({
               {renderErrorFunc(errors['policy_expiry_date'])}
             </div>
           </div>}
-          { gallery &&
-              <div className="image text-center">
-                <img id="avatar" src={gallery.image_url} alt="Avatar Image"/>
+          <div className="file-upload text-center">
+          {
+            file && file.id ?
+              <div className="file-pdf" >
+                <span>
+                  {file.metadata.filename}
+                </span>
+                <i className="fa fa-file-o" />
+                <span onClick={this.removeFile}>Remove</span>
+              </div>
+              :
+              <div className="browse-wrap">
+                <div className="title" id="title-upload">
+                  <i className="fa fa-upload" />
+                  Choose your{isLicense ? ' license' : ' insurance'}
+                </div>
+                <input
+                  type="file"
+                  id="input-file"
+                  className="upload inputfile"
+                  accept="image/jpeg, image/png, application/pdf"
+                  onChange={(e) => this._handleChangeFile(e)}
+                />
               </div>
           }
-          <div className="image-upload text-center">
-            <ModalImageUpload
-              uploadImage={this.uploadImage}
-              gallery={gallery && [gallery] || []}
-              text="Add/Change Photo"
-              className="btn button-primary option-button"
-            />
           </div>
-          <div className="text-center">
-            <button type="submit" className="submit">submit</button>
+          <div className="buttons">
+            <button type="submit" className="button-primary green option-button">
+              Submit
+            </button>
           </div>
         </form>
       </div>
