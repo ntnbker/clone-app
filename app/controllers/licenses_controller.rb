@@ -13,7 +13,7 @@ class LicensesController < ApplicationController
     @role = "Trady"
     @license = License.new(license_params)
 
-    if params[:picture][:insured] == true
+    if params[:picture][:licensed] == true
       @license.perform_presence_validation = true
     else
       @license.perform_presence_validation = false
