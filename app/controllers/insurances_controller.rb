@@ -13,7 +13,7 @@ class InsurancesController < ApplicationController
     @maintenance_request_id= params[:picture][:maintenance_request_id]
     @role = "Trady"
     @insurance = Insurance.new(insurance_params)
-
+    binding.pry
     if @insurance.save
       insurance_image = @image.as_json(methods: :image_url)
       flash[:success] = "Thank you for adding your insurance to your registration."
@@ -29,7 +29,7 @@ class InsurancesController < ApplicationController
   private
 
   def insurance_params
-    params.require(:picture).permit(:trady_id, :insurance_company, :policy_number, :policy_expiry_date, :image, :insurance_id)
+    params.require(:picture).permit(:trady_id,:role,:insured, :insurance_company, :policy_number, :policy_expiry_date, :image, :insurance_id, :maintenance_request_id)
   end
 
 end 

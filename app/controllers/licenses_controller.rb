@@ -4,6 +4,7 @@ class LicensesController < ApplicationController
     @maintenance_request_id= params[:maintenance_request_id]
     @role = "Trady"
     @license = License.new
+    
   end
 
   def create
@@ -27,7 +28,7 @@ class LicensesController < ApplicationController
   private
 
   def license_params
-     params.require(:picture).permit(:trady_id,  :image, :license_id)
+     params.require(:picture).permit(:trady_id,:licensed ,:image, :license_id, :role,:maintenance_request_id)
   end
 
 end 
