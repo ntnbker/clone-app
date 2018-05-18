@@ -98,7 +98,8 @@ var TradyLicenseAndInsurance = React.createClass({
     return {
       text: '',
       file: null,
-      error: []
+      error: [],
+      haveDocument: false,
     }
   },
 
@@ -252,7 +253,7 @@ var TradyLicenseAndInsurance = React.createClass({
   },
 
   render() {
-    const {file, error} = this.state;
+    const {file, error, haveDocument} = this.state;
     const {isLicense} = this.props;
     const renderErrorFunc = this.renderError;
     const removeErrorFunc = this.removeError;
@@ -305,39 +306,71 @@ var TradyLicenseAndInsurance = React.createClass({
               {renderErrorFunc(error['policy_expiry_date'])}
             </div>
           </div>} */}
-          <div className="file-upload text-center">
-          {
-            file && file.id ?
-              <div className="file-pdf" >
-                <span>
-                  {file.metadata.filename}
-                </span>
-                <i className="fa fa-file-o" />
-                <span className="remove-text" onClick={this.removeFile}>Remove</span>
-              </div>
-              :
-              <div className="browse-wrap">
-                <div className="title" id="title-upload">
-                  <i className="fa fa-upload" />
-                  {isLicense 
-                    ? "Upload Image/PDF of professional license"
-                    : "Upload Image/PDF of license insurance certificate of currency/work cover"
-                  }
-                </div>
+          <div className="do-you-have text-center">
+            Do you have business insurance?
+            <div className="radio-same-address">
+              <label className="radio-option">No
                 <input
-                  type="file"
-                  id="input-file"
-                  className="upload inputfile"
-                  accept="image/jpeg, image/png, application/pdf"
-                  onChange={(e) => this._handleChangeFile(e)}
+                  type="radio"
+                  name="haveDocument"
+                  value={false}
+                  onChange={() => this.setState({haveDocument: false, error: {}})}
+                  defaultChecked={!haveDocument}
                 />
-              </div>
-          }
+                <span className="radio-checkmark"></span>
+              </label>
+              <label className="radio-option">Yes
+                <input
+                  type="radio"
+                  name="haveDocument"
+                  value={true}
+                  onChange={() => this.setState({haveDocument: true, error: {}})}
+                  defaultChecked={!!haveDocument}
+                />
+                <span className="radio-checkmark"></span>
+              </label>
+            </div>
           </div>
+          { !isLicense && 
+            <div className={"alert " + (haveDocument ? 'alert-message' : 'alert-danger')}>
+              Please note that to successfully be awarded jobs from property agencies, companies are required to have business insurance. As evidence we require you to upload a photo or PDF file of the insurance certificate of currency.(This is provided to you by your insurance company)
+            </div>
+          }
+          {haveDocument && 
+            <div className="file-upload text-center">
+              {
+                file && file.id ?
+                  <div className="file-pdf" >
+                    <span>
+                      {file.metadata.filename}
+                    </span>
+                    <i className="fa fa-file-o" />
+                    <span className="remove-text" onClick={this.removeFile}>Remove</span>
+                  </div>
+                  :
+                  <div className="browse-wrap">
+                    <div className="title" id="title-upload">
+                      <i className="fa fa-upload" />
+                      {isLicense 
+                        ? "Upload Image/PDF of professional license"
+                        : "Upload Image/PDF of license insurance certificate of currency/work cover"
+                      }
+                    </div>
+                    <input
+                      type="file"
+                      id="input-file"
+                      className="upload inputfile"
+                      accept="image/jpeg, image/png, application/pdf"
+                      onChange={(e) => this._handleChangeFile(e)}
+                    />
+                  </div>
+              }
+            </div>
+          }
           {renderErrorFunc(error['image'])}
           <div className="buttons">
             <button type="submit" className="button-primary green option-button">
-              Submit
+              {!haveDocument ? "Skip for now" : isLicense ? 'Submit' : 'Next'}
             </button>
           </div>
         </form>
