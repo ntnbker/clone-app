@@ -5,4 +5,5 @@ class License < ApplicationRecord
 
 
   attr_accessor :perform_presence_validation
+  attr_accessor :maintenance_request_id
 end 
