@@ -8,13 +8,13 @@ class InsurancesController < ApplicationController
 
   
   def create
-    binding.pry
+    
     @insurance = Insurance.new(insurance_params)
 
     if @insurance.save
       insurance_image = @image.as_json(methods: :image_url)
       flash[:success] = "Thank you for adding your insurance to your registration."
-      redirect_to new_license_path(trady_id:params[:insurance][:trady_id], role:"Trady", maintenance_request_id:params[:insurance][:maintenance_request_id])
+      redirect_to new_license_path(trady_id:params[:picture][:trady_id], role:"Trady", maintenance_request_id:params[:picture][:maintenance_request_id])
     else
       respond_to do |format|
         format.json {render :json=>{:error=>@insurance.errors}}
