@@ -1,7 +1,7 @@
 var TradyRegistrationForm = React.createClass({
   getInitialState : function() {
     const {step} = this.props;
-    const level = ['terms-and-conditions', 'trady', 'trady-company', 'service', 'license', 'insurance'];
+    const level = ['terms-and-conditions', 'trady', 'trady-company', 'service', 'insurance', 'license'];
 
     return {
       errors: {},
@@ -34,8 +34,8 @@ var TradyRegistrationForm = React.createClass({
         {this.labelTitle(2, <p>User<br />Registration</p>, level > 1)}
         {this.labelTitle(3, <p>Company<br />Registration</p>, level > 2)}
         {this.labelTitle(4, <p>Services<br />Available</p>, level > 3)}
-        {this.labelTitle(5, <p>Upload<br />License</p>, level > 4)}
-        {this.labelTitle(6, <p>Upload<br />Insurance</p>, level > 5)}
+        {this.labelTitle(5, <p>Upload<br />Insurance</p>, level > 4)}
+        {this.labelTitle(6, <p>Upload<br />License</p>, level > 5)}
       </div>
     )
   },
@@ -200,20 +200,20 @@ var TradyLicenseAndInsurance = React.createClass({
     const self = this;
     const {file} = this.state;
     const {isEdit, isLicense, license_id, insurance_id} = this.props;
-    // if (!file) return;
-    const picture = {
-      image: JSON.stringify(file || {}),
+    if (!file) return;
+    const data = {
       trady_id: self.props.trady_id,
+      maintenance_request_id: self.props.maintenance_request_id,
     }
     if (isEdit) {
-      if (isLicense) picture.license_id = license_id;
-      else picture.insurance_id = insurance_id;
+      if (isLicense) data.license_id = license_id;
+      else data.insurance_id = insurance_id;
     }
 
     if (!isLicense) {
-      picture.insurance_company = self.insurance_company.value;
-      picture.policy_number = self.policy_number.value;
-      picture.policy_expiry_date = self.policy_expiry_date.value;
+      data.insurance_company = self.insurance_company.value;
+      data.policy_number = self.policy_number.value;
+      data.policy_expiry_date = self.policy_expiry_date.value;
     }
 
     $.ajax({
@@ -222,7 +222,12 @@ var TradyLicenseAndInsurance = React.createClass({
       beforeSend: function (xhr) {
         xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
       },
-      data: { picture },
+      data: {
+        [isLicense ? 'license' : 'insurance']: data,
+        picture: {
+          image: JSON.stringify(file || {}),
+        },
+      },
       success(res) {
         self.setState({errors: res.errors || {}});
       },
@@ -246,7 +251,7 @@ var TradyLicenseAndInsurance = React.createClass({
 
   render() {
     const {file, errors} = this.state;
-    const {isLicense, back_path} = this.props;
+    const {isLicense} = this.props;
     const renderErrorFunc = this.renderError;
     const removeErrorFunc = this.removeError;
 
@@ -325,15 +330,6 @@ var TradyLicenseAndInsurance = React.createClass({
           }
           </div>
           <div className="buttons">
-            <button
-              type="button"
-              onClick={() => {
-                location.href = back_path;
-              }}
-              className="button-back green"
-            >
-              Back
-            </button>
             <button type="submit" className="button-primary green option-button">
               Submit
             </button>
