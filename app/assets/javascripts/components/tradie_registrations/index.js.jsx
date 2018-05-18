@@ -202,7 +202,7 @@ var TradyLicenseAndInsurance = React.createClass({
     const self = this;
     const {file} = this.state;
     const {isEdit, isLicense, license_id, insurance_id} = this.props;
-    if (!file) return this.setState({error: {image: ['Please upload a file']}});
+    // if (!file) return this.setState({error: {image: ['Please upload a file']}});
     const data = {
       trady_id: self.props.trady_id,
       maintenance_request_id: self.props.maintenance_request_id,
@@ -227,7 +227,7 @@ var TradyLicenseAndInsurance = React.createClass({
       data: {
         [isLicense ? 'license' : 'insurance']: data,
         picture: {
-          image: JSON.stringify(file || {}),
+          image: file && JSON.stringify(file),
         },
       },
       success(res) {
