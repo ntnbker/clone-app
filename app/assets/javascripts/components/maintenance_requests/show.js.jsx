@@ -2665,6 +2665,7 @@ var MaintenanceRequest = React.createClass({
 					return (
 						<ModalViewQuote
 							close={this.isClose}
+							role="Agent"
 							quote={this.state.quote}
 							quotes={this.state.quote_requests}
 							hideRestore={!!this.state.trady}
@@ -3271,6 +3272,7 @@ var MaintenanceRequest = React.createClass({
 						{
 							quote_requests && quote_requests.length > 0
 							? <QuoteRequests
+									role="Agent"
 									hideRestore={!!trady}
 									assignedTrady={trady}
 									quote_requests={quote_requests}

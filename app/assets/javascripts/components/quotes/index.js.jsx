@@ -553,10 +553,12 @@ var QuoteRequests = React.createClass({
   getInitialState: function() {
   	const self = this.props;
 
-    const role = self.current_role && self.current_role.role;
+    const role = self.role || (self.current_role && self.current_role.role);
     const quote_requests = role === 'Landlord'
                         ? this.filterQuoteRequestForLandlord(self.quote_requests)
-                        : this.filterQuoteRequest(self.quote_requests);
+                        : role === 'Agent' 
+                          ? this.filterQuoteRequestForAgent(self.quote_requests)
+                          : this.filterQuoteRequest(self.quote_requests);
     return {
       quote_requests: quote_requests.sort((qr1, qr2) => !!qr2.quotes.length - !!qr1.quotes.length),
       pictures: [],
@@ -586,6 +588,15 @@ var QuoteRequests = React.createClass({
     })
 
     return filteredQuoteRequest;
+  },
+
+  filterQuoteRequestForAgent(quote_requests) {
+    const filtered = this.filterQuoteRequest(quote_requests);
+
+    // Filter quote_request have empty quotes
+    return filtered.filter((qr) => {
+      return qr.quotes.length;
+    })
   },
 
   filterQuoteRequestForLandlord(quote_requests) {

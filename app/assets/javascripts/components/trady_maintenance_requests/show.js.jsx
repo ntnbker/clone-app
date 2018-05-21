@@ -906,6 +906,7 @@ var TradyMaintenanceRequest = React.createClass({
 							close={this.isClose}
 							quote={this.state.quote}
 							keyLandlord="trady"
+							role="Trady"
 							landlord={this.props.landlord}
 							quotes={this.state.quote_requests}
 							agency={this.props.agency}
@@ -1731,6 +1732,7 @@ var TradyMaintenanceRequest = React.createClass({
 						{ needShowInfo && quote_requests && quote_requests.length > 0 &&
 								<QuoteRequests
 									keyLandlord="trady"
+									role="Trady"
 									landlord={this.state.landlord}
 									quote_requests={quote_requests}
 									assignedTrady={trady}

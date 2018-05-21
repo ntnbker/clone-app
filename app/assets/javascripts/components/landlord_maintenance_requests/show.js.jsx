@@ -1012,6 +1012,7 @@ var LandlordMaintenanceRequest = React.createClass({
 							quote_requests && quote_requests.length > 0
 							? <QuoteRequests
 									keyLandlord="landlord"
+									role="Landlord"
 									quote_requests={quote_requests}
 									onModalWith={this.onModalWith}
 									landlord={this.state.landlord}
