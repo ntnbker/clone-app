@@ -565,7 +565,7 @@ var QuoteRequests = React.createClass({
   },
 
   componentWillMount() {
-    this.getPictureImage(this.state.quote_requests);
+    // this.getPictureImage(this.state.quote_requests);
   },
 
   componentWillReceiveProps: function(nextProps) {
@@ -574,7 +574,7 @@ var QuoteRequests = React.createClass({
                         ? this.filterQuoteRequestForLandlord(nextProps.quote_requests)
                         : this.filterQuoteRequest(nextProps.quote_requests);
 
-    this.getPictureImage(quote_requests);
+    // this.getPictureImage(quote_requests);
     this.setState({
       quote_requests: quote_requests.sort((qr1, qr2) => !!qr2.quotes.length - !!qr1.quotes.length),
     });
@@ -607,28 +607,25 @@ var QuoteRequests = React.createClass({
     })
   },
 
-  getPictureImage(quote_requests) {
+  getPictureImage(quote_request) {
     const self = this;
-    if (!quote_requests || quote_requests.length === 0)
-      return this.setState({ pictures: []});
+    if (!quote_request)
+      return '';
 
-    const pictures = (quote_requests || []).map((quote_request) => {
-      const trady 											= quote_request.trady || {};
-      const id 													= trady.id || '';
-      const trady_company 							= trady.trady_company || {};
-      const trady_profile_image 				= trady.trady_profile_image || {};
-      const trady_company_profile_image = trady_company.trady_company_profile_image || {};
+    const trady 											= quote_request.trady || {};
+    const id 													= trady.id || '';
+    const trady_company 							= trady.trady_company || {};
+    const trady_profile_image 				= trady.trady_profile_image || {};
+    const trady_company_profile_image = trady_company.trady_company_profile_image || {};
 
-      return trady_company_profile_image && trady_company_profile_image.image_url
-          || trady_profile_image && trady_profile_image.image_url;
-    });
-
-    this.setState({ pictures });
+    return trady_company_profile_image && trady_company_profile_image.image_url
+        || trady_profile_image && trady_profile_image.image_url;
   },
 
   render: function() {
-    const {quote_requests, pictures, role} = this.state;
+    const {quote_requests, role} = this.state;
     const self = this.props;
+    const getImage = this.getPictureImage;
 
     const isCallTrady = role === 'AgencyAdmin' || role === 'Agent';
 
@@ -673,7 +670,7 @@ var QuoteRequests = React.createClass({
                 <div className="user seven columns trady-info-group">
                   <div className="trady-info">
                     <span className="icon-user">
-                      <AvatarImage imageUri={pictures[index]} />
+                      <AvatarImage imageUri={getImage(quote_request)} />
                     </span>
                     <div className="info">
                       <div className="name">
