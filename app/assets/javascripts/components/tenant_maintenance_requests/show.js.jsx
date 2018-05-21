@@ -202,6 +202,7 @@ var TenantMaintenanceRequest = React.createClass({
 				self.setState({
 					tenants_conversation: tenants_conversation,
 				});
+				callback();
 			},
 			error: function(err) {
 				self.setState({notification: {

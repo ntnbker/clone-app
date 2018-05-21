@@ -1231,7 +1231,7 @@ var ModalViewQuoteMessage = React.createClass({
         self.setState({ errorMessage: err['body'] });
       }
     });
-    this.message.value = "";
+    self.message.value = "";
   },
 
   render: function() {
@@ -1319,7 +1319,8 @@ var ModalViewQuoteRequestMessage = React.createClass({
       if (err) {
         self.setState({ errorMessage: err['body'] });
       }
-      this.message.value = "";
+
+      self.message.value = "";
     });
 
     return false;

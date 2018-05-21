@@ -241,6 +241,7 @@ var LandlordMaintenanceRequest = React.createClass({
 				self.setState({
 					landlords_conversation: landlords_conversation,
 				});
+				callback();
 			},
 			error: function(err) {
 				self.setState({notification: {

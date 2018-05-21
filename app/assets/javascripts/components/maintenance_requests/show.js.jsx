@@ -1642,6 +1642,7 @@ var MaintenanceRequest = React.createClass({
 				self.setState({
 					landlords_conversation: landlords_conversation,
 				});
+				callback();
 			},
 			error: function(err) {
 				self.setState({notification: {
@@ -1673,6 +1674,7 @@ var MaintenanceRequest = React.createClass({
 				self.setState({
 					tenants_conversation: tenants_conversation
 				});
+				callback();
 			},
 			error: function(err) {
 				self.setState({notification: {
@@ -1706,6 +1708,7 @@ var MaintenanceRequest = React.createClass({
 				self.setState({
 					trady_conversation: trady_conversation
 				});
+				callback();
 			},
 			error: function(err) {
 				self.setState({notification: {
@@ -1740,6 +1743,7 @@ var MaintenanceRequest = React.createClass({
 				self.setState({
 					quote: quote
 				});
+				callback();
 			},
 			error: function(err) {
 				self.setState({notification: {
@@ -1774,6 +1778,7 @@ var MaintenanceRequest = React.createClass({
 				self.setState({
 					quote_request: quote_request
 				});
+				callback();
 			},
 			error: function(err) {
 				self.setState({notification: {

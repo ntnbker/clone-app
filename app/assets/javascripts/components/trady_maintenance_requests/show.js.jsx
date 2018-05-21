@@ -392,6 +392,7 @@ var TradyMaintenanceRequest = React.createClass({
 				self.setState({
 					quote: quote
 				});
+				callback();
 			},
 			error: function(err) {
 				self.setState({notification: {
@@ -426,6 +427,7 @@ var TradyMaintenanceRequest = React.createClass({
 				self.setState({
 					quote_request: quote_request
 				});
+				callback();
 			},
 			error: function(err) {
 				self.setState({notification: {
@@ -780,6 +782,7 @@ var TradyMaintenanceRequest = React.createClass({
 				self.setState({
 					trady_agent_conversation: trady_agent_conversation
 				});
+				callback();
 			},
 			error: function(err) {
 				self.setState({notification: {
