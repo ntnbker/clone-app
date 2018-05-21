@@ -661,11 +661,15 @@ var QuoteRequests = React.createClass({
 
           const isLandlord = role === "Landlord";
 
-          const needAlreadySentButton = !isLandlord
+          const needAlreadySentButton = !quote_request.trady.jfmo_participant
+                                     && !isLandlord
                                      && quotes.length === 0
                                      && !quote_request.quote_sent;
 
-          const needPhotoButton 			= !isLandlord && quote_request.quote_sent;
+          const needUploadButton = !isLandlord
+                                && quote_request.quote_sent
+                                && !quote_request.trady.jfmo_participant;
+
           const needMessageButton 		= !isLandlord && assignedTradyValid
                                       && !!self.current_user_show_quote_message;
 
@@ -734,7 +738,7 @@ var QuoteRequests = React.createClass({
                         />
                       </div>
                     }
-                    { !quote_request.trady.jfmo_participant && needAlreadySentButton
+                    { needAlreadySentButton
                       ? <div className="stop-reminder">
                           <ButtonQuoteAlreadySent
                             {...self}
@@ -743,7 +747,7 @@ var QuoteRequests = React.createClass({
                         </div>
                       : ''
                     }
-                    { true
+                    { needUploadButton
                       ? <div className="upload-quote">
                           <ModalImageUpload
                             className="btn btn-default"
