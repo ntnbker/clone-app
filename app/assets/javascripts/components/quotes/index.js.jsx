@@ -387,7 +387,7 @@ var ActionQuote = React.createClass({
                 viewQuoteMessage={(key, item) => self.viewQuote(key, item)}
               />
           }
-          { quote.status == "Active" &&
+          { quote.status == "Active" && this.props.showForward &&
               <ButtonForwardLandlord
                 quote={quote}
                 landlord={self.landlord}
@@ -502,8 +502,12 @@ var Quotes = React.createClass({
         <div className="list-quote">
         {
           quotes.map(function(quote, index) {
-            const status = quote.status;
-            const showStatus = ['Approved', 'Declined'].indexOf(status) !== -1;
+            let status = quote.status || '';
+            let showStatus = ['Approved', 'Declined'].indexOf(status) !== -1;
+            if (!showStatus && quote.forwarded_to_landlord) {
+              status = 'Sent To Landlord';
+              showStatus = true;
+            }
 
             return (
               <div className="item-quote row" key={index}>
@@ -513,7 +517,7 @@ var Quotes = React.createClass({
                   {showStatus 
                     ? <button
                         type="button"
-                        className={'button-default status ' + status}>
+                        className={'button-default status ' + status.toLowerCase().split` `.join`-`}>
                         <span>{status}</span>
                       </button>
                     : <button
@@ -1174,6 +1178,7 @@ var ModalViewQuote = React.createClass({
                   <ActionQuote
                     quote={quote}
                     hideRestore={self.hideRestore}
+                    showForward={true}
                     isModal="true"
                     className="print"
                     landlord={self.landlord}
@@ -1437,6 +1442,7 @@ var ModalViewPhoto = React.createClass({
                 <ActionQuote
                   isModal="true"
                   className="print"
+                  showForward={true}
                   hideRestore={self.hideRestore}
                   quote={self.quote}
                   landlord={self.landlord}

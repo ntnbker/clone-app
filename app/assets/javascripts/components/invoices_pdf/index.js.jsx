@@ -66,9 +66,9 @@ var PDFInvoices = React.createClass({
 												{
 													paid == false
 														? active !== false
-															? <button className={'button-default status Declined'}>Outstanding Payment</button>
-															: <button className={'button-default status Declined'}>Do Not Pay</button>
-														: <button className={'button-default status Approved'}>Payment Scheduled</button>
+															? <button className={'button-default status declined'}>Outstanding Payment</button>
+															: <button className={'button-default status declined'}>Do Not Pay</button>
+														: <button className={'button-default status approved'}>Payment Scheduled</button>
 												}
 											</div>
 										</div>

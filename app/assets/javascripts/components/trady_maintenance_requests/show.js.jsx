@@ -1221,24 +1221,24 @@ var TradyMaintenanceRequest = React.createClass({
 						/>
 					)
 
-					case 'wantNewInvoice':
-						return (
-							<ModalConfirmAnyThing
-								close={this.isClose}
-								confirm={() => this.onModalWith('viewConfirm')}
-								title="Void Invoice"
-								content={this.state.message || "You have void this invoice. Do you want to create a new invoice?"} />
-						);
+				case 'wantNewInvoice':
+					return (
+						<ModalConfirmAnyThing
+							close={this.isClose}
+							confirm={() => this.onModalWith('viewConfirm')}
+							title="Void Invoice"
+							content={this.state.message || "You have void this invoice. Do you want to create a new invoice?"} />
+					);
 
-					case 'ShowTradyActions':
-						return (
-							<ShowTradyActions
-								close={this.isClose}
-								title="Trady Actions"
-								maintenance_request_id={this.props.maintenance_request.id}
-								trady_id={this.props.signed_in_trady.id}
-							/>
-						);
+				case 'ShowTradyActions':
+					return (
+						<ShowTradyActions
+							close={this.isClose}
+							title="Trady Actions"
+							maintenance_request_id={this.props.maintenance_request.id}
+							trady_id={this.props.signed_in_trady.id}
+						/>
+					);
 					
 				default:
 					return null;
