@@ -13,7 +13,7 @@ class LicensesController < ApplicationController
     @role = "Trady"
     @license = License.new(license_params)
 
-    if params[:picture][:licensed] == true
+    if params[:picture][:licensed] == "true"
       @license.perform_presence_validation = true
     else
       @license.perform_presence_validation = false
@@ -22,7 +22,7 @@ class LicensesController < ApplicationController
 
     if @license.save
       license_image = @image.as_json(methods: :image_url)
-      flash[:success] = "Thank you for adding your license to your registration."
+      flash[:success] = "Thank you for joining the maintenance app network. Be ready to receive free job leads."
       redirect_to root_path(trady_id:params[:picture][:trady_id], role:"Trady", maintenance_request_id:params[:picture][:maintenance_request_id])
     else
       respond_to do |format|

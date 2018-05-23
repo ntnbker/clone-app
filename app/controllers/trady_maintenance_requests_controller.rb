@@ -184,12 +184,24 @@ class TradyMaintenanceRequestsController < ApplicationController
     if current_user && current_user.logged_in_as("Trady") && current_user.trady.jfmo_participant == true && current_user.trady.customer_profile.nil?
       flash[:danger] = "Please accept the terms and conditions to continue."
       redirect_to  join_just_find_me_one_path(trady_id:current_user.trady.id)
-    else 
+    
 
-      #do nothing 
+    elsif  current_user && current_user.logged_in_as("Trady") && current_user.trady.jfmo_participant == true && current_user.trady.insurance.insured == false
+      flash[:danger] = "Oops it appears we are missing some important information. Please upload your insurance information to continue. We will quickly verify your information and then you can start taking receiving jobs, thank you for your time."
+      redirect_to  #page the has the single insurance uploader page (trady_id:current_user.trady.id)
+      #do nothing
+    elsif  current_user && current_user.logged_in_as("Trady") && current_user.trady.jfmo_participant == true && current_user.trady.license.licensed == false
+      flash[:danger] = "Oops it appears we are missing some important information. You would like to receive jobs that require you to be a licensed professional, Please upload your license information to continue thank you for your time."
+      #redirect_to  #page the has the single insurance uploader page (trady_id:current_user.trady.id)
+      #do nothing  
+    elsif  current_user && current_user.logged_in_as("Trady") && current_user.trady.jfmo_participant == true && current_user.trady.skills.count == 0
+      flash[:danger] = "Please add a service you provide to continue."
+      #redirect to add service place
+    else
+      #do nothing
 
     end 
-
+    #always block until approved pending approved declined 
   end
 
 

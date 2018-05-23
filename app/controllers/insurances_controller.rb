@@ -14,17 +14,17 @@ class InsurancesController < ApplicationController
     @role = "Trady"
     @insurance = Insurance.new(insurance_params)
     
-    if params[:picture][:insured] == true
+    if params[:picture][:insured] == "true"
       @insurance.perform_presence_validation = true
     else
       @insurance.perform_presence_validation = false
     end 
 
-
+    
 
     if @insurance.save
       insurance_image = @image.as_json(methods: :image_url)
-      flash[:success] = "Thank you for adding your insurance to your registration."
+      #flash[:success] = "Thank you for adding your insurance to your registration."
       redirect_to new_license_path(trady_id:params[:picture][:trady_id], role:"Trady", maintenance_request_id:params[:picture][:maintenance_request_id])
     else
       respond_to do |format|
@@ -33,6 +33,20 @@ class InsurancesController < ApplicationController
       end
     end 
   end
+
+
+
+  def add_insurance
+    @trady_id = params[:trady_id]
+  end
+
+  def submit_insurance
+    
+  end
+
+
+
+
 
   private
 

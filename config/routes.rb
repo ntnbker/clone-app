@@ -284,6 +284,8 @@ Rails.application.routes.draw do
     get "edit_services"=>"services#edit_services", :as => "edit_services"
     get "new_service_onboarding" => "services#new_service_onboarding", :as=> "new_service_onboarding"
     post "new_service_onboarding" => "services#create_service_onboarding"
+    get "submit_service" => "services#submit_service"
+    
   ###########################################################
   ##########TRADY TERMS AND CONDITIONS RESOURCES/ROUTES######
   ###########################################################
@@ -319,10 +321,14 @@ Rails.application.routes.draw do
   ##########INSURANCE RESOURCES/ROUTES#####
   ###########################################################
   resources :insurances, only: [:new, :create, :edit, :update]
-
+  get "submit_insurance" => "insurances#submit_insurance", :as => "submit_insurance"
+  post "submit_insurance" => "insurances#save_insurance"
   ###########################################################
   ##########LICENSE RESOURCES/ROUTES#####
   ###########################################################
   resources :licenses, only: [:new, :create, :edit, :update]
 
  end
+
+
+
