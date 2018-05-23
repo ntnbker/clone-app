@@ -321,12 +321,14 @@ Rails.application.routes.draw do
   ##########INSURANCE RESOURCES/ROUTES#####
   ###########################################################
   resources :insurances, only: [:new, :create, :edit, :update]
-  get "submit_insurance" => "insurances#submit_insurance", :as => "submit_insurance"
-  post "submit_insurance" => "insurances#save_insurance"
+  get "new_insurance_onboarding" => "insurances#new_insurance_onboarding", :as => "new_insurance_onboarding"
+  post "new_insurance_onboarding" => "insurances#create_insurance_onboarding"
   ###########################################################
   ##########LICENSE RESOURCES/ROUTES#####
   ###########################################################
   resources :licenses, only: [:new, :create, :edit, :update]
+  get "new_license_onboarding" => "licenses#new_license_onboarding",  :as => "new_license_onboarding"
+  post "new_license_onboarding" => "licenses#create_license_onboarding"
 
  end
 

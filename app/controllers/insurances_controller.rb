@@ -1,4 +1,6 @@
 class InsurancesController < ApplicationController
+  before_action :require_login, only:[:new_insurance_onboarding]
+  before_action(only:[:new_insurance_onboarding]) {allow("Trady")}
   def new
     @trady_id = params[:trady_id]
     @maintenance_request_id= params[:maintenance_request_id]
@@ -36,12 +38,30 @@ class InsurancesController < ApplicationController
 
 
 
-  def add_insurance
-    @trady_id = params[:trady_id]
+  def new_insurance_onboarding
+    @trady_id = current_user.trady.id 
+    @insurance = Insurance.new
   end
 
-  def submit_insurance
+  def create_insurance_onboarding
+    @trady_id = params[:picture][:trady_id]
     
+    @insurance = Insurance.new(insurance_params)
+    @insurance.perform_presence_validation = true
+    
+
+    
+
+    if @insurance.save
+      insurance_image = @image.as_json(methods: :image_url)
+      #flash[:success] = "Thank you for adding your insurance to your registration."
+      redirect_to trady_maintenance_requests_path
+    else
+      respond_to do |format|
+        format.json {render :json=>{:error=>@insurance.errors}}
+        format.html {render :new}
+      end
+    end 
   end
 
 
