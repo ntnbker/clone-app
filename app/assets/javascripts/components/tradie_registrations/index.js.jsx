@@ -219,6 +219,10 @@ var TradyLicenseAndInsurance = React.createClass({
     }
     else {
       data.licensed = !!haveDocument;
+      if (haveDocument) {
+        data.license_number = this.license_number.value;
+        data.license_type = this.license_type.value;
+      }
     }
 
     $.ajax({
@@ -336,6 +340,40 @@ var TradyLicenseAndInsurance = React.createClass({
           { !isLicense && 
             <div className={"alert " + (haveDocument ? 'alert-message' : 'alert-danger')}>
               Please note that to successfully be awarded jobs from property agencies, companies are required to have business insurance. As evidence we require you to upload a photo or PDF file of the insurance certificate of currency.(This is provided to you by your insurance company)
+            </div>
+          }
+          { haveDocument && isLicense && 
+            <div className="form-group">
+              <div className="col-sm-10">
+                <input
+
+                  id="license_number"
+                  type="text"
+                  placeholder="License Number"
+                  defaultValue={this.props.license_number}
+                  ref={(ref) => this.license_number = ref}
+                  className={"form-control " + (error['license_number'] ? "has-error" : "")}
+                  onChange={removeErrorFunc}
+                />
+                {renderErrorFunc(error['license_number'])}
+              </div>
+            </div>
+          }
+          {haveDocument && isLicense && 
+            <div className="form-group">
+              <div className="col-sm-10">
+                <input
+
+                  id="license_type"
+                  type="text"
+                  placeholder="License Type"
+                  defaultValue={this.props.license_type}
+                  ref={(ref) => this.license_type = ref}
+                  className={"form-control " + (error['license_type'] ? "has-error" : "")}
+                  onChange={removeErrorFunc}
+                />
+                {renderErrorFunc(error['license_type'])}
+              </div>
             </div>
           }
           {haveDocument && 
