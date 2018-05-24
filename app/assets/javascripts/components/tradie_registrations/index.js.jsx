@@ -93,13 +93,65 @@ var TradyRegistrationForm = React.createClass({
   }
 });
 
+var SingleRegistrationForm = React.createClass({
+  getInitialState : function() {
+    const {form} = this.props;
+    const level = ['license', 'insurance'];
+
+    return {
+      errors: {},
+      form,
+      level: (level.indexOf(form) || 0) + 1,
+    }
+  },
+
+  componentDidMount() {
+    $('body > div.layout').css('background-color', 'white');
+  },
+
+  generateTitle() {
+    const {form} = this.state;
+
+    switch (form) {
+      case 'license':
+      return <h5 className="step-title text-center space-top">Upload License</h5>
+      case 'insurance':
+      return <h5 className="step-title text-center space-top">Upload Insurance</h5>
+    }
+  },
+
+  generateForm() {
+    const {form} = this.state;
+
+    switch (form) {
+      case 'license':
+      return <TradyLicenseAndInsurance {...this.props} isRegistering={false} />;
+      case 'insurance':
+      return <TradyLicenseAndInsurance {...this.props} isRegistering={false} />;
+    }
+  },
+
+  componentWillUnmount() {
+    $('body > div.layout').css('background-color', '#F4F8FB');
+  },
+
+  render() {
+    return (
+      <div id="registration" className="trady-registration">
+        {this.generateTitle()}
+        {this.generateForm()}
+      </div>
+    )
+  }
+});
+
 var TradyLicenseAndInsurance = React.createClass({
   getInitialState() {
     return {
       text: '',
       file: null,
       error: [],
-      haveDocument: false,
+      haveDocument: !this.props.isRegistering,
     }
   },
 
@@ -202,7 +254,7 @@ var TradyLicenseAndInsurance = React.createClass({
     e.preventDefault();
     const self = this;
     const {file, haveDocument} = this.state;
-    const {isEdit, isLicense, license_id, insurance_id} = this.props;
+    const {isEdit, isLicense, license_id, insurance_id, upload_url} = this.props;
     // if (!file) return this.setState({error: {image: ['Please upload a file']}});
     const data = {
       trady_id: self.props.trady_id,
@@ -224,10 +276,10 @@ var TradyLicenseAndInsurance = React.createClass({
         data.license_type = this.license_type.value;
       }
     }
-
+    const url = upload_url || (isLicense ? '/licenses' : '/insurances');
     $.ajax({
-      type: self.props.isEdit ? 'PUT' : 'POST',
-      url: self.props.isLicense ? '/licenses' : '/insurances',
+      type: isEdit ? 'PUT' : 'POST',
+      url,
       beforeSend: function (xhr) {
         xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
       },
@@ -257,7 +309,7 @@ var TradyLicenseAndInsurance = React.createClass({
 
   render() {
     const {file, error, haveDocument} = this.state;
-    const {isLicense} = this.props;
+    const {isLicense, isRegistering} = this.props;
     const renderErrorFunc = this.renderError;
     const removeErrorFunc = this.removeError;
 
@@ -309,7 +361,8 @@ var TradyLicenseAndInsurance = React.createClass({
               {renderErrorFunc(error['policy_expiry_date'])}
             </div>
           </div>} */}
-          <div className="do-you-have text-center">
+          {isRegistering &&
+            <div className="do-you-have text-center">
             {isLicense 
               ? "Are you a licensed professional?"
               : "Do you have business insurance?"
@@ -336,7 +389,7 @@ var TradyLicenseAndInsurance = React.createClass({
                 <span className="radio-checkmark"></span>
               </label>
             </div>
-          </div>
+          </div>}
           { !isLicense && 
             <div className={"alert " + (haveDocument ? 'alert-message' : 'alert-danger')}>
               Please note that to successfully be awarded jobs from property agencies, companies are required to have business insurance. As evidence we require you to upload a photo or PDF file of the insurance certificate of currency.(This is provided to you by your insurance company)

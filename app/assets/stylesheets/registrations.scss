@@ -48,6 +48,9 @@ $color-text: #83878C;
     color: $color-green-submit;
     border-bottom: 4px solid $color-green-submit;
     padding-bottom: 20px;
+    &.space-top {
+      padding-top: 20px;
+    }
   }
   form {
     width: 80%;
