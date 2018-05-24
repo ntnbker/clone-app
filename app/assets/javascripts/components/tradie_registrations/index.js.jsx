@@ -264,15 +264,11 @@ var TradyLicenseAndInsurance = React.createClass({
       maintenance_request_id: self.props.maintenance_request_id,
       image: file && JSON.stringify(file),
     }
-    if (isEdit) {
-      if (isLicense) data.license_id = license_id;
-      else data.insurance_id = insurance_id;
-    }
+    if (isLicense && isEdit) data.id = license && license.id;
 
     if (isLicense && haveDocument) {
       data.license_number = this.license_number.value;
       data.license_type = this.license_type.value;
-      data.id = license && license.id;
     }
     const url = upload_url || (isLicense ? '/licenses' : '/insurances');
     $.ajax({
@@ -418,7 +414,7 @@ var TradyLicenseAndInsurance = React.createClass({
                   id="license_type"
                   type="text"
                   placeholder="License Type"
-                  defaultValue={license && license.license_number}
+                  defaultValue={license && license.license_type}
                   ref={(ref) => this.license_type = ref}
                   className={"form-control " + (error['license_type'] ? "has-error" : "")}
                   onChange={removeErrorFunc}
