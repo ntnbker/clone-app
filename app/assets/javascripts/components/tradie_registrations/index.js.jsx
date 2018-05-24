@@ -254,7 +254,7 @@ var TradyLicenseAndInsurance = React.createClass({
     e.preventDefault();
     const self = this;
     const {file, haveDocument} = this.state;
-    const {isEdit, isLicense, license_id, insurance_id, upload_url, isRegistering} = this.props;
+    const {isEdit, isLicense, license, insurance_id, upload_url, isRegistering} = this.props;
     if (isRegistering && !haveDocument) {
       return location.href = this.props.url;
     }
@@ -272,6 +272,7 @@ var TradyLicenseAndInsurance = React.createClass({
     if (isLicense && haveDocument) {
       data.license_number = this.license_number.value;
       data.license_type = this.license_type.value;
+      data.id = license && license.id;
     }
     const url = upload_url || (isLicense ? '/licenses' : '/insurances');
     $.ajax({
@@ -306,7 +307,7 @@ var TradyLicenseAndInsurance = React.createClass({
 
   render() {
     const {file, error, haveDocument} = this.state;
-    const {isLicense, isRegistering} = this.props;
+    const {isLicense, isRegistering, license} = this.props;
     const renderErrorFunc = this.renderError;
     const removeErrorFunc = this.removeError;
 
@@ -400,7 +401,7 @@ var TradyLicenseAndInsurance = React.createClass({
                   id="license_number"
                   type="text"
                   placeholder="License Number"
-                  defaultValue={this.props.license_number}
+                  defaultValue={license && license.license_number}
                   ref={(ref) => this.license_number = ref}
                   className={"form-control " + (error['license_number'] ? "has-error" : "")}
                   onChange={removeErrorFunc}
@@ -417,7 +418,7 @@ var TradyLicenseAndInsurance = React.createClass({
                   id="license_type"
                   type="text"
                   placeholder="License Type"
-                  defaultValue={this.props.license_type}
+                  defaultValue={license && license.license_number}
                   ref={(ref) => this.license_type = ref}
                   className={"form-control " + (error['license_type'] ? "has-error" : "")}
                   onChange={removeErrorFunc}
