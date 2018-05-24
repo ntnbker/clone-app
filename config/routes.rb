@@ -323,12 +323,16 @@ Rails.application.routes.draw do
   resources :insurances, only: [:new, :create, :edit, :update]
   get "new_insurance_onboarding" => "insurances#new_insurance_onboarding", :as => "new_insurance_onboarding"
   post "new_insurance_onboarding" => "insurances#create_insurance_onboarding"
+  get "edit_insurance_onboarding" => "insurances#edit_insurance_onboarding", :as => "edit_insurance_onboarding"
+  put "edit_insurance_onboarding" => "insurances#update_insurance_onboarding"
   ###########################################################
   ##########LICENSE RESOURCES/ROUTES#####
   ###########################################################
   resources :licenses, only: [:new, :create, :edit, :update]
   get "new_license_onboarding" => "licenses#new_license_onboarding",  :as => "new_license_onboarding"
   post "new_license_onboarding" => "licenses#create_license_onboarding"
+  get "edit_license_onboarding" => "licenses#edit_license_onboarding", :as => "edit_license_onboarding"
+  put "edit_license_onboarding" => "licenses#update_license_onboarding"
 
  end
 

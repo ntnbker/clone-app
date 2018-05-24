@@ -61,6 +61,15 @@ class LicensesController < ApplicationController
     end 
   end
 
+
+  def edit_license_onboarding
+    
+  end
+
+  def update_license_onboarding
+    
+  end
+
   private
 
   def license_params
