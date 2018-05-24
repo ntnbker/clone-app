@@ -254,7 +254,10 @@ var TradyLicenseAndInsurance = React.createClass({
     e.preventDefault();
     const self = this;
     const {file, haveDocument} = this.state;
-    const {isEdit, isLicense, license_id, insurance_id, upload_url} = this.props;
+    const {isEdit, isLicense, license_id, insurance_id, upload_url, isRegistering} = this.props;
+    if (isRegistering && !haveDocument) {
+      return location.href = this.props.url;
+    }
     // if (!file) return this.setState({error: {image: ['Please upload a file']}});
     const data = {
       trady_id: self.props.trady_id,
