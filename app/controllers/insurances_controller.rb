@@ -73,7 +73,26 @@ class InsurancesController < ApplicationController
   end
 
   def update_insurance_onboarding
+    @trady_id = params[:picture][:trady_id]
     
+    @insurance = Insurance.find_by(id:params[:picture][:id])
+    #@insurance.perform_presence_validation = true
+    #add trady registration pending
+
+    
+
+    if @insurance.update(insurance_params)
+      trady = Trady.find_by(id:@trady_id)
+      trady.update_attribute(:registration_status,"Pending")
+      insurance_image = @image.as_json(methods: :image_url)
+      flash[:success] = "Thank you for updating your insurance. We will review your application."
+      redirect_to trady_maintenance_requests_path
+    else
+      respond_to do |format|
+        format.json {render :json=>{:error=>@insurance.errors}}
+        format.html {render :new}
+      end
+    end 
   end
 
 
@@ -83,7 +102,7 @@ class InsurancesController < ApplicationController
   private
 
   def insurance_params
-    params.require(:picture).permit(:trady_id,:role,:insured, :insurance_company, :policy_number, :policy_expiry_date, :image, :insurance_id, :maintenance_request_id)
+    params.require(:picture).permit(:id,:trady_id,:role,:insured, :insurance_company, :policy_number, :policy_expiry_date, :image, :insurance_id, :maintenance_request_id)
   end
 
 end 
