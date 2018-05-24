@@ -267,10 +267,10 @@ var TradyLicenseAndInsurance = React.createClass({
     }
 
     if (!isLicense) {
-      data.insured = !!haveDocument;
+      data.insured = null;
     }
     else {
-      data.licensed = !!haveDocument;
+      data.licensed = null;
       if (haveDocument) {
         data.license_number = this.license_number.value;
         data.license_type = this.license_type.value;
