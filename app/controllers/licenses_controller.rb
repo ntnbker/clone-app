@@ -1,5 +1,5 @@
 class LicensesController < ApplicationController
-  before_action :require_login, only:[:new_license_onboarding]
+  before_action :require_login, only:[:new_license_onboarding, :edit_license_onboarding]
   before_action(only:[:new_license_onboarding]) {allow("Trady")}
   def new
     @trady_id = params[:trady_id]
@@ -63,7 +63,8 @@ class LicensesController < ApplicationController
 
 
   def edit_license_onboarding
-    
+    @trady_id = current_user.trady.id 
+    @license = License.find_by(id:params[:id])
   end
 
   def update_license_onboarding

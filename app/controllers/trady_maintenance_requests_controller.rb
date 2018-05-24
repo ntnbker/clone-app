@@ -194,13 +194,13 @@ class TradyMaintenanceRequestsController < ApplicationController
         redirect_to  new_insurance_onboarding_path
       elsif current_user && current_user.logged_in_as("Trady") && current_user.trady.jfmo_participant == true && current_user.trady.insurance.insured == false
         flash[:danger] = "Oops it appears you have submitted invalid insurance information. Please upload valid insurance information to continue. We will quickly verify your information and then you can start taking receiving jobs, thank you for your time."
-        redirect_to  edit_insurance_onboarding_path
+        redirect_to  edit_insurance_onboarding_path(current_user.trady.insurance)
       elsif current_user && current_user.logged_in_as("Trady") && current_user.trady.jfmo_participant == true && current_user.trady.license == nil
         flash[:danger] = "Oops it appears we are missing some important information. You would like to receive jobs that require you to be a licensed professional, Please upload your license information to continue thank you for your time."
         redirect_to new_license_onboarding_path
       elsif current_user && current_user.logged_in_as("Trady") && current_user.trady.jfmo_participant == true && current_user.trady.license.licensed == false
         flash[:danger] = "Oops it appears you have submitted invalid license information. If you would like to receive jobs that require you to be a licensed professional, Please upload your license information to continue thank you for your time."
-        redirect_to edit_license_onboarding_path
+        redirect_to edit_license_onboarding_path(current_user.trady.license)
       end 
 
 

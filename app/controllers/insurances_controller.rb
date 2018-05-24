@@ -1,5 +1,5 @@
 class InsurancesController < ApplicationController
-  before_action :require_login, only:[:new_insurance_onboarding]
+  before_action :require_login, only:[:new_insurance_onboarding, :edit_insurance_onboarding]
   before_action(only:[:new_insurance_onboarding]) {allow("Trady")}
   def new
     @trady_id = params[:trady_id]
@@ -68,7 +68,8 @@ class InsurancesController < ApplicationController
   end
 
   def edit_insurance_onboarding
-    
+    @trady_id = current_user.trady.id 
+    @insurance = Insurance.find_by(id:params[:id])
   end
 
   def update_insurance_onboarding
