@@ -6,6 +6,7 @@ class InsurancesController < ApplicationController
     @maintenance_request_id= params[:maintenance_request_id]
     @role = "Trady"
     @insurance = Insurance.new
+    @url = new_license_path(trady_id:params[:picture][:trady_id], maintenance_request_id:params[:picture][:maintenance_request_id])
   end
 
   
@@ -25,6 +26,8 @@ class InsurancesController < ApplicationController
     
 
     if @insurance.save
+      trady = Trady.find_by(id:@trady_id)
+      trady.update_attribute(:registration_status,"Pending")
       insurance_image = @image.as_json(methods: :image_url)
       #flash[:success] = "Thank you for adding your insurance to your registration."
       redirect_to new_license_path(trady_id:params[:picture][:trady_id], role:"Trady", maintenance_request_id:params[:picture][:maintenance_request_id])
@@ -48,11 +51,13 @@ class InsurancesController < ApplicationController
     
     @insurance = Insurance.new(insurance_params)
     @insurance.perform_presence_validation = true
-    
+    #add trady registration pending
 
     
 
     if @insurance.save
+      trady = Trady.find_by(id:@trady_id)
+      trady.update_attribute(:registration_status,"Pending")
       insurance_image = @image.as_json(methods: :image_url)
       #flash[:success] = "Thank you for adding your insurance to your registration."
       redirect_to trady_maintenance_requests_path
