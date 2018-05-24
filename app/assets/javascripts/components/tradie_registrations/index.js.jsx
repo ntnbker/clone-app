@@ -254,7 +254,7 @@ var TradyLicenseAndInsurance = React.createClass({
     e.preventDefault();
     const self = this;
     const {file, haveDocument} = this.state;
-    const {isEdit, isLicense, license, insurance_id, upload_url, isRegistering} = this.props;
+    const {isEdit, isLicense, license, insurance, upload_url, isRegistering} = this.props;
     if (isRegistering && !haveDocument) {
       return location.href = this.props.url;
     }
@@ -264,8 +264,11 @@ var TradyLicenseAndInsurance = React.createClass({
       maintenance_request_id: self.props.maintenance_request_id,
       image: file && JSON.stringify(file),
     }
-    if (isLicense && isEdit) data.id = license && license.id;
-
+    if (isEdit) {
+      data.id = isLicense
+              ? (license && license.id)
+              : (insurance && insurance.id);
+    }
     if (isLicense && haveDocument) {
       data.license_number = this.license_number.value;
       data.license_type = this.license_type.value;
