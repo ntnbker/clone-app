@@ -269,15 +269,9 @@ var TradyLicenseAndInsurance = React.createClass({
       else data.insurance_id = insurance_id;
     }
 
-    if (!isLicense) {
-      data.insured = null;
-    }
-    else {
-      data.licensed = null;
-      if (haveDocument) {
-        data.license_number = this.license_number.value;
-        data.license_type = this.license_type.value;
-      }
+    if (isLicense && haveDocument) {
+      data.license_number = this.license_number.value;
+      data.license_type = this.license_type.value;
     }
     const url = upload_url || (isLicense ? '/licenses' : '/insurances');
     $.ajax({
