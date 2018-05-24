@@ -15,11 +15,11 @@ class LicensesController < ApplicationController
     @role = "Trady"
     @license = License.new(license_params)
 
-    if params[:picture][:licensed] == "true"
-      @license.perform_presence_validation = true
-    else
-      @license.perform_presence_validation = false
-    end 
+    # if params[:picture][:licensed] == "true"
+    #   @license.perform_presence_validation = true
+    # else
+    #   @license.perform_presence_validation = false
+    # end 
 
 
     if @license.save
@@ -46,7 +46,7 @@ class LicensesController < ApplicationController
     @trady_id = params[:picture][:trady_id]
    
     @license = License.new(license_params)
-    @license.perform_presence_validation = true
+    #@license.perform_presence_validation = true
     if @license.save
       trady = Trady.find_by(id:@trady_id)
       trady.update_attribute(:registration_status,"Pending")

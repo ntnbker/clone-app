@@ -17,11 +17,9 @@ class InsurancesController < ApplicationController
     @role = "Trady"
     @insurance = Insurance.new(insurance_params)
     
-    if params[:picture][:insured] == "true"
-      @insurance.perform_presence_validation = true
-    else
-      @insurance.perform_presence_validation = false
-    end 
+    
+    # @insurance.perform_presence_validation = true
+    
 
     
 
@@ -50,7 +48,7 @@ class InsurancesController < ApplicationController
     @trady_id = params[:picture][:trady_id]
     
     @insurance = Insurance.new(insurance_params)
-    @insurance.perform_presence_validation = true
+    #@insurance.perform_presence_validation = true
     #add trady registration pending
 
     
@@ -67,6 +65,14 @@ class InsurancesController < ApplicationController
         format.html {render :new}
       end
     end 
+  end
+
+  def edit_insurance_onboarding
+    
+  end
+
+  def update_insurance_onboarding
+    
   end
 
 
