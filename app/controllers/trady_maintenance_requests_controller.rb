@@ -201,7 +201,7 @@ class TradyMaintenanceRequestsController < ApplicationController
       elsif current_user && current_user.logged_in_as("Trady") && current_user.trady.jfmo_participant == true && current_user.trady.license.licensed == false
         flash[:danger] = "Oops it appears you have submitted invalid license information. If you would like to receive jobs that require you to be a licensed professional, Please upload your license information to continue thank you for your time."
         redirect_to edit_license_onboarding_path
-
+      end 
 
 
 
