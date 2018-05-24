@@ -6,7 +6,7 @@ class InsurancesController < ApplicationController
     @maintenance_request_id= params[:maintenance_request_id]
     @role = "Trady"
     @insurance = Insurance.new
-    @url = new_license_path(trady_id:params[:picture][:trady_id], maintenance_request_id:params[:picture][:maintenance_request_id])
+    @url = new_license_path(trady_id:@trady_id, maintenance_request_id:@maintenance_request_id)
   end
 
   

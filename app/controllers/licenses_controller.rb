@@ -6,7 +6,7 @@ class LicensesController < ApplicationController
     @maintenance_request_id= params[:maintenance_request_id]
     @role = "Trady"
     @license = License.new
-    @url = root_path(trady_id:params[:picture][:trady_id], role:"Trady", maintenance_request_id:params[:picture][:maintenance_request_id])
+    @url = root_path(trady_id:@trady_id, role:"Trady", maintenance_request_id:@maintenance_request_id)
   end
 
   def create
