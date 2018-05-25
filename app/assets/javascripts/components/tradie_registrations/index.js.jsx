@@ -245,7 +245,7 @@ var TradyLicenseAndInsurance = React.createClass({
 	removeFile: function (index) {
 		$('#input-file').val('');
 		this.setState({
-			file: {},
+			file: null,
 			error: '',
 		});
 	},
