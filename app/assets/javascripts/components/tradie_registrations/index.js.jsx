@@ -150,7 +150,7 @@ var TradyLicenseAndInsurance = React.createClass({
     return {
       text: '',
       file: null,
-      error: [],
+      error: {},
       haveDocument: !this.props.isRegistering,
     }
   },
@@ -284,6 +284,10 @@ var TradyLicenseAndInsurance = React.createClass({
         picture: data,
       },
       success(res) {
+        if (res.image_error) {
+          if (!res.error) res.error = {};
+          res.error.image = res.error.image || [res.image_error];
+        }
         self.setState({error: res.error || {}});
       },
       error(err) {
