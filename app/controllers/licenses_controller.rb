@@ -73,7 +73,11 @@ class LicensesController < ApplicationController
     @license = License.find_by(id:params[:picture][:id])
     #@license.perform_presence_validation = true
 
-    if @license.update(license_params)
+    if  params[:picture][:image].blank?
+      @insurance.errors.messages[:image].push("Please pick a file")
+    end
+
+    if @license.update(license_params) !params[:picture][:image].blank?
       trady = Trady.find_by(id:@trady_id)
       trady.update_attribute(:registration_status,"Pending")
       license_image = @image.as_json(methods: :image_url)
@@ -81,8 +85,8 @@ class LicensesController < ApplicationController
       redirect_to trady_maintenance_requests_path
     else
       respond_to do |format|
-        format.json {render :json=>{:error=>@license.errors}}
-        format.html {render :new}
+        format.json {render :json=>{:error=>@license.errors, image_error:"Please pick a file"}}
+        format.html {render :edit_license_onboarding}
       end
     end 
   end

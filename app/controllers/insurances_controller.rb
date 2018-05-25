@@ -76,13 +76,9 @@ class InsurancesController < ApplicationController
     @trady_id = params[:picture][:trady_id]
     
     @insurance = Insurance.find_by(id:params[:picture][:id])
-    #@insurance.perform_presence_validation = true
-    #add trady registration pending
-    if  params[:picture][:image].blank?
-      @insurance.errors.messages[:image].push("Please pick a file")
-    end  
+    
 
-    binding.pry
+    
     
     if @insurance.update(insurance_params) &&  !params[:picture][:image].blank?
       trady = Trady.find_by(id:@trady_id)
