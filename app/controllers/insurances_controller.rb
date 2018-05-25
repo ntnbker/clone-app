@@ -22,7 +22,7 @@ class InsurancesController < ApplicationController
     
 
     
-
+    binding.pry
     if @insurance.save
       trady = Trady.find_by(id:@trady_id)
       trady.update_attribute(:registration_status,"Pending")
@@ -78,10 +78,13 @@ class InsurancesController < ApplicationController
     @insurance = Insurance.find_by(id:params[:picture][:id])
     #@insurance.perform_presence_validation = true
     #add trady registration pending
+    if  params[:picture][:image].blank?
+      @insurance.errors.messages[:image].push("Please pick a file")
+    end  
 
+    binding.pry
     
-
-    if @insurance.update(insurance_params)
+    if @insurance.update(insurance_params) &&  !params[:picture][:image].blank?
       trady = Trady.find_by(id:@trady_id)
       trady.update_attribute(:registration_status,"Pending")
       insurance_image = @image.as_json(methods: :image_url)
@@ -89,8 +92,8 @@ class InsurancesController < ApplicationController
       redirect_to trady_maintenance_requests_path
     else
       respond_to do |format|
-        format.json {render :json=>{:error=>@insurance.errors}}
-        format.html {render :new}
+        format.json {render :json=>{:error=>@insurance.errors, image_error:"Please pick a file"}}
+        format.html {render :edit_insurance_onboarding}
       end
     end 
   end

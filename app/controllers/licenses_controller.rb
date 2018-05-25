@@ -72,6 +72,7 @@ class LicensesController < ApplicationController
    
     @license = License.find_by(id:params[:picture][:id])
     #@license.perform_presence_validation = true
+
     if @license.update(license_params)
       trady = Trady.find_by(id:@trady_id)
       trady.update_attribute(:registration_status,"Pending")
