@@ -77,7 +77,7 @@ class LicensesController < ApplicationController
       @insurance.errors.messages[:image].push("Please pick a file")
     end
 
-    if @license.update(license_params) !params[:picture][:image].blank?
+    if @license.update(license_params) &&  !params[:picture][:image].blank?
       trady = Trady.find_by(id:@trady_id)
       trady.update_attribute(:registration_status,"Pending")
       license_image = @image.as_json(methods: :image_url)
