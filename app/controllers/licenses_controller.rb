@@ -71,11 +71,7 @@ class LicensesController < ApplicationController
     @trady_id = params[:picture][:trady_id]
    
     @license = License.find_by(id:params[:picture][:id])
-    #@license.perform_presence_validation = true
-
-    if  params[:picture][:image].blank?
-      @insurance.errors.messages[:image].push("Please pick a file")
-    end
+    
 
     if @license.update(license_params) &&  !params[:picture][:image].blank?
       trady = Trady.find_by(id:@trady_id)
