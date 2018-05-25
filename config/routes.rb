@@ -331,7 +331,7 @@ Rails.application.routes.draw do
   resources :licenses, only: [:new, :create, :edit, :update]
   get "new_license_onboarding" => "licenses#new_license_onboarding",  :as => "new_license_onboarding"
   post "new_license_onboarding" => "licenses#create_license_onboarding"
-  get "edit_license_onboarding" => "licenses#edit_license_onboarding", :as => "edit_license_onboarding"
+  get "edit_license_onboarding/:id" => "licenses#edit_license_onboarding", :as => "edit_license_onboarding"
   put "edit_license_onboarding" => "licenses#update_license_onboarding"
 
  end
