@@ -71503,10 +71503,12 @@ UploadImageComponent = React.createClass({
 
   loadImage: function (e, image, key, isError) {
     var img = e.target;
-    var maxSize = 500000; // byte
+    var maxSize = 1000000; // byte
     var self = this;
-    var _self$state$data = self.state.data;
+    var _self$state = self.state;
+    var _self$state$data = _self$state.data;
     var data = _self$state$data === undefined ? {} : _self$state$data;
+    var errors = _self$state.errors;
 
     data[key] = 0;
 
@@ -71516,21 +71518,28 @@ UploadImageComponent = React.createClass({
 
       var file = image.fileInfo;
       image.isUpload = true;
-
+      image.isPdf = image.url.includes('data:application/pdf');
       // resize image
-      if (file.size > maxSize) {
-        var quality = Math.ceil(maxSize / file.size * 100);
-        target_img.src = self.reduceQuality(img, file.type, quality, image.orientation).src;
+      if (image.isPdf) {
+        if (file.size > maxSize) {
+          errors['image'] = ['File too large!'];
+          return self.setState({ errors: errors });
+        }
+        target_img.src = image.url;
       } else {
-        if (!!this.state.isAndroid) {
-          target_img.src = self.reduceQuality(img, file.type, 100, image.orientation).src;
+        if (file.size > maxSize) {
+          var quality = Math.ceil(maxSize / file.size * 100);
+          target_img.src = self.reduceQuality(img, file.type, quality, image.orientation).src;
         } else {
-          target_img.src = image.url;
+          if (!!this.state.isAndroid) {
+            target_img.src = self.reduceQuality(img, file.type, 100, image.orientation).src;
+          } else {
+            target_img.src = image.url;
+          }
         }
       }
-
       if (isError) {
-        image.isPdf = target_img.src.includes('data:application/pdf');
+        // image.isPdf = target_img.src.includes('data:application/pdf');
         image.isInvalid = !image.isPdf;
       }
       image.url = target_img.src;
@@ -73276,9 +73285,9 @@ var InvoiceItemField = React.createClass({
   getInitialState: function () {
     var invoice_item = this.props.content;
     var pricing_type = invoice_item ? invoice_item.pricing_type : 'Fixed Cost';
-    var hours_input = pricing_type !== 'Hourly' ? false : true;
-    var amount = invoice_item ? invoice_item.amount || invoice_item.min_price : 0;
-    var numofhours = invoice_item && invoice_item.hours ? invoice_item.hours : 1;
+    var hours_input = pricing_type == 'Hourly';
+    var amount = invoice_item ? invoice_item.amount || invoice_item.min_price : '';
+    var numofhours = invoice_item && invoice_item.hours ? invoice_item.hours : pricing_type === 'Hourly' ? '' : 1;
 
     return {
       remove: this.props.params.remove,
@@ -73286,7 +73295,7 @@ var InvoiceItemField = React.createClass({
       hours_input: hours_input,
       amount: amount,
       numofhours: numofhours,
-      totalamount: amount * numofhours,
+      totalamount: amount * numofhours || 0,
       errorsForm: {}
     };
   },
@@ -73314,7 +73323,7 @@ var InvoiceItemField = React.createClass({
       if (this.amount) {
         if (!this.amount.value) {
           filterError['amount'] = amountError[0];
-        } else if (AMOUNT_REGEX.test(this.amount.value) || this.amount.value === '0') {
+        } else if (!AMOUNT_REGEX.test(this.amount.value) || this.amount.value === '0') {
           filterError['amount'] = amountError.reverse()[0];
         }
       }
@@ -73323,7 +73332,7 @@ var InvoiceItemField = React.createClass({
       if (this.hours) {
         if (!this.hours.value) {
           filterError['hours'] = hoursError[0];
-        } else if (AMOUNT_REGEX.test(this.hours.value) || this.hours.value === '0') {
+        } else if (!AMOUNT_REGEX.test(this.hours.value) || this.hours.value === '0') {
           filterError['hours'] = hoursError.reverse()[0];
         }
       }
@@ -73350,6 +73359,7 @@ var InvoiceItemField = React.createClass({
 
   updatePrice: function (amount) {
     var selectedValue = $("[name='" + ("ledger[invoices_attributes][" + this.props.params.x + "][invoice_items_attributes][" + this.props.x + "][pricing_type]") + "']").val();
+    if (amount === '') amount = 0;
 
     if (!isNaN(amount)) {
       this.props.params.updatePrice(amount - this.state.totalamount, selectedValue === 'Hourly');
@@ -73359,21 +73369,19 @@ var InvoiceItemField = React.createClass({
   onPricing: function (event) {
     var pricing_type = event.target.value;
     var self = this;
+    var isHourly = pricing_type === 'Hourly';
 
     this.setState({ pricing_type: pricing_type });
 
-    if (pricing_type == "Hourly") {
-      this.setState({ hours_input: true, numofhours: 1 });
-    } else {
-      this.setState({
-        hours_input: false,
-        numofhours: 1
-      }, function () {
-        self.onHours({ target: { value: 1 } });
-      });
-    }
+    this.setState({
+      hours_input: isHourly,
+      numofhours: isHourly ? '' : 1,
+      amount: ''
+    }, function () {
+      self.onHours({ target: { value: isHourly ? '' : 1 } });
+    });
 
-    self.props.params.updateHourly(false, self.state.totalamount, pricing_type === 'Hourly');
+    self.props.params.updateHourly(false, self.state.totalamount, isHourly);
   },
 
   onAmount: function (event) {
@@ -73504,7 +73512,7 @@ var InvoiceItemField = React.createClass({
             },
             id: "amount",
             onChange: this.onAmount,
-            value: amount != undefined ? amount : '',
+            value: amount,
             className: "text-center " + (!!hours_input ? 'hour price ' : '') + (errors['amount'] ? 'border_on_error ' : ''),
             name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][amount]'
           }),
@@ -73515,7 +73523,7 @@ var InvoiceItemField = React.createClass({
               return _this3.hours = e;
             },
             placeholder: "Number of Hours",
-            defaultValue: numofhours > 0 ? numofhours : 0,
+            defaultValue: numofhours,
             className: "text-center " + (hours_input && 'hour ') + (errors['hours'] ? 'border_on_error ' : ''),
             name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][hours]'
           }) : React.createElement("input", {
@@ -73741,13 +73749,18 @@ var InvoiceField = React.createClass({
           React.createElement(
             "div",
             { className: "text-center m-t-lg" },
+            React.createElement(
+              "div",
+              null,
+              "Enter your own invoice reference eg: Inv-001"
+            ),
             React.createElement("input", {
               type: "text",
               className: "text-center",
               ref: function (elem) {
                 return _this4.reference = elem;
               },
-              placeholder: "Trady Invoice Reference",
+              placeholder: "Invoice Reference",
               defaultValue: invoice && invoice.trady_invoice_reference,
               onChange: function () {
                 return _this4.setState({ errorReference: '' });
@@ -73830,6 +73843,11 @@ var InvoiceField = React.createClass({
               })
             )
           )
+        ),
+        React.createElement(
+          "p",
+          { id: "errorbox", className: "text-center error" },
+          errorDate || ''
         ),
         React.createElement("hr", null),
         React.createElement(
@@ -73986,11 +74004,6 @@ var InvoiceField = React.createClass({
               ),
               React.createElement("input", { type: "text", readOnly: "readonly", placeholder: "Maintenance App Receives", value: (service_fee - agency_fee).toFixed(2) })
             )
-          ),
-          React.createElement(
-            "p",
-            { id: "errorbox", className: "text-center error" },
-            errorDate || ''
           )
         ),
         React.createElement("input", { type: "hidden", value: remove, name: 'ledger[invoices_attributes][' + x + '][_destroy]' }),
@@ -76496,19 +76509,33 @@ var ModalViewPDFInvoice = React.createClass({
                       invoice.void_reason
                     )
                   ),
-                  !!pdf_url && React.createElement(
-                    "object",
-                    {
-                      width: "100%",
-                      height: isPdf ? '350px' : "100%",
-                      data: pdf_url
-                    },
-                    React.createElement("iframe", {
-                      width: "100%",
-                      height: isPdf ? '350px' : "100%",
-                      src: "https://docs.google.com/gview?url=" + pdf_url.replace(/.pdf\?.*/g, '') + ".pdf&embedded=true",
-                      className: "scroll-custom" })
-                  )
+                  !!pdf_url && (!isPdf ? React.createElement(
+                    "div",
+                    { className: "modal-body" },
+                    React.createElement(Carousel, { gallery: [pdf_url] })
+                  ) : React.createElement(
+                    "div",
+                    { id: "Iframe-Master-CC-and-Rs", className: "set-margin set-padding set-border set-box-shadow center-block-horiz" },
+                    React.createElement(
+                      "div",
+                      {
+                        className: "responsive-wrapper responsive-wrapper-wxh-572x612"
+                      },
+                      React.createElement(
+                        "object",
+                        {
+                          width: "100%",
+                          height: isPdf ? '350px' : "100%",
+                          data: pdf_url
+                        },
+                        React.createElement("iframe", {
+                          width: "100%",
+                          height: isPdf ? '350px' : "100%",
+                          src: "https://docs.google.com/gview?url=" + pdf_url.replace(/.pdf\?.*/g, '') + ".pdf&embedded=true",
+                          className: "scroll-custom" })
+                      )
+                    )
+                  ))
                 ),
                 React.createElement(
                   "div",
@@ -76712,7 +76739,11 @@ var SubmitInvoicePDF = React.createClass({
     return React.createElement(
       "div",
       { className: "container well invoice-form", id: "submit-invoice" },
-      React.createElement(
+      !isPdf ? React.createElement(
+        "div",
+        { className: "modal-body" },
+        React.createElement(Carousel, { gallery: [pdf_url] })
+      ) : React.createElement(
         "div",
         { id: "Iframe-Master-CC-and-Rs", className: "set-margin set-padding set-border set-box-shadow center-block-horiz" },
         React.createElement(
@@ -83602,21 +83633,6 @@ var MaintenaceRequestDetail = React.createClass({
 		return React.createElement(
 			'div',
 			{ className: 'mr-detail box-shadow' },
-			React.createElement(
-				'h5',
-				{ className: 'mr-title' },
-				'Maintenance Request Details',
-				show_assign && React.createElement(
-					'span',
-					{
-						className: 'edit-detail',
-						onClick: function () {
-							return _this10.props.onModalWith('editMaintenanceRequest');
-						}
-					},
-					'(Edit Details)'
-				)
-			),
 			React.createElement(MaintenanceRequestInformation, this.props),
 			React.createElement(
 				'div',
@@ -83627,7 +83643,17 @@ var MaintenaceRequestDetail = React.createClass({
 					React.createElement(
 						'h5',
 						{ className: 'm-b-n mr-title' },
-						'Job Description:'
+						'Job Details',
+						show_assign && React.createElement(
+							'span',
+							{
+								className: 'edit-detail',
+								onClick: function () {
+									return _this10.props.onModalWith('editMaintenanceRequest');
+								}
+							},
+							'(Edit Details)'
+						)
 					),
 					React.createElement(
 						'p',
@@ -88387,7 +88413,7 @@ var MaintenanceRequest = React.createClass({
 					});
 
 				case 'viewTrady':
-					var hasApproved = this.props.quote_requests.some(function (quote_request) {
+					var hasApproved = this.state.quote_requests.some(function (quote_request) {
 						return quote_request.quotes.some(function (quote) {
 							return quote.status === 'Approved';
 						});
@@ -94468,11 +94494,11 @@ var QuoteOption = React.createClass({
       React.createElement(
         "p",
         { className: "optiondescription text-center" },
-        "Easily make quotes using our platform by clicking the ",
+        "Easily send agents quotes using our platform by clicking the ",
         React.createElement(
           "b",
           null,
-          "Create Quotes"
+          "Send Quote"
         ),
         " button below."
       ),
@@ -96806,7 +96832,8 @@ var QuoteField = React.createClass({
   getInitialState: function () {
     var quote = this.props.content;
     var pricing_type = quote ? quote.pricing_type : 'Fixed Cost';
-    var hours_input = pricing_type == 'Fixed Cost' ? false : true;
+    var hours_input = pricing_type == 'Hourly';
+    var isRange = pricing_type === 'Range';
     return {
       remove: false,
       pricing_type: pricing_type,
@@ -96815,10 +96842,30 @@ var QuoteField = React.createClass({
       amount_error: '',
       min_price_error: '',
       max_price_error: '',
-      amount: quote ? quote.amount : 0,
-      min_price: quote ? quote.min_price : 0,
-      max_price: quote ? quote.max_price : 0
+      amount: quote ? quote.amount : isRange ? 0 : '',
+      min_price: quote ? quote.min_price : isRange ? '' : 0,
+      max_price: quote ? quote.max_price : isRange ? '' : 0
     };
+  },
+
+  componentWillMount: function () {
+    var _props = this.props;
+    var quote = _props.content;
+    var changeFee = _props.params.changeFee;
+    var x = _props.x;
+
+    if (!quote) return;
+
+    var pricing_type = quote.pricing_type;
+    var min_price = quote.min_price;
+    var max_price = quote.max_price;
+    var amount = quote.amount;
+
+    var valueFee = pricing_type !== 'Range' ? amount : {
+      min: min_price,
+      max: max_price
+    };
+    changeFee(valueFee, pricing_type, x);
   },
 
   validateDescription: function (errors) {
@@ -96834,7 +96881,7 @@ var QuoteField = React.createClass({
     if (amount === '') return error.filter(function (e) {
       return e.includes('blank');
     })[0];
-    if (AMOUNT_REGEX.test(amount)) return error.filter(function (e) {
+    if (!AMOUNT_REGEX.test(amount)) return error.filter(function (e) {
       return e.includes('number');
     })[0];
     return '';
@@ -96846,7 +96893,7 @@ var QuoteField = React.createClass({
     var min_price = this.min_price && this.min_price.value || '';
 
     if (min_price === '') return error[0];
-    if (AMOUNT_REGEX.test(min_price)) return error.filter(function (e) {
+    if (!AMOUNT_REGEX.test(min_price)) return error.filter(function (e) {
       return e.includes('number');
     })[0];
     return '';
@@ -96858,7 +96905,7 @@ var QuoteField = React.createClass({
     var max_price = this.max_price && this.max_price.value || '';
 
     if (max_price === '') return error[0];
-    if (AMOUNT_REGEX.test(max_price)) return error.filter(function (e) {
+    if (!AMOUNT_REGEX.test(max_price)) return error.filter(function (e) {
       return e.includes('number');
     })[0];
     return '';
@@ -96877,26 +96924,27 @@ var QuoteField = React.createClass({
   },
 
   removeField: function () {
-    var _props = this.props;
-    var changeFee = _props.params.changeFee;
-    var x = _props.x;
-    var pricing_type = this.state.pricing_type;
-
-    // Reset value to 0 when remove the quote item
-    var defaultValue = pricing_type !== 'Range' ? 0 : { min: 0, max: 0 };
-
-    changeFee(defaultValue, pricing_type, this.props.x);
-    this.setState({ remove: true });
-  },
-
-  onPricing: function (event) {
     var _props2 = this.props;
     var changeFee = _props2.params.changeFee;
     var x = _props2.x;
     var pricing_type = this.state.pricing_type;
 
-    // Reset value to 0 when change to other price type
+    // Reset value to 0 when remove the quote item
     var defaultValue = pricing_type !== 'Range' ? 0 : { min: 0, max: 0 };
+
+    changeFee(defaultValue, pricing_type, x);
+    this.setState({ remove: true });
+  },
+
+  onPricing: function (event) {
+    var _props3 = this.props;
+    var changeFee = _props3.params.changeFee;
+    var x = _props3.x;
+    var pricing_type = this.state.pricing_type;
+
+    var isRange = pricing_type === 'Range';
+    // Reset value to 0 when change to other price type
+    var defaultValue = isRange ? { min: 0, max: 0 } : 0;
     changeFee(defaultValue, pricing_type, x);
 
     var new_pricing_type = event.target.value;
@@ -96904,9 +96952,9 @@ var QuoteField = React.createClass({
       pricing_type: new_pricing_type,
       hours_input: new_pricing_type === 'Hourly'
     };
-    update.min_price = 0;
-    update.max_price = 0;
-    update.amount = 0;
+    update.min_price = new_pricing_type === 'Range' ? '' : 0;
+    update.max_price = new_pricing_type === 'Range' ? '' : 0;
+    update.amount = new_pricing_type === 'Range' ? 0 : '';
 
     this.setState(update);
   },
@@ -96921,9 +96969,9 @@ var QuoteField = React.createClass({
     var field = id.match(/\d+_(\w+)$/);
     if (!field) return;
     var pricing_type = this.state.pricing_type;
-    var _props3 = this.props;
-    var changeFee = _props3.params.changeFee;
-    var x = _props3.x;
+    var _props4 = this.props;
+    var changeFee = _props4.params.changeFee;
+    var x = _props4.x;
 
     var valueFee = pricing_type !== 'Range' ? value : {
       min: this.min_price.value,
@@ -96976,7 +97024,7 @@ var QuoteField = React.createClass({
             id: 'quote_quote_items_attributes_' + x + '_item_description',
             name: 'quote[quote_items_attributes][' + x + '][item_description]',
             onChange: function () {
-              return removeErrorFunc();
+              return _this.setState({ item_description_error: '' });
             }
           }),
           renderErrorFunc(currentState['item_description_error'])
@@ -97271,10 +97319,10 @@ var QuoteFields = React.createClass({
   render: function () {
     var _this2 = this;
 
-    var _props4 = this.props;
-    var trady_company = _props4.trady_company;
-    var quote = _props4.quote;
-    var trady = _props4.trady;
+    var _props5 = this.props;
+    var trady_company = _props5.trady_company;
+    var quote = _props5.quote;
+    var trady = _props5.trady;
 
     return React.createElement(
       'form',
@@ -97309,7 +97357,18 @@ var QuoteFields = React.createClass({
       React.createElement(
         'div',
         { className: 'text-center' },
-        React.createElement('input', { type: 'text', className: 'm-t-lg text-center', defaultValue: quote && quote.trady_quote_reference, name: 'quote[trady_quote_reference]', placeholder: 'Quote Reference Number' })
+        React.createElement(
+          'div',
+          { className: 'm-t-lg' },
+          'Enter your own quote reference eg: Quote-001'
+        ),
+        React.createElement('input', {
+          type: 'text',
+          className: 'text-center',
+          defaultValue: quote && quote.trady_quote_reference,
+          name: 'quote[trady_quote_reference]',
+          placeholder: 'Quote Reference'
+        })
       ),
       React.createElement(
         'div',
@@ -98889,6 +98948,17 @@ var Spinner = React.createClass({
 			self.setState({ isShow: true });
 		}).bind('ajaxComplete load', function (e) {
 			self.setState({ isShow: false });
+
+			var firstError = null;
+			$('.error').each(function (i, item) {
+				if (!firstError && $(item).text().trim()) firstError = item;
+			});
+
+			if (firstError) {
+				$('html, body').animate({
+					scrollTop: $(firstError).offset().top - 100
+				}, 500);
+			}
 		});
 	},
 

@@ -11,7 +11,7 @@ var QuoteOption = React.createClass({
     return (
       <form className="invoice-form quote-form">
         <p className="optiondescription text-center">
-          Easily make quotes using our platform by clicking the <b>Create Quotes</b> button below.
+          Easily send agents quotes using our platform by clicking the <b>Send Quote</b> button below.
         </p>
         <div className="quote-button">
           <button

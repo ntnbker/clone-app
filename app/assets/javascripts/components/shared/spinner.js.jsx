@@ -26,6 +26,17 @@ var Spinner = React.createClass({
 			self.setState({isShow: true});
 		}).bind('ajaxComplete load', function(e) {
 			self.setState({isShow: false});
+			
+			let firstError = null;
+			$('.error').each((i, item) => {
+				if (!firstError && $(item).text().trim()) firstError = item;
+			})
+
+			if (firstError) {
+				$('html, body').animate({
+					scrollTop: $(firstError).offset().top - 100
+				}, 500);
+			}
 		});
 	},
 

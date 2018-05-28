@@ -949,21 +949,20 @@ var MaintenaceRequestDetail = React.createClass({
 
 		return (
 			<div className="mr-detail box-shadow">
-				<h5 className="mr-title">
-					Maintenance Request Details 
-					{show_assign && 
-						<span 
-							className="edit-detail" 
-							onClick={() => this.props.onModalWith('editMaintenanceRequest')}
-						>
-							(Edit Details)
-						</span>
-					}
-				</h5>
 				<MaintenanceRequestInformation {...this.props} />
 				<div className="content">
 					<div className="description">
-						<h5 className="m-b-n mr-title">Job Description:</h5>
+						<h5 className="m-b-n mr-title">
+							Job Details
+							{show_assign && 
+								<span 
+									className="edit-detail" 
+									onClick={() => this.props.onModalWith('editMaintenanceRequest')}
+								>
+									(Edit Details)
+								</span>
+							}
+						</h5>
 						<p className="job-description">{maintenance_request.maintenance_description}</p>
 					</div>
 					{ !hide_note && maintenance_request.preapproved_note

@@ -1,8 +1,9 @@
 class InvoiceItem < ApplicationRecord
   belongs_to :invoice, inverse_of: :invoice_items
-  validates_presence_of :item_description, :amount
+  #validates_presence_of :item_description, :amount
 
-  
+  validates :amount, :presence => true
+  validates :item_description, :presence => true
   validates :amount, :numericality => true
   validates :hours, :numericality => true
 
@@ -24,12 +25,12 @@ class InvoiceItem < ApplicationRecord
 
 
   def positive_number_amount
-    if self.amount >= 1
-      
+    if self.amount == nil || self.amount <= 0 
+      errors.add(:amount, "Must be a number greater or equal to 1") 
     else
-      errors.add(:amount, "Must be a number greater or equal to 1") if
-        self.amount <= 0 
-    end 
+        
+    end
+     
   end
   
 
