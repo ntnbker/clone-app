@@ -599,7 +599,7 @@ var QuoteRequests = React.createClass({
 
     // Filter quote_request have empty quotes
     return filtered.filter((qr) => {
-      return qr.quotes.length;
+      return qr.quotes.length || qr.conversation;
     })
   },
 
