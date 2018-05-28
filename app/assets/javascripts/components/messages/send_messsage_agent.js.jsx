@@ -24,15 +24,15 @@ var ModalSendMessageAgent = React.createClass({
 				conversation_type: 'Trady_Agent',
 			},
 		}
-
+		
 		this.props.sendMessageAgent(params, function(err) {
 			if (err) {
 				self.setState({
 					errorMessage: err['body'],
 				})
 			}
+			self.message.value = "";
 		});
-		this.message.value = "";
 	},
 
 	render: function() {

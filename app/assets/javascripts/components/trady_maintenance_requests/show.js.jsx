@@ -392,6 +392,7 @@ var TradyMaintenanceRequest = React.createClass({
 				self.setState({
 					quote: quote
 				});
+				callback();
 			},
 			error: function(err) {
 				self.setState({notification: {
@@ -426,6 +427,7 @@ var TradyMaintenanceRequest = React.createClass({
 				self.setState({
 					quote_request: quote_request
 				});
+				callback();
 			},
 			error: function(err) {
 				self.setState({notification: {
@@ -780,6 +782,7 @@ var TradyMaintenanceRequest = React.createClass({
 				self.setState({
 					trady_agent_conversation: trady_agent_conversation
 				});
+				callback();
 			},
 			error: function(err) {
 				self.setState({notification: {
@@ -906,6 +909,7 @@ var TradyMaintenanceRequest = React.createClass({
 							close={this.isClose}
 							quote={this.state.quote}
 							keyLandlord="trady"
+							role="Trady"
 							landlord={this.props.landlord}
 							quotes={this.state.quote_requests}
 							agency={this.props.agency}
@@ -1217,24 +1221,24 @@ var TradyMaintenanceRequest = React.createClass({
 						/>
 					)
 
-					case 'wantNewInvoice':
-						return (
-							<ModalConfirmAnyThing
-								close={this.isClose}
-								confirm={() => this.onModalWith('viewConfirm')}
-								title="Void Invoice"
-								content={this.state.message || "You have void this invoice. Do you want to create a new invoice?"} />
-						);
+				case 'wantNewInvoice':
+					return (
+						<ModalConfirmAnyThing
+							close={this.isClose}
+							confirm={() => this.onModalWith('viewConfirm')}
+							title="Void Invoice"
+							content={this.state.message || "You have void this invoice. Do you want to create a new invoice?"} />
+					);
 
-					case 'ShowTradyActions':
-						return (
-							<ShowTradyActions
-								close={this.isClose}
-								title="Trady Actions"
-								maintenance_request_id={this.props.maintenance_request.id}
-								trady_id={this.props.signed_in_trady.id}
-							/>
-						);
+				case 'ShowTradyActions':
+					return (
+						<ShowTradyActions
+							close={this.isClose}
+							title="Trady Actions"
+							maintenance_request_id={this.props.maintenance_request.id}
+							trady_id={this.props.signed_in_trady.id}
+						/>
+					);
 					
 				default:
 					return null;
@@ -1731,6 +1735,7 @@ var TradyMaintenanceRequest = React.createClass({
 						{ needShowInfo && quote_requests && quote_requests.length > 0 &&
 								<QuoteRequests
 									keyLandlord="trady"
+									role="Trady"
 									landlord={this.state.landlord}
 									quote_requests={quote_requests}
 									assignedTrady={trady}

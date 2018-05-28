@@ -869,22 +869,26 @@ $color-text: #83878C;
           font-size: 13px;
         }
 
-        .Active {
+        .active {
           border: 2px solid #849aaa;
         }
-        .Accepted {
+        .accepted {
           border: 2px solid #7dc691;
           color: #7dc691;
         }
-        .Approved {
+        .approved {
           border: 2px solid #7dc691;
           color: #7dc691;
         }
-        .Declined, .Cancelled {
+        .declined, .cancelled {
           border: 2px solid #e76565;
           color: #e76565;
         }
         .pending-decision {
+          border: 2px solid rgb(255, 191, 28);
+          color: rgb(255, 191, 28);
+        }
+        .sent-to-landlord {
           border: 2px solid rgb(255, 191, 28);
           color: rgb(255, 191, 28);
         }

@@ -1642,6 +1642,7 @@ var MaintenanceRequest = React.createClass({
 				self.setState({
 					landlords_conversation: landlords_conversation,
 				});
+				callback();
 			},
 			error: function(err) {
 				self.setState({notification: {
@@ -1673,6 +1674,7 @@ var MaintenanceRequest = React.createClass({
 				self.setState({
 					tenants_conversation: tenants_conversation
 				});
+				callback();
 			},
 			error: function(err) {
 				self.setState({notification: {
@@ -1706,6 +1708,7 @@ var MaintenanceRequest = React.createClass({
 				self.setState({
 					trady_conversation: trady_conversation
 				});
+				callback();
 			},
 			error: function(err) {
 				self.setState({notification: {
@@ -1740,6 +1743,7 @@ var MaintenanceRequest = React.createClass({
 				self.setState({
 					quote: quote
 				});
+				callback();
 			},
 			error: function(err) {
 				self.setState({notification: {
@@ -1774,6 +1778,7 @@ var MaintenanceRequest = React.createClass({
 				self.setState({
 					quote_request: quote_request
 				});
+				callback();
 			},
 			error: function(err) {
 				self.setState({notification: {
@@ -2665,6 +2670,7 @@ var MaintenanceRequest = React.createClass({
 					return (
 						<ModalViewQuote
 							close={this.isClose}
+							role="Agent"
 							quote={this.state.quote}
 							quotes={this.state.quote_requests}
 							hideRestore={!!this.state.trady}
@@ -3018,33 +3024,43 @@ var MaintenanceRequest = React.createClass({
 							close={this.isClose}
 						/>
 					)
+				case 'voidInvoice':
+					return (
+						<ModalVoidInvoice
+							voidInvoice={this.voidInvoice}
+							text={"Are you sure want to void this invoice? Voiding this invoice will mark the invoice with a DO NOT PAY status. An email will be sent to the tradie to inform them you have voided and rejected this invoice along with the reason why it was voided."}
+							invoice={this.state.invoice}
+							close={this.isClose}
+						/>
+					)
+	
 
-					case 'assignTo':
-						return (
-							<AssignModal
-								onModalWith={this.onModalWith}
-								all_agents={this.props.all_agents}
-								all_agency_admins={this.props.all_agency_admins}
-								viewItem={this.viewItem}
-								close={this.isClose}
-							/>
-						)
+				case 'assignTo':
+					return (
+						<AssignModal
+							onModalWith={this.onModalWith}
+							all_agents={this.props.all_agents}
+							all_agency_admins={this.props.all_agency_admins}
+							viewItem={this.viewItem}
+							close={this.isClose}
+						/>
+					)
 
-					case 'showSettings':
-						return (
-							<ModalShowSettings
-								onModalWith={this.onModalWith}
-								close={this.isClose}
-							/>
-						)
+				case 'showSettings':
+					return (
+						<ModalShowSettings
+							onModalWith={this.onModalWith}
+							close={this.isClose}
+						/>
+					)
 
-					case 'showLandlordSettings':
-						return (
-							<ShowLandlordSettings
-								onModalWith={this.onModalWith}
-								close={this.isClose}
-							/>
-						)
+				case 'showLandlordSettings':
+					return (
+						<ShowLandlordSettings
+							onModalWith={this.onModalWith}
+							close={this.isClose}
+						/>
+					)
 
 				default:
 					return null;
@@ -3271,6 +3287,7 @@ var MaintenanceRequest = React.createClass({
 						{
 							quote_requests && quote_requests.length > 0
 							? <QuoteRequests
+									role="Agent"
 									hideRestore={!!trady}
 									assignedTrady={trady}
 									quote_requests={quote_requests}
