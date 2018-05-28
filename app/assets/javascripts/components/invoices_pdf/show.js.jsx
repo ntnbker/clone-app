@@ -60,17 +60,28 @@ var ModalViewPDFInvoice = React.createClass({
                       </div>
                     }
 										{!!pdf_url &&
-											<object
-												width="100%"
-												height={isPdf ? '350px' : "100%"}
-												data={pdf_url}
-											>
-												<iframe
-													width="100%"
-													height={isPdf ? '350px' : "100%"}
-													src={`https://docs.google.com/gview?url=${pdf_url.replace(/.pdf\?.*/g, '')}.pdf&embedded=true`}
-													className="scroll-custom" />
-											</object>
+											(!isPdf
+                        ? <div className="modal-body">
+                            <Carousel gallery={[pdf_url]} />
+                          </div>
+                        : <div id="Iframe-Master-CC-and-Rs" className="set-margin set-padding set-border set-box-shadow center-block-horiz">
+                          <div
+                            className="responsive-wrapper responsive-wrapper-wxh-572x612"
+                          >
+                            <object
+                              width="100%"
+                              height={isPdf ? '350px' : "100%"}
+                              data={pdf_url}
+                            >
+                              <iframe
+                                width="100%"
+                                height={isPdf ? '350px' : "100%"}
+                                src={`https://docs.google.com/gview?url=${pdf_url.replace(/.pdf\?.*/g, '')}.pdf&embedded=true`}
+                                className="scroll-custom" />
+                            </object>
+                          </div>
+                        </div>
+                      )
 										}
 									</div>
 									<div className="text-center">
@@ -256,24 +267,29 @@ var SubmitInvoicePDF = React.createClass({
 
 		return (
 			<div className="container well invoice-form" id="submit-invoice">
-			  <div id="Iframe-Master-CC-and-Rs" className="set-margin set-padding set-border set-box-shadow center-block-horiz">
-			    <div
-			    	className="responsive-wrapper responsive-wrapper-wxh-572x612"
-			    >
-			      <object
-							width="100%"
-							height={isPdf ? '500px' : "100%"}
-							data={pdf_url}
-						>
-							<iframe
-								width="100%"
-								height={isPdf ? '500px' : "100%"}
-								src={pdf_path}
-								className="scroll-custom"
-							/>
-						</object>
-			    </div>
-	      </div>
+			  {!isPdf
+          ? <div className="modal-body">
+              <Carousel gallery={[pdf_url]} />
+            </div>
+          : <div id="Iframe-Master-CC-and-Rs" className="set-margin set-padding set-border set-box-shadow center-block-horiz">
+            <div
+              className="responsive-wrapper responsive-wrapper-wxh-572x612"
+            >
+              <object
+                width="100%"
+                height={isPdf ? '500px' : "100%"}
+                data={pdf_url}
+              >
+                <iframe
+                  width="100%"
+                  height={isPdf ? '500px' : "100%"}
+                  src={pdf_path}
+                  className="scroll-custom"
+                />
+              </object>
+            </div>
+          </div>
+        }
 			  <div className="text-center m-b-lg">
 			    Invoice Total: {pdf.total_invoice_amount}
 			  </div>

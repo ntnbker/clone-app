@@ -126,9 +126,9 @@ UploadImageComponent = React.createClass({
 
   loadImage: function (e, image, key, isError) {
     const img = e.target;
-    const maxSize = 500000; // byte
+    const maxSize = 1000000; // byte
     const self = this;
-    const { data = {} } = self.state;
+    const { data = {}, errors } = self.state;
     data[key] = 0;
 
     if (!image.isUpload) {
@@ -136,21 +136,29 @@ UploadImageComponent = React.createClass({
       var { images } = this.state;
       var file = image.fileInfo;
       image.isUpload = true;
-
+      image.isPdf = image.url.includes('data:application/pdf');
       // resize image
-      if (file.size > maxSize) {
-        var quality = Math.ceil(maxSize / file.size * 100);
-        target_img.src = self.reduceQuality(img, file.type, quality, image.orientation).src;
-      } else {
-        if (!!this.state.isAndroid) {
-          target_img.src = self.reduceQuality(img, file.type, 100, image.orientation).src;
+      if (image.isPdf) {
+        if (file.size > maxSize) {
+          errors['image'] = ['File too large!'];
+          return self.setState({errors});
+        }
+        target_img.src = image.url;
+      }
+      else {
+        if (file.size > maxSize) {
+          var quality = Math.ceil(maxSize / file.size * 100);
+          target_img.src = self.reduceQuality(img, file.type, quality, image.orientation).src;
         } else {
-          target_img.src = image.url;
+          if (!!this.state.isAndroid) {
+            target_img.src = self.reduceQuality(img, file.type, 100, image.orientation).src;
+          } else {
+            target_img.src = image.url;
+          }
         }
       }
-
       if (isError) {
-        image.isPdf = target_img.src.includes('data:application/pdf');
+        // image.isPdf = target_img.src.includes('data:application/pdf');
         image.isInvalid = !image.isPdf;
       }
       image.url = target_img.src;
