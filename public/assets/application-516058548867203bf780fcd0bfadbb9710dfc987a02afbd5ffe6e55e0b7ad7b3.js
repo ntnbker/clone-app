@@ -71503,10 +71503,12 @@ UploadImageComponent = React.createClass({
 
   loadImage: function (e, image, key, isError) {
     var img = e.target;
-    var maxSize = 500000; // byte
+    var maxSize = 1000000; // byte
     var self = this;
-    var _self$state$data = self.state.data;
+    var _self$state = self.state;
+    var _self$state$data = _self$state.data;
     var data = _self$state$data === undefined ? {} : _self$state$data;
+    var errors = _self$state.errors;
 
     data[key] = 0;
 
@@ -71516,21 +71518,28 @@ UploadImageComponent = React.createClass({
 
       var file = image.fileInfo;
       image.isUpload = true;
-
+      image.isPdf = image.url.includes('data:application/pdf');
       // resize image
-      if (file.size > maxSize) {
-        var quality = Math.ceil(maxSize / file.size * 100);
-        target_img.src = self.reduceQuality(img, file.type, quality, image.orientation).src;
+      if (image.isPdf) {
+        if (file.size > maxSize) {
+          errors['image'] = ['File too large!'];
+          return self.setState({ errors: errors });
+        }
+        target_img.src = image.url;
       } else {
-        if (!!this.state.isAndroid) {
-          target_img.src = self.reduceQuality(img, file.type, 100, image.orientation).src;
+        if (file.size > maxSize) {
+          var quality = Math.ceil(maxSize / file.size * 100);
+          target_img.src = self.reduceQuality(img, file.type, quality, image.orientation).src;
         } else {
-          target_img.src = image.url;
+          if (!!this.state.isAndroid) {
+            target_img.src = self.reduceQuality(img, file.type, 100, image.orientation).src;
+          } else {
+            target_img.src = image.url;
+          }
         }
       }
-
       if (isError) {
-        image.isPdf = target_img.src.includes('data:application/pdf');
+        // image.isPdf = target_img.src.includes('data:application/pdf');
         image.isInvalid = !image.isPdf;
       }
       image.url = target_img.src;
@@ -76500,19 +76509,33 @@ var ModalViewPDFInvoice = React.createClass({
                       invoice.void_reason
                     )
                   ),
-                  !!pdf_url && React.createElement(
-                    "object",
-                    {
-                      width: "100%",
-                      height: isPdf ? '350px' : "100%",
-                      data: pdf_url
-                    },
-                    React.createElement("iframe", {
-                      width: "100%",
-                      height: isPdf ? '350px' : "100%",
-                      src: "https://docs.google.com/gview?url=" + pdf_url.replace(/.pdf\?.*/g, '') + ".pdf&embedded=true",
-                      className: "scroll-custom" })
-                  )
+                  !!pdf_url && (!isPdf ? React.createElement(
+                    "div",
+                    { className: "modal-body" },
+                    React.createElement(Carousel, { gallery: [pdf_url] })
+                  ) : React.createElement(
+                    "div",
+                    { id: "Iframe-Master-CC-and-Rs", className: "set-margin set-padding set-border set-box-shadow center-block-horiz" },
+                    React.createElement(
+                      "div",
+                      {
+                        className: "responsive-wrapper responsive-wrapper-wxh-572x612"
+                      },
+                      React.createElement(
+                        "object",
+                        {
+                          width: "100%",
+                          height: isPdf ? '350px' : "100%",
+                          data: pdf_url
+                        },
+                        React.createElement("iframe", {
+                          width: "100%",
+                          height: isPdf ? '350px' : "100%",
+                          src: "https://docs.google.com/gview?url=" + pdf_url.replace(/.pdf\?.*/g, '') + ".pdf&embedded=true",
+                          className: "scroll-custom" })
+                      )
+                    )
+                  ))
                 ),
                 React.createElement(
                   "div",
@@ -76716,7 +76739,11 @@ var SubmitInvoicePDF = React.createClass({
     return React.createElement(
       "div",
       { className: "container well invoice-form", id: "submit-invoice" },
-      React.createElement(
+      !isPdf ? React.createElement(
+        "div",
+        { className: "modal-body" },
+        React.createElement(Carousel, { gallery: [pdf_url] })
+      ) : React.createElement(
         "div",
         { id: "Iframe-Master-CC-and-Rs", className: "set-margin set-padding set-border set-box-shadow center-block-horiz" },
         React.createElement(
@@ -88386,7 +88413,7 @@ var MaintenanceRequest = React.createClass({
 					});
 
 				case 'viewTrady':
-					var hasApproved = this.props.quote_requests.some(function (quote_request) {
+					var hasApproved = this.state.quote_requests.some(function (quote_request) {
 						return quote_request.quotes.some(function (quote) {
 							return quote.status === 'Approved';
 						});
