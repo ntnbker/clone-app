@@ -241,6 +241,7 @@ var LandlordMaintenanceRequest = React.createClass({
 				self.setState({
 					landlords_conversation: landlords_conversation,
 				});
+				callback();
 			},
 			error: function(err) {
 				self.setState({notification: {
@@ -1012,6 +1013,7 @@ var LandlordMaintenanceRequest = React.createClass({
 							quote_requests && quote_requests.length > 0
 							? <QuoteRequests
 									keyLandlord="landlord"
+									role="Landlord"
 									quote_requests={quote_requests}
 									onModalWith={this.onModalWith}
 									landlord={this.state.landlord}
