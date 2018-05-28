@@ -1041,15 +1041,12 @@ body{
   display: none;
 }
 .download-button {
-  a {
+  button {
     background-color: DodgerBlue;
     border: none;
     color: white;
     cursor: pointer;
     font-size: 20px;
-    padding: 10px;
-    border-radius: 10px;
-    text-decoration: none;
   }
 }
 .file-pdf {
