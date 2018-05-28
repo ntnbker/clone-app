@@ -674,7 +674,7 @@ var QuoteRequests = React.createClass({
                                 && quote_request.quote_sent
                                 && !quote_request.trady.jfmo_participant;
 
-          const needMessageButton 		= !isLandlord && assignedTradyValid
+          const needMessageButton 		= isCallTrady || !isLandlord && assignedTradyValid
                                       && !!self.current_user_show_quote_message;
 
           const messageTo 						= role === 'Trady'
