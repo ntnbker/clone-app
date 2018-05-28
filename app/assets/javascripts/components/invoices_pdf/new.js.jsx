@@ -24,6 +24,7 @@ var AddInvoicePDF = React.createClass({
 		const options = {
 			extension: filename.name.match(/(\.\w+)?$/)[0],
 			_: Date.now(),
+			filename: filename.name,
 		}
 
 		// start upload file into S3

@@ -8,7 +8,17 @@ var ModalViewPDFInvoice = React.createClass({
 
 	printInvoice: function() {
 		window.print();
-	},
+  },
+  
+  download(url) {
+    let oIframe = window.document.createElement('iframe');
+    let $body = $('body');
+    let $oIframe = $(oIframe).attr({
+      src: url,
+      style: "visibility:hidden;display:none"
+    })
+    $body.append($oIframe);
+  },
 
 	render: function() {
 		const self = this.props;
@@ -59,29 +69,36 @@ var ModalViewPDFInvoice = React.createClass({
                         <div className="reason-content">{invoice.void_reason}</div>
                       </div>
                     }
+                    <div className="download-button">
+                      {/* <button onClick={() => this.download(pdf_url)}> */}
+                        <a 
+                          // className="display-none" 
+                          href={pdf_url} 
+                          ref={e => this.downloadLink = e} 
+                          download target="_blank"
+                        >
+                          <i className="fa fa-download"></i> Download
+                        </a>
+                      {/* </button> */}
+                    </div>
 										{!!pdf_url &&
-											(!isPdf
-                        ? <div className="modal-body">
-                            <Carousel gallery={[pdf_url]} />
-                          </div>
-                        : <div id="Iframe-Master-CC-and-Rs" className="set-margin set-padding set-border set-box-shadow center-block-horiz">
-                          <div
-                            className="responsive-wrapper responsive-wrapper-wxh-572x612"
+											<div id="Iframe-Master-CC-and-Rs" className="set-margin set-padding set-border set-box-shadow center-block-horiz">
+                        <div
+                          className="responsive-wrapper responsive-wrapper-wxh-572x612"
+                        >
+                          <object
+                            width="100%"
+                            height={isPdf ? '350px' : "100%"}
+                            data={pdf_url}
                           >
-                            <object
+                            <iframe
                               width="100%"
                               height={isPdf ? '350px' : "100%"}
-                              data={pdf_url}
-                            >
-                              <iframe
-                                width="100%"
-                                height={isPdf ? '350px' : "100%"}
-                                src={`https://docs.google.com/gview?url=${pdf_url.replace(/.pdf\?.*/g, '')}.pdf&embedded=true`}
-                                className="scroll-custom" />
-                            </object>
-                          </div>
+                              src={`https://docs.google.com/gview?url=${pdf_url.replace(/(\..*)\?.*/g, '$1&embedded=true')}`}
+                              className="scroll-custom" />
+                          </object>
                         </div>
-                      )
+                      </div>
 										}
 									</div>
 									<div className="text-center">

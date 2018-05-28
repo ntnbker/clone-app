@@ -1037,6 +1037,21 @@ body{
 .display-block {
   display: block;
 }
+.display-none {
+  display: none;
+}
+.download-button {
+  a {
+    background-color: DodgerBlue;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 20px;
+    padding: 10px;
+    border-radius: 10px;
+    text-decoration: none;
+  }
+}
 .file-pdf {
   text-align: center;
   color: grey;
