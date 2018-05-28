@@ -95295,7 +95295,7 @@ var QuoteRequests = React.createClass({
 
         var needUploadButton = !isLandlord && quote_request.quote_sent && !quote_request.trady.jfmo_participant;
 
-        var needMessageButton = !isLandlord && assignedTradyValid && !!self.current_user_show_quote_message;
+        var needMessageButton = isCallTrady || !isLandlord && assignedTradyValid && !!self.current_user_show_quote_message;
 
         var messageTo = role === 'Trady' ? "Agent - " + (self.agent && (self.agent.name || self.agent.first_name)) : quote_request.trady ? "Tradie - " + quote_request.trady.name : '';
         var linkCreateQuote = "/quote_options?maintenance_request_id=" + maintenance_request_id + "&trady_id=" + trady_id;
