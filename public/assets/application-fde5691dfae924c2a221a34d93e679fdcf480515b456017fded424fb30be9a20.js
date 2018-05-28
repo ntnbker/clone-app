@@ -72508,15 +72508,15 @@ var Invoices = React.createClass({
                     ),
                     paid == false ? active !== false ? React.createElement(
                       'button',
-                      { className: 'button-default status Declined' },
+                      { className: 'button-default status declined' },
                       'Outstanding Payment'
                     ) : React.createElement(
                       'button',
-                      { className: 'button-default status Declined' },
+                      { className: 'button-default status declined' },
                       'Do Not Pay'
                     ) : React.createElement(
                       'button',
-                      { className: 'button-default status Approved' },
+                      { className: 'button-default status approved' },
                       'Payment Scheduled'
                     )
                   )
@@ -72590,9 +72590,7 @@ var ModalVoidInvoice = React.createClass({
   },
 
   voidInvoice: function () {
-    var _props3 = this.props;
-    var invoice = _props3.invoice;
-    var current_user = _props3.current_user;
+    var invoice = this.props.invoice;
 
     var self = this;
 
@@ -72623,9 +72621,9 @@ var ModalVoidInvoice = React.createClass({
   render: function () {
     var _this = this;
 
-    var _props4 = this.props;
-    var invoice = _props4.invoice;
-    var text = _props4.text;
+    var _props3 = this.props;
+    var invoice = _props3.invoice;
+    var text = _props3.text;
 
     return React.createElement(
       'div',
@@ -75800,15 +75798,15 @@ var PDFInvoices = React.createClass({
 										),
 										paid == false ? active !== false ? React.createElement(
 											"button",
-											{ className: 'button-default status Declined' },
+											{ className: 'button-default status declined' },
 											"Outstanding Payment"
 										) : React.createElement(
 											"button",
-											{ className: 'button-default status Declined' },
+											{ className: 'button-default status declined' },
 											"Do Not Pay"
 										) : React.createElement(
 											"button",
-											{ className: 'button-default status Approved' },
+											{ className: 'button-default status approved' },
 											"Payment Scheduled"
 										)
 									)
@@ -77631,6 +77629,7 @@ var LandlordMaintenanceRequest = React.createClass({
 				self.setState({
 					landlords_conversation: landlords_conversation
 				});
+				callback();
 			},
 			error: function (err) {
 				self.setState({ notification: {
@@ -78436,6 +78435,7 @@ var LandlordMaintenanceRequest = React.createClass({
 					}),
 					quote_requests && quote_requests.length > 0 ? React.createElement(QuoteRequests, {
 						keyLandlord: 'landlord',
+						role: 'Landlord',
 						quote_requests: quote_requests,
 						onModalWith: this.onModalWith,
 						landlord: this.state.landlord,
@@ -87169,6 +87169,7 @@ var MaintenanceRequest = React.createClass({
 				self.setState({
 					landlords_conversation: landlords_conversation
 				});
+				callback();
 			},
 			error: function (err) {
 				self.setState({ notification: {
@@ -87200,6 +87201,7 @@ var MaintenanceRequest = React.createClass({
 				self.setState({
 					tenants_conversation: tenants_conversation
 				});
+				callback();
 			},
 			error: function (err) {
 				self.setState({ notification: {
@@ -87237,6 +87239,7 @@ var MaintenanceRequest = React.createClass({
 				self.setState({
 					trady_conversation: trady_conversation
 				});
+				callback();
 			},
 			error: function (err) {
 				self.setState({ notification: {
@@ -87271,6 +87274,7 @@ var MaintenanceRequest = React.createClass({
 				self.setState({
 					quote: quote
 				});
+				callback();
 			},
 			error: function (err) {
 				self.setState({ notification: {
@@ -87305,6 +87309,7 @@ var MaintenanceRequest = React.createClass({
 				self.setState({
 					quote_request: quote_request
 				});
+				callback();
 			},
 			error: function (err) {
 				self.setState({ notification: {
@@ -88200,6 +88205,7 @@ var MaintenanceRequest = React.createClass({
 					{
 						return React.createElement(ModalViewQuote, {
 							close: this.isClose,
+							role: "Agent",
 							quote: this.state.quote,
 							quotes: this.state.quote_requests,
 							hideRestore: !!this.state.trady,
@@ -88527,6 +88533,13 @@ var MaintenanceRequest = React.createClass({
 						viewItem: this.viewItem,
 						close: this.isClose
 					});
+				case 'voidInvoice':
+					return React.createElement(ModalVoidInvoice, {
+						voidInvoice: this.voidInvoice,
+						text: "Are you sure want to void this invoice? Voiding this invoice will mark the invoice with a DO NOT PAY status. An email will be sent to the tradie to inform them you have voided and rejected this invoice along with the reason why it was voided.",
+						invoice: this.state.invoice,
+						close: this.isClose
+					});
 
 				case 'assignTo':
 					return React.createElement(AssignModal, {
@@ -88776,6 +88789,7 @@ var MaintenanceRequest = React.createClass({
 						}
 					}),
 					quote_requests && quote_requests.length > 0 ? React.createElement(QuoteRequests, {
+						role: "Agent",
 						hideRestore: !!trady,
 						assignedTrady: trady,
 						quote_requests: quote_requests,
@@ -89220,8 +89234,8 @@ var ModalSendMessageLandlord = React.createClass({
 					errorMessage: err['body']
 				});
 			}
+			self.message.value = "";
 		});
-		this.message.value = "";
 	},
 
 	render: function () {
@@ -89347,8 +89361,8 @@ var ModalSendMessageTenant = React.createClass({
 					errorMessage: err['body']
 				});
 			}
+			self.message.value = "";
 		});
-		this.message.value = "";
 	},
 
 	render: function () {
@@ -89472,8 +89486,8 @@ var ModalSendMessageTrady = React.createClass({
 					errorMessage: err['body']
 				});
 			}
+			self.message.value = "";
 		});
-		this.message.value = "";
 	},
 
 	render: function () {
@@ -89598,8 +89612,8 @@ var ModalSendMessageAgent = React.createClass({
 					errorMessage: err['body']
 				});
 			}
+			self.message.value = "";
 		});
-		this.message.value = "";
 	},
 
 	render: function () {
@@ -94533,7 +94547,12 @@ var QuoteOption = React.createClass({
 });
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+var _templateObject = _taggedTemplateLiteral(["-"], ["-"]),
+    _templateObject2 = _taggedTemplateLiteral([" "], [" "]);
+
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
 var ButtonForwardLandlord = React.createClass({
   displayName: "ButtonForwardLandlord",
@@ -94972,7 +94991,7 @@ var ActionQuote = React.createClass({
             return self.viewQuote(key, item);
           }
         }),
-        quote.status == "Active" && React.createElement(ButtonForwardLandlord, {
+        quote.status == "Active" && this.props.showForward && React.createElement(ButtonForwardLandlord, {
           quote: quote,
           landlord: self.landlord,
           viewQuote: self.viewQuote,
@@ -95086,8 +95105,12 @@ var Quotes = React.createClass({
         "div",
         { className: "list-quote" },
         quotes.map(function (quote, index) {
-          var status = quote.status;
+          var status = quote.status || '';
           var showStatus = ['Approved', 'Declined'].indexOf(status) !== -1;
+          if (!showStatus && quote.forwarded_to_landlord) {
+            status = 'Sent To Landlord';
+            showStatus = true;
+          }
 
           return React.createElement(
             "div",
@@ -95109,7 +95132,7 @@ var Quotes = React.createClass({
                 "button",
                 {
                   type: "button",
-                  className: 'button-default status ' + status },
+                  className: 'button-default status ' + status.toLowerCase().split(_templateObject2).join(_templateObject) },
                 React.createElement(
                   "span",
                   null,
@@ -95155,8 +95178,8 @@ var QuoteRequests = React.createClass({
   getInitialState: function () {
     var self = this.props;
 
-    var role = self.current_role && self.current_role.role;
-    var quote_requests = role === 'Landlord' ? this.filterQuoteRequestForLandlord(self.quote_requests) : this.filterQuoteRequest(self.quote_requests);
+    var role = self.role || self.current_role && self.current_role.role;
+    var quote_requests = role === 'Landlord' ? this.filterQuoteRequestForLandlord(self.quote_requests) : role === 'Agent' ? this.filterQuoteRequestForAgent(self.quote_requests) : this.filterQuoteRequest(self.quote_requests);
     return {
       quote_requests: quote_requests.sort(function (qr1, qr2) {
         return !!qr2.quotes.length - !!qr1.quotes.length;
@@ -95191,6 +95214,15 @@ var QuoteRequests = React.createClass({
     });
 
     return filteredQuoteRequest;
+  },
+
+  filterQuoteRequestForAgent: function (quote_requests) {
+    var filtered = this.filterQuoteRequest(quote_requests);
+
+    // Filter quote_request have empty quotes
+    return filtered.filter(function (qr) {
+      return qr.quotes.length || qr.conversation;
+    });
   },
 
   filterQuoteRequestForLandlord: function (quote_requests) {
@@ -95259,9 +95291,10 @@ var QuoteRequests = React.createClass({
 
         var isLandlord = role === "Landlord";
 
-        var needAlreadySentButton = !isLandlord && quotes.length === 0 && !quote_request.quote_sent;
+        var needAlreadySentButton = !quote_request.trady.jfmo_participant && !isLandlord && quotes.length === 0 && !quote_request.quote_sent;
 
-        var needPhotoButton = !isLandlord && quote_request.quote_sent;
+        var needUploadButton = !isLandlord && quote_request.quote_sent && !quote_request.trady.jfmo_participant;
+
         var needMessageButton = !isLandlord && assignedTradyValid && !!self.current_user_show_quote_message;
 
         var messageTo = role === 'Trady' ? "Agent - " + (self.agent && (self.agent.name || self.agent.first_name)) : quote_request.trady ? "Tradie - " + quote_request.trady.name : '';
@@ -95381,14 +95414,14 @@ var QuoteRequests = React.createClass({
                     viewQuote: self.viewQuote
                   })
                 ),
-                !quote_request.trady.jfmo_participant && needAlreadySentButton ? React.createElement(
+                needAlreadySentButton ? React.createElement(
                   "div",
                   { className: "stop-reminder" },
                   React.createElement(ButtonQuoteAlreadySent, _extends({}, self, {
                     quote_request: quote_request
                   }))
                 ) : '',
-                true ? React.createElement(
+                needUploadButton ? React.createElement(
                   "div",
                   { className: "upload-quote" },
                   React.createElement(ModalImageUpload, _extends({
@@ -96001,6 +96034,7 @@ var ModalViewQuote = React.createClass({
               !!self.current_user && React.createElement(ActionQuote, {
                 quote: quote,
                 hideRestore: self.hideRestore,
+                showForward: true,
                 isModal: "true",
                 className: "print",
                 landlord: self.landlord,
@@ -96064,7 +96098,7 @@ var ModalViewQuoteMessage = React.createClass({
         self.setState({ errorMessage: err['body'] });
       }
     });
-    this.message.value = "";
+    self.message.value = "";
   },
 
   render: function () {
@@ -96189,7 +96223,8 @@ var ModalViewQuoteRequestMessage = React.createClass({
       if (err) {
         self.setState({ errorMessage: err['body'] });
       }
-      this.message.value = "";
+
+      self.message.value = "";
     });
 
     return false;
@@ -96364,6 +96399,7 @@ var ModalViewPhoto = React.createClass({
             !!self.current_user && React.createElement(ActionQuote, {
               isModal: "true",
               className: "print",
+              showForward: true,
               hideRestore: self.hideRestore,
               quote: self.quote,
               landlord: self.landlord,
@@ -99416,6 +99452,7 @@ var TenantMaintenanceRequest = React.createClass({
 				self.setState({
 					tenants_conversation: tenants_conversation
 				});
+				callback();
 			},
 			error: function (err) {
 				self.setState({ notification: {
@@ -103442,7 +103479,7 @@ var AddTradycompany = React.createClass({
       "button",
       {
         type: "button",
-        className: "back-button",
+        className: "button-back",
         onClick: function () {
           return _this.backButton.click();
         }
@@ -104941,6 +104978,7 @@ var TradyMaintenanceRequest = React.createClass({
 				self.setState({
 					quote: quote
 				});
+				callback();
 			},
 			error: function (err) {
 				self.setState({ notification: {
@@ -104975,6 +105013,7 @@ var TradyMaintenanceRequest = React.createClass({
 				self.setState({
 					quote_request: quote_request
 				});
+				callback();
 			},
 			error: function (err) {
 				self.setState({ notification: {
@@ -105361,6 +105400,7 @@ var TradyMaintenanceRequest = React.createClass({
 				self.setState({
 					trady_agent_conversation: trady_agent_conversation
 				});
+				callback();
 			},
 			error: function (err) {
 				self.setState({ notification: {
@@ -105488,6 +105528,7 @@ var TradyMaintenanceRequest = React.createClass({
 							close: this.isClose,
 							quote: this.state.quote,
 							keyLandlord: 'trady',
+							role: 'Trady',
 							landlord: this.props.landlord,
 							quotes: this.state.quote_requests,
 							agency: this.props.agency,
@@ -106327,6 +106368,7 @@ var TradyMaintenanceRequest = React.createClass({
 					}),
 					needShowInfo && quote_requests && quote_requests.length > 0 && React.createElement(QuoteRequests, {
 						keyLandlord: 'trady',
+						role: 'Trady',
 						landlord: this.state.landlord,
 						quote_requests: quote_requests,
 						assignedTrady: trady,
