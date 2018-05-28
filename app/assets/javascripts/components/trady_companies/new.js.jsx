@@ -166,7 +166,7 @@ var AddTradycompany = React.createClass({
     return (
       <button
         type="button"
-        className="back-button"
+        className="button-back"
         onClick={() => this.backButton.click()}
       >
         <a href={backPath} style={{display: 'none'}} ref={e => this.backButton = e}/>

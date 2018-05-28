@@ -33,8 +33,8 @@ var ModalSendMessageLandlord = React.createClass({
 					errorMessage: err['body'],
 				})
 			}
+			self.message.value = "";
 		});
-		this.message.value = "";
 	},
 
 	render: function() {

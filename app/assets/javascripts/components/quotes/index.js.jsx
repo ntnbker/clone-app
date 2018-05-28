@@ -387,7 +387,7 @@ var ActionQuote = React.createClass({
                 viewQuoteMessage={(key, item) => self.viewQuote(key, item)}
               />
           }
-          { quote.status == "Active" &&
+          { quote.status == "Active" && this.props.showForward &&
               <ButtonForwardLandlord
                 quote={quote}
                 landlord={self.landlord}
@@ -502,8 +502,12 @@ var Quotes = React.createClass({
         <div className="list-quote">
         {
           quotes.map(function(quote, index) {
-            const status = quote.status;
-            const showStatus = ['Approved', 'Declined'].indexOf(status) !== -1;
+            let status = quote.status || '';
+            let showStatus = ['Approved', 'Declined'].indexOf(status) !== -1;
+            if (!showStatus && quote.forwarded_to_landlord) {
+              status = 'Sent To Landlord';
+              showStatus = true;
+            }
 
             return (
               <div className="item-quote row" key={index}>
@@ -513,7 +517,7 @@ var Quotes = React.createClass({
                   {showStatus 
                     ? <button
                         type="button"
-                        className={'button-default status ' + status}>
+                        className={'button-default status ' + status.toLowerCase().split` `.join`-`}>
                         <span>{status}</span>
                       </button>
                     : <button
@@ -553,10 +557,12 @@ var QuoteRequests = React.createClass({
   getInitialState: function() {
   	const self = this.props;
 
-    const role = self.current_role && self.current_role.role;
+    const role = self.role || (self.current_role && self.current_role.role);
     const quote_requests = role === 'Landlord'
                         ? this.filterQuoteRequestForLandlord(self.quote_requests)
-                        : this.filterQuoteRequest(self.quote_requests);
+                        : role === 'Agent' 
+                          ? this.filterQuoteRequestForAgent(self.quote_requests)
+                          : this.filterQuoteRequest(self.quote_requests);
     return {
       quote_requests: quote_requests.sort((qr1, qr2) => !!qr2.quotes.length - !!qr1.quotes.length),
       pictures: [],
@@ -586,6 +592,15 @@ var QuoteRequests = React.createClass({
     })
 
     return filteredQuoteRequest;
+  },
+
+  filterQuoteRequestForAgent(quote_requests) {
+    const filtered = this.filterQuoteRequest(quote_requests);
+
+    // Filter quote_request have empty quotes
+    return filtered.filter((qr) => {
+      return qr.quotes.length || qr.conversation;
+    })
   },
 
   filterQuoteRequestForLandlord(quote_requests) {
@@ -650,11 +665,15 @@ var QuoteRequests = React.createClass({
 
           const isLandlord = role === "Landlord";
 
-          const needAlreadySentButton = !isLandlord
+          const needAlreadySentButton = !quote_request.trady.jfmo_participant
+                                     && !isLandlord
                                      && quotes.length === 0
                                      && !quote_request.quote_sent;
 
-          const needPhotoButton 			= !isLandlord && quote_request.quote_sent;
+          const needUploadButton = !isLandlord
+                                && quote_request.quote_sent
+                                && !quote_request.trady.jfmo_participant;
+
           const needMessageButton 		= !isLandlord && assignedTradyValid
                                       && !!self.current_user_show_quote_message;
 
@@ -723,7 +742,7 @@ var QuoteRequests = React.createClass({
                         />
                       </div>
                     }
-                    { !quote_request.trady.jfmo_participant && needAlreadySentButton
+                    { needAlreadySentButton
                       ? <div className="stop-reminder">
                           <ButtonQuoteAlreadySent
                             {...self}
@@ -732,7 +751,7 @@ var QuoteRequests = React.createClass({
                         </div>
                       : ''
                     }
-                    { true
+                    { needUploadButton
                       ? <div className="upload-quote">
                           <ModalImageUpload
                             className="btn btn-default"
@@ -1159,6 +1178,7 @@ var ModalViewQuote = React.createClass({
                   <ActionQuote
                     quote={quote}
                     hideRestore={self.hideRestore}
+                    showForward={true}
                     isModal="true"
                     className="print"
                     landlord={self.landlord}
@@ -1216,7 +1236,7 @@ var ModalViewQuoteMessage = React.createClass({
         self.setState({ errorMessage: err['body'] });
       }
     });
-    this.message.value = "";
+    self.message.value = "";
   },
 
   render: function() {
@@ -1304,7 +1324,8 @@ var ModalViewQuoteRequestMessage = React.createClass({
       if (err) {
         self.setState({ errorMessage: err['body'] });
       }
-      this.message.value = "";
+
+      self.message.value = "";
     });
 
     return false;
@@ -1421,6 +1442,7 @@ var ModalViewPhoto = React.createClass({
                 <ActionQuote
                   isModal="true"
                   className="print"
+                  showForward={true}
                   hideRestore={self.hideRestore}
                   quote={self.quote}
                   landlord={self.landlord}
