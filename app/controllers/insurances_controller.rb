@@ -22,7 +22,7 @@ class InsurancesController < ApplicationController
     
 
     
-    binding.pry
+    
     if @insurance.save
       trady = Trady.find_by(id:@trady_id)
       trady.update_attribute(:registration_status,"Pending")
