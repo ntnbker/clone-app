@@ -32,15 +32,18 @@ var ModalViewPDFInvoice = React.createClass({
 		}
 
 
-		if(url && url.length< 2048){ // if no filename and no mime, assume a url was passed as the only argument
-			fileName = url.split("/").pop().split("?")[0];
-			anchor.href = url; // assign href prop to temp anchor
+    if(url && url.length< 2048){ // if no filename and no mime, assume a url was passed as the only argument
+      fileName = url.split("/").pop().split("?")[0];
+      url = url.slice(0, url.lastIndexOf('/') + 1) + fileName + '?_version=1';
+      anchor.href = url; // assign href prop to temp anchor
       if(anchor.href.indexOf(url) !== -1){ // if the browser determines that it's a potentially valid url path:
+        _this.setState({isDownloading: true});
         var ajax=new XMLHttpRequest();
         ajax.open( "GET", url, true);
         ajax.responseType = 'blob';
         ajax.onload= function(e){ 
           _this.download(e.target.response, fileName, defaultMime);
+          _this.setState({isDownloading: false});
         };
         setTimeout(function(){ ajax.send();}, 500); // allows setting custom ajax headers using the return:
         return ajax;
@@ -155,7 +158,7 @@ var ModalViewPDFInvoice = React.createClass({
 
 	render: function() {
 		const self = this.props;
-		const {invoice} = this.state;
+		const {invoice, isDownloading} = this.state;
 		const {pdf_url, trady} = invoice;
 		const {role} = this.props;
 
@@ -208,7 +211,7 @@ var ModalViewPDFInvoice = React.createClass({
                           id="download_target"
                           className="display-none"
                         />
-                        <i className="fa fa-download"></i> Download
+                        {!isDownloading && <i className="fa fa-download"></i>} Download{isDownloading && 'ing ...'}
                       </button>
                     </div>
 										{!!pdf_url &&
@@ -225,7 +228,8 @@ var ModalViewPDFInvoice = React.createClass({
                               width="100%"
                               height={isPdf ? '350px' : "100%"}
                               src={`https://docs.google.com/gview?url=${pdf_url.replace(/(\..*)\?.*/g, '$1&embedded=true')}`}
-                              className="scroll-custom" />
+                              className="scroll-custom" 
+                            />
                           </object>
                         </div>
                       </div>
