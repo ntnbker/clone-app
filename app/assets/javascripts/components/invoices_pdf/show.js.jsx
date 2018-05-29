@@ -10,7 +10,7 @@ var ModalViewPDFInvoice = React.createClass({
 		window.print();
   },
   
-  download(data, strFileName, strMimeType) {    
+  download(data, strFileName, strMimeType) {
     var self = window, // this script is only for browsers anyway...
       _this = this,
 			defaultMime = "application/octet-stream", // this default mime also triggers iframe downloads
