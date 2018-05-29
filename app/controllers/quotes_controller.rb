@@ -132,7 +132,7 @@ class QuotesController < ApplicationController
           maintenance_request.update_attribute(:trady_id,trady.id)
           quote.update_attribute(:status, params[:status])
           maintenance_request.action_status.update_columns(agent_status:"Maintenance Scheduled - Awaiting Invoice", trady_status:"Job Booked")
-
+          QuoteRequest.expire(maintenance_request.id)
           Log.create(maintenance_request_id:maintenance_request.id, action:"Quote has been approved by: ", name: name)
           if maintenance_request.property.landlord
             NotifyLandlordQuoteApprovedEmailWorker.perform_async(maintenance_request.id)

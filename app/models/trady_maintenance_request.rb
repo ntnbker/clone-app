@@ -24,7 +24,7 @@ class TradyMaintenanceRequest
   def self.filtered_trady_maintenance_requests(trady_id, parameter)
     
     if parameter == "Quote Requests"
-      quote_request_mr_ids = QuoteRequest.where(trady_id:trady_id,quote_id:nil).pluck(:maintenance_request_id)
+      quote_request_mr_ids = QuoteRequest.where(trady_id:trady_id,quote_id:nil, expired:false).pluck(:maintenance_request_id)
       maintenance_requests = MaintenanceRequest.where(id:quote_request_mr_ids).includes(:property)
     elsif parameter == "Awaiting Quote Approvals"
       quote_mr_ids = Quote.where(trady_id:trady_id,status:"Active",delivery_status: true).pluck(:maintenance_request_id)
@@ -53,7 +53,7 @@ class TradyMaintenanceRequest
   def self.filtered_trady_maintenance_requests_count(trady_id, parameter)
     
     if parameter == "Quote Requests"
-      quote_request_mr_ids = QuoteRequest.where(trady_id:trady_id,quote_id:nil).pluck(:maintenance_request_id)
+      quote_request_mr_ids = QuoteRequest.where(trady_id:trady_id,quote_id:nil,expired:false).pluck(:maintenance_request_id)
       count = MaintenanceRequest.where(id:quote_request_mr_ids).count
     elsif parameter == "Awaiting Quote Approvals"
       quote_mr_ids = Quote.where(trady_id:trady_id,status:"Active", delivery_status: true).pluck(:maintenance_request_id)
