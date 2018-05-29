@@ -71552,7 +71552,8 @@ UploadImageComponent = React.createClass({
       var filename = file;
       var options = {
         extension: filename.name.match(/(\.\w+)?$/)[0],
-        _: Date.now()
+        _: Date.now(),
+        filename: filename.name
       };
       // start upload file into S3
       $.getJSON('/images/cache/presign', options, function (result) {
@@ -75944,7 +75945,8 @@ var AddInvoicePDF = React.createClass({
 		var filename = files[0];
 		var options = {
 			extension: filename.name.match(/(\.\w+)?$/)[0],
-			_: Date.now()
+			_: Date.now(),
+			filename: filename.name
 		};
 
 		// start upload file into S3
@@ -76385,11 +76387,173 @@ var ModalViewPDFInvoice = React.createClass({
     window.print();
   },
 
+  download: function (data, strFileName, strMimeType) {
+    var self = window,
+        // this script is only for browsers anyway...
+    _this = this,
+        defaultMime = "application/octet-stream",
+        // this default mime also triggers iframe downloads
+    mimeType = strMimeType || defaultMime,
+        payload = data,
+        url = !strFileName && !strMimeType && payload,
+        anchor = document.createElement("a"),
+        toString = function (a) {
+      return String(a);
+    },
+        myBlob = self.Blob || self.MozBlob || self.WebKitBlob || toString,
+        fileName = strFileName || "download",
+        blob,
+        reader;
+    myBlob = myBlob.call ? myBlob.bind(self) : Blob;
+
+    if (String(this) === "true") {
+      //reverse arguments, allowing download.bind(true, "text/xml", "export.xml") to act as a callback
+      payload = [payload, mimeType];
+      mimeType = payload[0];
+      payload = payload[1];
+    }
+
+    if (url && url.length < 2048) {
+      // if no filename and no mime, assume a url was passed as the only argument
+      fileName = url.split("/").pop().split("?")[0];
+      url = url.slice(0, url.lastIndexOf('/') + 1) + fileName + '?_version=1';
+      anchor.href = url; // assign href prop to temp anchor
+      if (anchor.href.indexOf(url) !== -1) {
+        // if the browser determines that it's a potentially valid url path:
+        _this.setState({ isDownloading: true });
+        var ajax = new XMLHttpRequest();
+        ajax.open("GET", url, true);
+        ajax.responseType = 'blob';
+        ajax.onload = function (e) {
+          _this.download(e.target.response, fileName, defaultMime);
+          _this.setState({ isDownloading: false });
+        };
+        setTimeout(function () {
+          ajax.send();
+        }, 500); // allows setting custom ajax headers using the return:
+        return ajax;
+      } // end if valid url?
+    } // end if url?
+
+    //go ahead and download dataURLs right away
+    if (/^data:([\w+-]+\/[\w+.-]+)?[,;]/.test(payload)) {
+
+      if (payload.length > 1024 * 1024 * 1.999 && myBlob !== toString) {
+        payload = dataUrlToBlob(payload);
+        mimeType = payload.type || defaultMime;
+      } else {
+        return navigator.msSaveBlob ? // IE10 can't do a[download], only Blobs:
+        navigator.msSaveBlob(dataUrlToBlob(payload), fileName) : saver(payload); // everyone else can save dataURLs un-processed
+      }
+    } else {
+        //not data url, is it a string with special needs?
+        if (/([\x80-\xff])/.test(payload)) {
+          var i = 0,
+              tempUiArr = new Uint8Array(payload.length),
+              mx = tempUiArr.length;
+          for (i; i < mx; ++i) tempUiArr[i] = payload.charCodeAt(i);
+          payload = new myBlob([tempUiArr], { type: mimeType });
+        }
+      }
+    blob = payload instanceof myBlob ? payload : new myBlob([payload], { type: mimeType });
+
+    function dataUrlToBlob(strUrl) {
+      var parts = strUrl.split(/[:;,]/),
+          type = parts[1],
+          decoder = parts[2] == "base64" ? atob : decodeURIComponent,
+          binData = decoder(parts.pop()),
+          mx = binData.length,
+          i = 0,
+          uiArr = new Uint8Array(mx);
+
+      for (i; i < mx; ++i) uiArr[i] = binData.charCodeAt(i);
+
+      return new myBlob([uiArr], { type: type });
+    }
+
+    function saver(url, winMode) {
+
+      if ('download' in anchor) {
+        //html5 A[download]
+        anchor.href = url;
+        anchor.setAttribute("download", fileName);
+        anchor.className = "download-js-link";
+        anchor.innerHTML = "downloading...";
+        anchor.style.display = "none";
+        document.body.appendChild(anchor);
+        setTimeout(function () {
+          anchor.click();
+          document.body.removeChild(anchor);
+          if (winMode === true) {
+            setTimeout(function () {
+              self.URL.revokeObjectURL(anchor.href);
+            }, 250);
+          }
+        }, 66);
+        return true;
+      }
+
+      // handle non-a[download] safari as best we can:
+      if (/(Version)\/(\d+)\.(\d+)(?:\.(\d+))?.*Safari\//.test(navigator.userAgent)) {
+        if (/^data:/.test(url)) url = "data:" + url.replace(/^data:([\w\/\-\+]+)/, defaultMime);
+        if (!window.open(url)) {
+          // popup blocked, offer direct download:
+          if (confirm("Displaying New Document\n\nUse Save As... to download, then click back to return to this page.")) {
+            location.href = url;
+          }
+        }
+        return true;
+      }
+
+      //do iframe dataURL download (old ch+FF):
+      var f = document.createElement("iframe");
+      document.body.appendChild(f);
+
+      if (!winMode && /^data:/.test(url)) {
+        // force a mime that will download:
+        url = "data:" + url.replace(/^data:([\w\/\-\+]+)/, defaultMime);
+      }
+      f.src = url;
+      setTimeout(function () {
+        document.body.removeChild(f);
+      }, 333);
+    } //end saver
+
+    if (navigator.msSaveBlob) {
+      // IE10+ : (has Blob, but not a[download] or URL)
+      return navigator.msSaveBlob(blob, fileName);
+    }
+
+    if (self.URL) {
+      // simple fast and modern way using Blob and URL:
+      saver(self.URL.createObjectURL(blob), true);
+    } else {
+      // handle non-Blob()+non-URL browsers:
+      if (typeof blob === "string" || blob.constructor === toString) {
+        try {
+          return saver("data:" + mimeType + ";base64," + self.btoa(blob));
+        } catch (y) {
+          return saver("data:" + mimeType + "," + encodeURIComponent(blob));
+        }
+      }
+
+      // Blob but not URL support:
+      reader = new FileReader();
+      reader.onload = function (e) {
+        saver(this.result);
+      };
+      reader.readAsDataURL(blob);
+    }
+    return true;
+  }, /* end download() */
+
   render: function () {
-    var _this = this;
+    var _this2 = this;
 
     var self = this.props;
-    var invoice = this.state.invoice;
+    var _state = this.state;
+    var invoice = _state.invoice;
+    var isDownloading = _state.isDownloading;
     var pdf_url = invoice.pdf_url;
     var trady = invoice.trady;
     var role = this.props.role;
@@ -76440,7 +76604,7 @@ var ModalViewPDFInvoice = React.createClass({
               React.createElement(
                 "div",
                 { className: "show-quote", onTouchEnd: function (key, index) {
-                    return _this.switchSlider('prev', _this.state.index);
+                    return _this2.switchSlider('prev', _this2.state.index);
                   } },
                 React.createElement(
                   "div",
@@ -76507,11 +76671,24 @@ var ModalViewPDFInvoice = React.createClass({
                       invoice.void_reason
                     )
                   ),
-                  !!pdf_url && (!isPdf ? React.createElement(
+                  React.createElement(
                     "div",
-                    { className: "modal-body" },
-                    React.createElement(Carousel, { gallery: [pdf_url] })
-                  ) : React.createElement(
+                    { className: "download-button" },
+                    React.createElement(
+                      "button",
+                      { type: "button", onClick: function () {
+                          return _this2.download(pdf_url);
+                        } },
+                      React.createElement("a", {
+                        id: "download_target",
+                        className: "display-none"
+                      }),
+                      !isDownloading && React.createElement("i", { className: "fa fa-download" }),
+                      " Download",
+                      isDownloading && 'ing ...'
+                    )
+                  ),
+                  !!pdf_url && React.createElement(
                     "div",
                     { id: "Iframe-Master-CC-and-Rs", className: "set-margin set-padding set-border set-box-shadow center-block-horiz" },
                     React.createElement(
@@ -76529,11 +76706,12 @@ var ModalViewPDFInvoice = React.createClass({
                         React.createElement("iframe", {
                           width: "100%",
                           height: isPdf ? '350px' : "100%",
-                          src: "https://docs.google.com/gview?url=" + pdf_url.replace(/.pdf\?.*/g, '') + ".pdf&embedded=true",
-                          className: "scroll-custom" })
+                          src: "https://docs.google.com/gview?url=" + pdf_url.replace(/(\..*)\?.*/g, '$1&embedded=true'),
+                          className: "scroll-custom"
+                        })
                       )
                     )
-                  ))
+                  )
                 ),
                 React.createElement(
                   "div",
@@ -76686,9 +76864,9 @@ var SubmitInvoicePDF = React.createClass({
   },
 
   submitInvoicePdf: function (e) {
-    var _state = this.state;
-    var customer = _state.customer;
-    var trady = _state.trady;
+    var _state2 = this.state;
+    var customer = _state2.customer;
+    var trady = _state2.trady;
     var send_pdf_invoice_path = this.props.send_pdf_invoice_path;
 
     if (customer && !customer.customer_id && trady.jfmo_participant) {
@@ -76728,9 +76906,9 @@ var SubmitInvoicePDF = React.createClass({
     var pdf = _props2.pdf;
     var edit_uploaded_invoice_path = _props2.edit_uploaded_invoice_path;
     var pdf_path = _props2.pdf_path;
-    var _state2 = this.state;
-    var trady = _state2.trady;
-    var customer = _state2.customer;
+    var _state3 = this.state;
+    var trady = _state3.trady;
+    var customer = _state3.customer;
 
     var isPdf = /store\/\w+\.pdf/.test(pdf_url);
 
@@ -95295,7 +95473,7 @@ var QuoteRequests = React.createClass({
 
         var needUploadButton = !isLandlord && quote_request.quote_sent && !quote_request.trady.jfmo_participant;
 
-        var needMessageButton = !isLandlord && assignedTradyValid && !!self.current_user_show_quote_message;
+        var needMessageButton = isCallTrady || !isLandlord && assignedTradyValid && !!self.current_user_show_quote_message;
 
         var messageTo = role === 'Trady' ? "Agent - " + (self.agent && (self.agent.name || self.agent.first_name)) : quote_request.trady ? "Tradie - " + quote_request.trady.name : '';
         var linkCreateQuote = "/quote_options?maintenance_request_id=" + maintenance_request_id + "&trady_id=" + trady_id;
