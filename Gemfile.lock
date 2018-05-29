@@ -223,6 +223,7 @@ GEM
     public_suffix (2.0.5)
     puma (3.8.2)
     rack (2.0.1)
+    rack-cors (1.0.2)
     rack-mini-profiler (0.10.7)
       rack (>= 1.2.0)
     rack-protection (1.5.3)
@@ -436,6 +437,7 @@ DEPENDENCIES
   pry
   pry-nav
   puma (~> 3.0)
+  rack-cors
   rack-mini-profiler
   rack_session_access
   rails (~> 5.0.0)

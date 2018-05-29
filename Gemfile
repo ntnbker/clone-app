@@ -54,7 +54,7 @@ gem 'rails-observers'
 # gem "tod"
 # gem "chronic"
 gem 'rufus-scheduler'
-
+gem 'rack-cors', :require => 'rack/cors'
 
 group :development, :test do
   gem 'byebug', platform: :mri
