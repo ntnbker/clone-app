@@ -1,7 +1,5 @@
 / Here he list all the services that they can be listed as.
-%div.container.well
-
-  =react_component('TradyRegistrationForm', {:authenticity_token => form_authenticity_token, :services => Service.all, :trady_skills => [], :is_edit => false, :trady_id => @trady_id, :trady_company_id => @trady_company_id, :maintenance_request_id => @maintenance_request_id, :edit_register_tradie_company_path => edit_register_tradie_company_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id, trady_id:@trady_id), :step => "service"})
+=react_component('TradyRegistrationForm', {:authenticity_token => form_authenticity_token, :services => Service.all, :trady_skills => [], :is_edit => false, :trady_id => @trady_id, :trady_company_id => @trady_company_id, :maintenance_request_id => @maintenance_request_id, :edit_register_tradie_company_path => edit_register_tradie_company_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id, trady_id:@trady_id), :step => "service"})
 
 / = bootstrap_form_for @skill, url:"/add_services" do |f|
 /   = f.collection_check_boxes :skill, Service.all, :service, :service

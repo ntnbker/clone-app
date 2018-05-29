@@ -188,7 +188,7 @@ var Invoices = React.createClass({
                       </div>  
                   }
                   { role === 'Trady' && !paid && active !== false &&
-                    <div className="payment-scheduled">
+                    <div className="payment-scheduled long-text">
                       <button type="button" className="btn payment-scheduled" onClick={(item) => self.props.paymentReminder({})}>
                         Remind Agent of Payment
                       </button>

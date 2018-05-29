@@ -16,6 +16,7 @@ $color-text: #83878C;
       text-align: center;
       color: $color-text;
       @include flex(1);
+      padding: 1px;
 
       .step-status {
         height: 6px;
