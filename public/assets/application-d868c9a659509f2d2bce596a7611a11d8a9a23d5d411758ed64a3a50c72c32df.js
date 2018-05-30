@@ -76694,7 +76694,8 @@ var ModalViewPDFInvoice = React.createClass({
                     React.createElement(
                       "div",
                       {
-                        className: "responsive-wrapper responsive-wrapper-wxh-572x612"
+                        className: "responsive-wrapper responsive-wrapper-wxh-572x612",
+                        style: { height: isPdf ? '350px' : "100%" }
                       },
                       React.createElement(
                         "object",
@@ -76925,7 +76926,8 @@ var SubmitInvoicePDF = React.createClass({
         React.createElement(
           "div",
           {
-            className: "responsive-wrapper responsive-wrapper-wxh-572x612"
+            className: "responsive-wrapper responsive-wrapper-wxh-572x612",
+            style: { height: isPdf ? '500px' : "100%" }
           },
           React.createElement(
             "object",
@@ -96563,7 +96565,9 @@ var ModalViewPhoto = React.createClass({
             { className: "detail-quote" },
             React.createElement(
               "div",
-              { className: "detail-quote" },
+              { className: "detail-quote",
+                style: { height: '500px' }
+              },
               React.createElement("iframe", {
                 src: "https://docs.google.com/gview?url=" + pdf.replace(/.pdf\?.*/, '') + ".pdf&embedded=true",
                 className: "scroll-custom",
