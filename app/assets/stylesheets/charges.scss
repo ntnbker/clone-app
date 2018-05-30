@@ -70,6 +70,7 @@ $color-text: #83878C;
     button {
       @include flex(1);
       margin: 0 15px;
+      padding: 0;
       background-color: $color-green-submit;
       color: white;
       border: 0;
