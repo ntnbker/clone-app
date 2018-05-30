@@ -1041,6 +1041,18 @@ body{
 .display-block {
   display: block;
 }
+.display-none {
+  display: none;
+}
+.download-button {
+  button {
+    background-color: DodgerBlue;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 20px;
+  }
+}
 .file-pdf {
   text-align: center;
   color: grey;

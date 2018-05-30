@@ -3,7 +3,7 @@ class InvoicePdfUploader < Shrine
   plugin :validation_helpers
 
   Attacher.validate do
-    validate_mime_type_inclusion ["application/pdf", "image/png", "image/jpeg"], message: "Please upload a PDF file."
+    validate_mime_type_inclusion ["application/pdf", "image/png", "image/jpeg"], message: "Please upload an image or PDF file."
   end
   # plugins and uploading logic
   #Shrine.plugin :determine_mime_type
@@ -28,12 +28,26 @@ class InvoicePdfUploader < Shrine
   #   PDF::Reader.new(io.path).page_count
   # end
 plugin :direct_upload, presign_options: ->(request) do
-  # filename = request.params["filename"]
-  # content_type = Rack::Mime.mime_type(File.extname(filename))
+   filename = request.params["filename"]
+   content_type = Rack::Mime.mime_type(File.extname(filename))
   {
     # content_length_range: 0..(10*1024*1024),                     # limit filesize to 10MB
     content_disposition: "inline", # download with original filename
-    content_type:        "application/pdf"                           # set correct content type
+    content_type: content_type                           # set correct content type
   }
 end
 end
+
+
+
+
+# plugin :direct_upload, presign_options: ->(request) do
+#   # filename = request.params["filename"]
+#   # content_type = Rack::Mime.mime_type(File.extname(filename))
+#   {
+#     # content_length_range: 0..(10*1024*1024),                     # limit filesize to 10MB
+#     content_disposition: "inline", # download with original filename
+#     content_type:        "application/pdf"                           # set correct content type
+#   }
+# end
+# end
