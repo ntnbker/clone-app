@@ -27,7 +27,7 @@ class TradieRegistrationsController < ApplicationController
       
       role = Role.new(user_id:@user.id)
       @trady = Trady.create(user_id:@user.id, email:params[:user][:trady_attributes][:email], mobile:params[:user][:trady_attributes][:mobile], name:params[:user][:trady_attributes][:name], company_name:params[:user][:trady_attributes][:company_name], jfmo_participant:true)
-      @trady.update_attribute(:user_id, @user.id)
+      @trady.update_columns(user_id: @user.id, registration_status:"Pending")
       @trady.roles << role
       role.save
       CustomerProfile.create(trady_id:@trady.id, terms_and_conditions: true)
@@ -61,7 +61,7 @@ class TradieRegistrationsController < ApplicationController
         trady.roles << role
         role.save
         CustomerProfile.create(trady_id:trady.id, terms_and_conditions: true)
-        trady.update_attribute(:jfmo_participant,true)
+        trady.update_columns(jfmo_participant:true, registration_status:"Pending")
 
 
         flash[:success] = "Please continue below"

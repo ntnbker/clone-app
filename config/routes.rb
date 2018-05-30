@@ -284,6 +284,8 @@ Rails.application.routes.draw do
     get "edit_services"=>"services#edit_services", :as => "edit_services"
     get "new_service_onboarding" => "services#new_service_onboarding", :as=> "new_service_onboarding"
     post "new_service_onboarding" => "services#create_service_onboarding"
+    get "submit_service" => "services#submit_service"
+    
   ###########################################################
   ##########TRADY TERMS AND CONDITIONS RESOURCES/ROUTES######
   ###########################################################
@@ -315,4 +317,24 @@ Rails.application.routes.draw do
   resources :recruits, only: [:new, :create, :index, :show]
   post "quote_request_for_recruit" => "recruits#quote_request"
 
+  ###########################################################
+  ##########INSURANCE RESOURCES/ROUTES#####
+  ###########################################################
+  resources :insurances, only: [:new, :create, :edit, :update]
+  get "new_insurance_onboarding" => "insurances#new_insurance_onboarding", :as => "new_insurance_onboarding"
+  post "new_insurance_onboarding" => "insurances#create_insurance_onboarding"
+  get "edit_insurance_onboarding/:id" => "insurances#edit_insurance_onboarding", :as => "edit_insurance_onboarding"
+  put "edit_insurance_onboarding" => "insurances#update_insurance_onboarding"
+  ###########################################################
+  ##########LICENSE RESOURCES/ROUTES#####
+  ###########################################################
+  resources :licenses, only: [:new, :create, :edit, :update]
+  get "new_license_onboarding" => "licenses#new_license_onboarding",  :as => "new_license_onboarding"
+  post "new_license_onboarding" => "licenses#create_license_onboarding"
+  get "edit_license_onboarding/:id" => "licenses#edit_license_onboarding", :as => "edit_license_onboarding"
+  put "edit_license_onboarding" => "licenses#update_license_onboarding"
+
  end
+
+
+

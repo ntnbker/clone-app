@@ -1,6 +1,4 @@
-%div.container.well
-
-  =react_component('TradyRegistrationForm', {:authenticity_token => form_authenticity_token, :is_edit => true, :trady_skills => @skills, :services => Service.all, :edit_register_tradie_company_path => edit_register_tradie_company_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id, trady_id:@trady_id), :trady_company_id => @trady_company_id, :trady_id => @trady_id, :maintenance_request_id => @maintenance_request_id, :step => "service"})
+=react_component('TradyRegistrationForm', {:authenticity_token => form_authenticity_token, :is_edit => true, :trady_skills => @skills, :services => Service.all, :edit_register_tradie_company_path => edit_register_tradie_company_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id, trady_id:@trady_id), :trady_company_id => @trady_company_id, :trady_id => @trady_id, :maintenance_request_id => @maintenance_request_id, :step => "service"})
 
 
 

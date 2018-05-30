@@ -1004,7 +1004,7 @@ $color-text: #83878C;
     @media (max-width: 380px) {
       .contact-button {
         > div {
-          &.stop-reminder, &.upload-quote {
+          &.stop-reminder, &.upload-quote, &.long-text {
             font-size: 8px;
           }
         }
@@ -1019,7 +1019,8 @@ $color-text: #83878C;
 
     > button {
       margin: 10px 0;
-      width: 300px;
+      max-width: 300px;
+      width: 100%;
       color: white;
       background-color: $color-green;
       border: $color-green;

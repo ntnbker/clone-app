@@ -10,7 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180516053459) do
+
+ActiveRecord::Schema.define(version: 20180525094611) do
+
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -226,6 +228,17 @@ ActiveRecord::Schema.define(version: 20180516053459) do
     t.datetime "updated_at",       null: false
   end
 
+  create_table "insurances", force: :cascade do |t|
+    t.string   "insurance_company"
+    t.string   "policy_number"
+    t.date     "policy_expiry_date"
+    t.integer  "trady_id"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+    t.text     "image_data"
+    t.boolean  "insured"
+  end
+
   create_table "invoice_items", force: :cascade do |t|
     t.integer  "invoice_id"
     t.text     "item_description"
@@ -296,6 +309,16 @@ ActiveRecord::Schema.define(version: 20180516053459) do
     t.datetime "updated_at",             null: false
     t.integer  "maintenance_request_id"
     t.integer  "super_ledger_id"
+  end
+
+  create_table "licenses", force: :cascade do |t|
+    t.text     "image_data"
+    t.integer  "trady_id"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+    t.boolean  "licensed"
+    t.string   "license_number"
+    t.string   "license_type"
   end
 
   create_table "logs", force: :cascade do |t|
@@ -488,6 +511,7 @@ ActiveRecord::Schema.define(version: 20180516053459) do
     t.string   "company_name"
     t.boolean  "jfmo_participant"
     t.boolean  "payment_registration", default: false
+    t.string   "registration_status"
   end
 
   create_table "trady_companies", force: :cascade do |t|
