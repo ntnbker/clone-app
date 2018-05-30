@@ -218,6 +218,7 @@ var ModalViewPDFInvoice = React.createClass({
 											<div id="Iframe-Master-CC-and-Rs" className="set-margin set-padding set-border set-box-shadow center-block-horiz">
                         <div
                           className="responsive-wrapper responsive-wrapper-wxh-572x612"
+                          style={{height: isPdf ? '350px' : "100%"}}
                         >
                           <object
                             width="100%"
@@ -425,6 +426,7 @@ var SubmitInvoicePDF = React.createClass({
           : <div id="Iframe-Master-CC-and-Rs" className="set-margin set-padding set-border set-box-shadow center-block-horiz">
             <div
               className="responsive-wrapper responsive-wrapper-wxh-572x612"
+              style={{height: isPdf ? '500px' : "100%"}}
             >
               <object
                 width="100%"

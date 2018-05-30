@@ -1428,7 +1428,9 @@ var ModalViewPhoto = React.createClass({
                   <Carousel gallery={gallery} fullWidth />
                 </div>
               : <div className="detail-quote">
-                  <div className="detail-quote">
+                  <div className="detail-quote"
+                    style={{height: '500px'}}
+                  >
                     <iframe
                       src={`https://docs.google.com/gview?url=${pdf.replace(/.pdf\?.*/, '')}.pdf&embedded=true`}
                       className="scroll-custom"
