@@ -13734,7 +13734,7 @@ textarea.none-resize {
 }
 /* line 544, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .new-ui .new-ui-maintenance-request.summary-container-index .mr-detail > .mr-information {
-  margin-top: 10px;
+  margin-top: 20px;
 }
 /* line 548, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .new-ui .new-ui-maintenance-request.summary-container-index .mr-detail .mr-information .key {
@@ -18706,21 +18706,22 @@ span.index.index-invoice {
   -ms-flex: 1;
   flex: 1;
   margin: 0 15px;
+  padding: 0;
   background-color: #71C796;
   color: white;
   border: 0;
 }
-/* line 77, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/charges.scss */
+/* line 78, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/charges.scss */
 #payment-form .buttons button:hover {
   background-color: #619970;
   border-color: #619970;
 }
 @media (max-width: 380px) {
-  /* line 85, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/charges.scss */
+  /* line 86, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/charges.scss */
   #payment-form .your-name .name {
     font-size: 14px;
   }
-  /* line 89, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/charges.scss */
+  /* line 90, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/charges.scss */
   #payment-form .plan {
     display: -webkit-box;
     display: -moz-box;
@@ -18729,7 +18730,7 @@ span.index.index-invoice {
     display: flex;
     color: #83878C;
   }
-  /* line 93, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/charges.scss */
+  /* line 94, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/charges.scss */
   #payment-form .plan > div {
     -webkit-box-flex: 1;
     -moz-box-flex: 1;
@@ -18737,27 +18738,27 @@ span.index.index-invoice {
     -ms-flex: 1;
     flex: 1;
   }
-  /* line 97, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/charges.scss */
+  /* line 98, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/charges.scss */
   #payment-form .plan .plan-name {
     font-size: 14px;
     font-weight: 600;
     margin-bottom: 0;
   }
-  /* line 102, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/charges.scss */
+  /* line 103, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/charges.scss */
   #payment-form .plan .plan-price {
     font-size: 14px;
     font-weight: 600;
     margin-top: 30px;
   }
-  /* line 107, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/charges.scss */
+  /* line 108, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/charges.scss */
   #payment-form .plan .plan-note {
     font-size: 11px;
   }
-  /* line 110, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/charges.scss */
+  /* line 111, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/charges.scss */
   #payment-form .plan .plan-note .row {
     margin-bottom: 0px;
   }
-  /* line 116, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/charges.scss */
+  /* line 117, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/charges.scss */
   #payment-form .buttons button {
     margin: 0;
   }

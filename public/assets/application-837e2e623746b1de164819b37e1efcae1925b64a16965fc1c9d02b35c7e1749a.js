@@ -76161,7 +76161,7 @@ var AddInvoicePDF = React.createClass({
 							'div',
 							{ className: 'title', id: 'title-upload' },
 							React.createElement('i', { className: 'fa fa-upload' }),
-							'Choose PDF to upload'
+							'Upload PDF file or Image file'
 						),
 						React.createElement('input', {
 							type: 'file',
@@ -76359,7 +76359,7 @@ var AddInvoicePDF = React.createClass({
 								type: 'submit',
 								className: 'button-submit'
 							},
-							'Attach PDF'
+							'Attach Invoice'
 						)
 					)
 				)
