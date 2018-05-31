@@ -72393,20 +72393,17 @@ var Invoices = React.createClass({
     return {};
   },
 
-  getPictureImage: function (invoices) {
-    if (!invoices || invoices.length === 0) return [];
+  getPictureImage: function (invoice) {
+    var self = this;
+    if (!invoice) return '';
 
-    var pictures = (invoices || []).map(function (invoice) {
-      var trady = invoice.trady || {};
-      var id = trady.id || '';
-      var trady_company = trady.trady_company || {};
-      var trady_profile_image = trady.trady_profile_image || {};
-      var trady_company_profile_image = trady_company.trady_company_profile_image || {};
+    var trady = invoice.trady || {};
+    var id = trady.id || '';
+    var trady_company = trady.trady_company || {};
+    var trady_profile_image = trady.trady_profile_image || {};
+    var trady_company_profile_image = trady_company.trady_company_profile_image || {};
 
-      return trady_company_profile_image && trady_company_profile_image.image_url || trady_profile_image && trady_profile_image.image_url;
-    });
-
-    return pictures;
+    return trady_company_profile_image && trady_company_profile_image.image_url || trady_profile_image && trady_profile_image.image_url;
   },
 
   render: function () {
@@ -72416,7 +72413,7 @@ var Invoices = React.createClass({
     var invoices = _props2.invoices;
 
     var role = current_role && current_role.role;
-    var pictures = this.getPictureImage(invoices);
+    var getImage = this.getPictureImage;
 
     var notPaid = invoices.filter(function (i) {
       return !i.paid;
@@ -72452,7 +72449,7 @@ var Invoices = React.createClass({
                 React.createElement(
                   'span',
                   { className: 'icon-user' },
-                  React.createElement(AvatarImage, { imageUri: pictures[index] })
+                  React.createElement(AvatarImage, { imageUri: getImage(invoice) })
                 ),
                 React.createElement(
                   'div',
@@ -72554,7 +72551,7 @@ var Invoices = React.createClass({
                 ),
                 role === 'Trady' && !paid && active !== false && React.createElement(
                   'div',
-                  { className: 'payment-scheduled' },
+                  { className: 'payment-scheduled long-text' },
                   React.createElement(
                     'button',
                     { type: 'button', className: 'btn payment-scheduled', onClick: function (item) {
@@ -75678,26 +75675,23 @@ var InvoiceSubmit = React.createClass({
   }
 });
 var PDFInvoices = React.createClass({
-	displayName: "PDFInvoices",
+	displayName: 'PDFInvoices',
 
 	getInitialState: function () {
 		return {};
 	},
 
-	getPictureImage: function (invoices) {
-		if (!invoices || invoices.length === 0) return [];
+	getPictureImage: function (invoice) {
+		var self = this;
+		if (!invoice) return '';
 
-		var pictures = (invoices || []).map(function (invoice) {
-			var trady = invoice.trady || {};
-			var id = trady.id || '';
-			var trady_company = trady.trady_company || {};
-			var trady_profile_image = trady.trady_profile_image || {};
-			var trady_company_profile_image = trady_company.trady_company_profile_image || {};
+		var trady = invoice.trady || {};
+		var id = trady.id || '';
+		var trady_company = trady.trady_company || {};
+		var trady_profile_image = trady.trady_profile_image || {};
+		var trady_company_profile_image = trady_company.trady_company_profile_image || {};
 
-			return trady_company_profile_image && trady_company_profile_image.image_url || trady_profile_image && trady_profile_image.image_url;
-		});
-
-		return pictures;
+		return trady_company_profile_image && trady_company_profile_image.image_url || trady_profile_image && trady_profile_image.image_url;
 	},
 
 	render: function () {
@@ -75705,7 +75699,7 @@ var PDFInvoices = React.createClass({
 		var current_role = _props.current_role;
 		var invoices = _props.invoice_pdf_files;
 
-		var pictures = this.getPictureImage(invoices);
+		var getImage = this.getPictureImage;
 		var self = this;
 		var role = current_role && current_role.role;
 		var notPaid = invoices.filter(function (i) {
@@ -75713,16 +75707,16 @@ var PDFInvoices = React.createClass({
 		}).length !== 0;
 
 		return React.createElement(
-			"div",
-			{ className: "quotes invoices m-t-xl box-shadow" },
+			'div',
+			{ className: 'quotes invoices m-t-xl box-shadow' },
 			React.createElement(
-				"h5",
-				{ className: "mr-title" },
-				"PDF Invoice"
+				'h5',
+				{ className: 'mr-title' },
+				'PDF Invoice'
 			),
 			React.createElement(
-				"div",
-				{ className: "list-quote" },
+				'div',
+				{ className: 'list-quote' },
 				invoices.map(function (invoice, index) {
 					var _invoice$trady = invoice.trady;
 					var trady = _invoice$trady === undefined ? {} : _invoice$trady;
@@ -75731,137 +75725,137 @@ var PDFInvoices = React.createClass({
 					var active = invoice.active;
 
 					return React.createElement(
-						"div",
-						{ className: "item-quote row item-quote-request", key: index },
+						'div',
+						{ className: 'item-quote row item-quote-request', key: index },
 						React.createElement(
-							"div",
-							{ className: "user seven columns trady-info-group" },
+							'div',
+							{ className: 'user seven columns trady-info-group' },
 							React.createElement(
-								"div",
-								{ className: "trady-info" },
+								'div',
+								{ className: 'trady-info' },
 								React.createElement(
-									"span",
-									{ className: "icon-user" },
-									React.createElement(AvatarImage, { imageUri: pictures[index] })
+									'span',
+									{ className: 'icon-user' },
+									React.createElement(AvatarImage, { imageUri: getImage(invoice) })
 								),
 								React.createElement(
-									"div",
-									{ className: "info" },
+									'div',
+									{ className: 'info' },
 									React.createElement(
-										"div",
-										{ className: "name" },
+										'div',
+										{ className: 'name' },
 										React.createElement(
-											"span",
-											{ className: "key" },
-											"Name: "
+											'span',
+											{ className: 'key' },
+											'Name: '
 										),
 										React.createElement(
-											"span",
-											{ className: "value" },
+											'span',
+											{ className: 'value' },
 											trady.name
 										)
 									),
 									trady.trady_company && React.createElement(
-										"div",
-										{ className: "business-name" },
+										'div',
+										{ className: 'business-name' },
 										React.createElement(
-											"span",
-											{ className: "key" },
-											"Business Name: "
+											'span',
+											{ className: 'key' },
+											'Business Name: '
 										),
 										React.createElement(
-											"span",
-											{ className: "value" },
+											'span',
+											{ className: 'value' },
 											trady.trady_company.trading_name
 										)
 									),
 									React.createElement(
-										"div",
-										{ className: "company-name" },
+										'div',
+										{ className: 'company-name' },
 										React.createElement(
-											"span",
-											{ className: "key" },
-											"Company Name: "
+											'span',
+											{ className: 'key' },
+											'Company Name: '
 										),
 										React.createElement(
-											"span",
-											{ className: "value" },
+											'span',
+											{ className: 'value' },
 											trady.company_name
 										)
 									),
 									React.createElement(
-										"div",
-										{ className: "invoice-status" },
+										'div',
+										{ className: 'invoice-status' },
 										React.createElement(
-											"span",
-											{ className: "key" },
-											"Invoice Status: "
+											'span',
+											{ className: 'key' },
+											'Invoice Status: '
 										),
 										paid == false ? active !== false ? React.createElement(
-											"button",
+											'button',
 											{ className: 'button-default status declined' },
-											"Outstanding Payment"
+											'Outstanding Payment'
 										) : React.createElement(
-											"button",
+											'button',
 											{ className: 'button-default status declined' },
-											"Do Not Pay"
+											'Do Not Pay'
 										) : React.createElement(
-											"button",
+											'button',
 											{ className: 'button-default status approved' },
-											"Payment Scheduled"
+											'Payment Scheduled'
 										)
 									)
 								)
 							),
 							React.createElement(
-								"div",
-								{ className: "contact-button" },
+								'div',
+								{ className: 'contact-button' },
 								React.createElement(
-									"div",
-									{ className: "view-invoice" },
+									'div',
+									{ className: 'view-invoice' },
 									React.createElement(
-										"button",
+										'button',
 										{
-											type: "button",
-											className: "btn btn-view",
+											type: 'button',
+											className: 'btn btn-view',
 											onClick: function (key, item) {
 												return self.props.viewPDFInvoice('viewPdfInvoice', invoice);
 											}
 										},
-										"View Invoice"
+										'View Invoice'
 									)
 								),
 								['Agent', 'AgencyAdmin'].indexOf(role) !== -1 && !paid && active !== false && React.createElement(
-									"div",
-									{ className: "payment-scheduled" },
+									'div',
+									{ className: 'payment-scheduled' },
 									React.createElement(
-										"button",
-										{ type: "button", className: "btn payment-scheduled", onClick: function (item) {
+										'button',
+										{ type: 'button', className: 'btn payment-scheduled', onClick: function (item) {
 												return self.props.markAsPaid(invoice);
 											} },
-										"Payment Scheduled"
+										'Payment Scheduled'
 									)
 								),
 								role === 'Trady' && !paid && active !== false && React.createElement(
-									"div",
-									{ className: "payment-scheduled" },
+									'div',
+									{ className: 'payment-scheduled long-text' },
 									React.createElement(
-										"button",
-										{ type: "button", className: "btn payment-scheduled", onClick: function (item) {
+										'button',
+										{ type: 'button', className: 'btn payment-scheduled', onClick: function (item) {
 												return self.props.paymentReminder({});
 											} },
-										"Remind Agent of Payment"
+										'Remind Agent of Payment'
 									)
 								),
 								invoice.paid == false && invoice.active !== false && React.createElement(
-									"div",
-									{ className: "void-invoice" },
+									'div',
+									{ className: 'void-invoice' },
 									React.createElement(
-										"button",
-										{ type: "button", className: "btn btn-decline", onClick: function (item) {
+										'button',
+										{ type: 'button', className: 'btn btn-decline', onClick: function (item) {
 												return self.props.viewPDFInvoice('voidInvoice', invoice);
 											} },
-										"Void Invoice"
+										'Void Invoice'
 									)
 								)
 							)
@@ -76167,7 +76161,7 @@ var AddInvoicePDF = React.createClass({
 							'div',
 							{ className: 'title', id: 'title-upload' },
 							React.createElement('i', { className: 'fa fa-upload' }),
-							'Choose PDF to upload'
+							'Upload PDF file or Image file'
 						),
 						React.createElement('input', {
 							type: 'file',
@@ -76365,7 +76359,7 @@ var AddInvoicePDF = React.createClass({
 								type: 'submit',
 								className: 'button-submit'
 							},
-							'Attach PDF'
+							'Attach Invoice'
 						)
 					)
 				)
@@ -95370,7 +95364,7 @@ var QuoteRequests = React.createClass({
   },
 
   componentWillMount: function () {
-    this.getPictureImage(this.state.quote_requests);
+    // this.getPictureImage(this.state.quote_requests);
   },
 
   componentWillReceiveProps: function (nextProps) {
@@ -95378,7 +95372,7 @@ var QuoteRequests = React.createClass({
 
     var quote_requests = role === 'Landlord' ? this.filterQuoteRequestForLandlord(nextProps.quote_requests) : this.filterQuoteRequest(nextProps.quote_requests);
 
-    this.getPictureImage(quote_requests);
+    // this.getPictureImage(quote_requests);
     this.setState({
       quote_requests: quote_requests.sort(function (qr1, qr2) {
         return !!qr2.quotes.length - !!qr1.quotes.length;
@@ -95424,30 +95418,26 @@ var QuoteRequests = React.createClass({
     });
   },
 
-  getPictureImage: function (quote_requests) {
+  getPictureImage: function (quote_request) {
     var self = this;
-    if (!quote_requests || quote_requests.length === 0) return this.setState({ pictures: [] });
+    if (!quote_request) return '';
 
-    var pictures = (quote_requests || []).map(function (quote_request) {
-      var trady = quote_request.trady || {};
-      var id = trady.id || '';
-      var trady_company = trady.trady_company || {};
-      var trady_profile_image = trady.trady_profile_image || {};
-      var trady_company_profile_image = trady_company.trady_company_profile_image || {};
+    var trady = quote_request.trady || {};
+    var id = trady.id || '';
+    var trady_company = trady.trady_company || {};
+    var trady_profile_image = trady.trady_profile_image || {};
+    var trady_company_profile_image = trady_company.trady_company_profile_image || {};
 
-      return trady_company_profile_image && trady_company_profile_image.image_url || trady_profile_image && trady_profile_image.image_url;
-    });
-
-    this.setState({ pictures: pictures });
+    return trady_company_profile_image && trady_company_profile_image.image_url || trady_profile_image && trady_profile_image.image_url;
   },
 
   render: function () {
     var _state2 = this.state;
     var quote_requests = _state2.quote_requests;
-    var pictures = _state2.pictures;
     var role = _state2.role;
 
     var self = this.props;
+    var getImage = this.getPictureImage;
 
     var isCallTrady = role === 'AgencyAdmin' || role === 'Agent';
 
@@ -95505,7 +95495,7 @@ var QuoteRequests = React.createClass({
                 React.createElement(
                   "span",
                   { className: "icon-user" },
-                  React.createElement(AvatarImage, { imageUri: pictures[index] })
+                  React.createElement(AvatarImage, { imageUri: getImage(quote_request) })
                 ),
                 React.createElement(
                   "div",
@@ -101287,13 +101277,15 @@ var TradyTermsAndConditions = React.createClass({
     );
   }
 });
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var TradyRegistrationForm = React.createClass({
   displayName: 'TradyRegistrationForm',
 
   getInitialState: function () {
     var step = this.props.step;
 
-    var level = ['terms-and-conditions', 'trady', 'trady-company', 'service'];
+    var level = ['terms-and-conditions', 'trady', 'trady-company', 'service', 'insurance', 'license'];
 
     return {
       errors: {},
@@ -101363,7 +101355,21 @@ var TradyRegistrationForm = React.createClass({
         'Services',
         React.createElement('br', null),
         'Available'
-      ), level > 3)
+      ), level > 3),
+      this.labelTitle(5, React.createElement(
+        'p',
+        null,
+        'Upload',
+        React.createElement('br', null),
+        'Insurance'
+      ), level > 4),
+      this.labelTitle(6, React.createElement(
+        'p',
+        null,
+        'Upload',
+        React.createElement('br', null),
+        'License'
+      ), level > 5)
     );
   },
 
@@ -101395,6 +101401,18 @@ var TradyRegistrationForm = React.createClass({
           { className: 'step-title text-center' },
           'Services Registration'
         );
+      case 'license':
+        return React.createElement(
+          'h5',
+          { className: 'step-title text-center' },
+          'Upload License'
+        );
+      case 'insurance':
+        return React.createElement(
+          'h5',
+          { className: 'step-title text-center' },
+          'Upload Insurance'
+        );
     }
   },
 
@@ -101410,6 +101428,10 @@ var TradyRegistrationForm = React.createClass({
         return React.createElement(NewTradyCompany, this.props);
       case 'service':
         return React.createElement(ServiceList, this.props);
+      case 'license':
+        return React.createElement(TradyLicenseAndInsurance, this.props);
+      case 'insurance':
+        return React.createElement(TradyLicenseAndInsurance, this.props);
     }
   },
 
@@ -101427,6 +101449,458 @@ var TradyRegistrationForm = React.createClass({
     );
   }
 });
+
+var SingleRegistrationForm = React.createClass({
+  displayName: 'SingleRegistrationForm',
+
+  getInitialState: function () {
+    var form = this.props.form;
+
+    var level = ['license', 'insurance'];
+
+    return {
+      errors: {},
+      form: form,
+      level: (level.indexOf(form) || 0) + 1
+    };
+  },
+
+  componentDidMount: function () {
+    $('body > div.layout').css('background-color', 'white');
+  },
+
+  generateTitle: function () {
+    var form = this.state.form;
+
+    switch (form) {
+      case 'license':
+        return React.createElement(
+          'h5',
+          { className: 'step-title text-center space-top' },
+          'Upload License'
+        );
+      case 'insurance':
+        return React.createElement(
+          'h5',
+          { className: 'step-title text-center space-top' },
+          'Upload Insurance'
+        );
+    }
+  },
+
+  generateForm: function () {
+    var form = this.state.form;
+
+    switch (form) {
+      case 'license':
+        return React.createElement(TradyLicenseAndInsurance, _extends({}, this.props, { isRegistering: false }));
+      case 'insurance':
+        return React.createElement(TradyLicenseAndInsurance, _extends({}, this.props, { isRegistering: false }));
+    }
+  },
+
+  componentWillUnmount: function () {
+    $('body > div.layout').css('background-color', '#F4F8FB');
+  },
+
+  render: function () {
+    return React.createElement(
+      'div',
+      { id: 'registration', className: 'trady-registration' },
+      this.generateTitle(),
+      this.generateForm()
+    );
+  }
+});
+
+var TradyLicenseAndInsurance = React.createClass({
+  displayName: 'TradyLicenseAndInsurance',
+
+  getInitialState: function () {
+    return {
+      text: '',
+      file: null,
+      error: {},
+      haveDocument: !this.props.isRegistering
+    };
+  },
+
+  _handleChangeFile: function (e) {
+    var self = this;
+    var error = this.state.error;
+
+    error.image = '';
+    this.setState({ error: error });
+    var files = e.target.files;
+    var file = files[0];
+
+    var filename = files[0];
+    var options = {
+      extension: filename.name.match(/(\.\w+)?$/)[0],
+      _: Date.now()
+    };
+
+    // start upload file into S3
+    $.getJSON('/images/cache/presign', options, function (result) {
+      var fd = new FormData();
+      $.each(result.fields, function (key, value) {
+        fd.append(key, value);
+      });
+      fd.append('file', file);
+      $.ajax({
+        type: 'POST',
+        url: result['url'],
+        enctype: 'multipart/form-data',
+        processData: false,
+        contentType: false,
+        data: fd,
+        xhr: function () {
+          var xhr = new window.XMLHttpRequest();
+          xhr.upload.addEventListener("loadstart", function (evt) {
+            if ($('.progress').length == 0) {
+              $('<div class="progress" style="width: 80%;"><div class="progress-bar" style="width: ' + 0 + '%"></div></div>').insertAfter("#input-file");
+            }
+
+            if (/Edge/i.test(navigator.userAgent)) {
+              var percentComplete;
+              var loop;
+
+              (function () {
+                percentComplete = 0;
+                loop = 0;
+
+                var inn = setInterval(function () {
+                  percentComplete += Math.ceil(51200 * ++loop / file.size * 100);
+                  if (percentComplete >= 100) {
+                    clearInterval(inn);
+                  } else {
+                    $('#title-upload').html('Uploading ' + percentComplete + '%');
+                    $('.progress .progress-bar').css('width', percentComplete + '%');
+                  }
+                }, 500);
+              })();
+            }
+          });
+          xhr.upload.addEventListener("progress", function (evt) {
+            if (evt.loaded > 0 && evt.total > 0) {
+              var percentComplete = Math.ceil(evt.loaded / evt.total * 100);
+              var progress = $('.progress');
+              if (progress.length !== 0) {
+                $('.progress .progress-bar').css('width', percentComplete + '%');
+              }
+              $('#title-upload').html('Uploading ' + percentComplete + '%');
+            }
+          }, false);
+          return xhr;
+        },
+        success: function (res) {
+          setTimeout(function () {
+            $('#title-upload').html('<i class="fa fa-upload" /> Choose PDF to upload');
+            $('.progress').remove();
+          }, 0);
+          var filePDF = {
+            id: result.fields.key.match(/cache\/(.+)/)[1],
+            storage: 'cache',
+            metadata: {
+              size: file.size,
+              filename: file.name.match(/[^\/\\]*$/)[0],
+              mime_type: file.type
+            }
+          };
+          self.updateFile(filePDF);
+        }
+      });
+    });
+  },
+
+  updateFile: function (filePDF) {
+    this.setState({
+      file: filePDF
+    });
+  },
+
+  removeFile: function (index) {
+    $('#input-file').val('');
+    this.setState({
+      file: null,
+      error: ''
+    });
+  },
+
+  onSubmit: function (e) {
+    e.preventDefault();
+    var self = this;
+    var _state = this.state;
+    var file = _state.file;
+    var haveDocument = _state.haveDocument;
+    var _props = this.props;
+    var isEdit = _props.isEdit;
+    var isLicense = _props.isLicense;
+    var license = _props.license;
+    var insurance = _props.insurance;
+    var upload_url = _props.upload_url;
+    var isRegistering = _props.isRegistering;
+
+    if (isRegistering && !haveDocument) {
+      return location.href = this.props.url;
+    }
+    // if (!file) return this.setState({error: {image: ['Please upload a file']}});
+    var data = {
+      trady_id: self.props.trady_id,
+      maintenance_request_id: self.props.maintenance_request_id,
+      image: file && JSON.stringify(file)
+    };
+    if (isEdit) {
+      data.id = isLicense ? license && license.id : insurance && insurance.id;
+    }
+    if (isLicense && haveDocument) {
+      data.license_number = this.license_number.value;
+      data.license_type = this.license_type.value;
+    }
+    var url = upload_url || (isLicense ? '/licenses' : '/insurances');
+    $.ajax({
+      type: isEdit ? 'PUT' : 'POST',
+      url: url,
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      data: {
+        picture: data
+      },
+      success: function (res) {
+        if (res.image_error) {
+          if (!res.error) res.error = {};
+          res.error.image = res.error.image || [res.image_error];
+        }
+        self.setState({ error: res.error || {} });
+      },
+      error: function (err) {}
+    });
+  },
+
+  removeError: function (_ref) {
+    var id = _ref.target.id;
+
+    var error = Object.assign({}, this.state.error);
+    if (error[id]) {
+      error[id] = false;
+      this.setState({ error: error });
+    }
+  },
+
+  renderError: function (error) {
+    return React.createElement(
+      'p',
+      { id: 'errorbox', className: 'error' },
+      error && error[0] ? error[0] : ''
+    );
+  },
+
+  render: function () {
+    var _this = this;
+
+    var _state2 = this.state;
+    var file = _state2.file;
+    var error = _state2.error;
+    var haveDocument = _state2.haveDocument;
+    var _props2 = this.props;
+    var isLicense = _props2.isLicense;
+    var isRegistering = _props2.isRegistering;
+    var license = _props2.license;
+
+    var renderErrorFunc = this.renderError;
+    var removeErrorFunc = this.removeError;
+
+    return React.createElement(
+      'div',
+      { className: 'upload-file' },
+      React.createElement(
+        'form',
+        { role: 'form', className: 'form-horizontal', id: 'upload-license-insurance', onSubmit: this.onSubmit },
+        React.createElement(
+          'div',
+          { className: 'upload-description' },
+          this.state.text
+        ),
+        isRegistering && React.createElement(
+          'div',
+          { className: 'do-you-have text-center' },
+          isLicense ? "Are you a licensed professional?" : "Do you have business insurance?",
+          React.createElement(
+            'div',
+            { className: 'radio-same-address' },
+            React.createElement(
+              'label',
+              { className: 'radio-option' },
+              'No',
+              React.createElement('input', {
+                type: 'radio',
+                name: 'haveDocument',
+                value: false,
+                onChange: function () {
+                  return _this.setState({ haveDocument: false, error: {} });
+                },
+                defaultChecked: !haveDocument
+              }),
+              React.createElement('span', { className: 'radio-checkmark' })
+            ),
+            React.createElement(
+              'label',
+              { className: 'radio-option' },
+              'Yes',
+              React.createElement('input', {
+                type: 'radio',
+                name: 'haveDocument',
+                value: true,
+                onChange: function () {
+                  return _this.setState({ haveDocument: true, error: {} });
+                },
+                defaultChecked: !!haveDocument
+              }),
+              React.createElement('span', { className: 'radio-checkmark' })
+            )
+          )
+        ),
+        !isLicense && React.createElement(
+          'div',
+          { className: "alert " + (haveDocument ? 'alert-message' : 'alert-danger') },
+          'Please note that to successfully be awarded jobs from property agencies, companies are required to have business insurance. As evidence we require you to upload a photo or PDF file of the insurance certificate of currency.(This is provided to you by your insurance company)'
+        ),
+        haveDocument && isLicense && React.createElement(
+          'div',
+          { className: 'form-group' },
+          React.createElement(
+            'div',
+            { className: 'col-sm-10' },
+            React.createElement('input', {
+
+              id: 'license_number',
+              type: 'text',
+              placeholder: 'License Number',
+              defaultValue: license && license.license_number,
+              ref: function (ref) {
+                return _this.license_number = ref;
+              },
+              className: "form-control " + (error['license_number'] ? "has-error" : ""),
+              onChange: removeErrorFunc
+            }),
+            renderErrorFunc(error['license_number'])
+          )
+        ),
+        haveDocument && isLicense && React.createElement(
+          'div',
+          { className: 'form-group' },
+          React.createElement(
+            'div',
+            { className: 'col-sm-10' },
+            React.createElement('input', {
+
+              id: 'license_type',
+              type: 'text',
+              placeholder: 'License Type',
+              defaultValue: license && license.license_type,
+              ref: function (ref) {
+                return _this.license_type = ref;
+              },
+              className: "form-control " + (error['license_type'] ? "has-error" : ""),
+              onChange: removeErrorFunc
+            }),
+            renderErrorFunc(error['license_type'])
+          )
+        ),
+        haveDocument && React.createElement(
+          'div',
+          { className: 'file-upload text-center' },
+          file && file.id ? React.createElement(
+            'div',
+            { className: 'file-pdf' },
+            React.createElement(
+              'span',
+              null,
+              file.metadata.filename
+            ),
+            React.createElement('i', { className: 'fa fa-file-o' }),
+            React.createElement(
+              'span',
+              { className: 'remove-text', onClick: this.removeFile },
+              'Remove'
+            )
+          ) : React.createElement(
+            'div',
+            { className: 'browse-wrap' },
+            React.createElement(
+              'div',
+              { className: 'title', id: 'title-upload' },
+              React.createElement('i', { className: 'fa fa-upload' }),
+              isLicense ? "Upload Image/PDF of professional license" : "Upload Image/PDF of license insurance certificate of currency/work cover"
+            ),
+            React.createElement('input', {
+              type: 'file',
+              id: 'input-file',
+              className: 'upload inputfile',
+              accept: 'image/jpeg, image/png, application/pdf',
+              onChange: function (e) {
+                return _this._handleChangeFile(e);
+              }
+            })
+          )
+        ),
+        renderErrorFunc(error['image']),
+        React.createElement(
+          'div',
+          { className: 'buttons' },
+          React.createElement(
+            'button',
+            { type: 'submit', className: 'button-primary green option-button' },
+            !haveDocument ? "Skip for now" : isLicense ? 'Submit' : 'Next'
+          )
+        )
+      )
+    );
+  }
+});
+/* {!isLicense && <div className="form-group">
+ <div className="col-sm-10 text-center">
+   <input
+     type="text"
+     id="insurance_company"
+     placeholder="Insurance Company"
+     defaultValue={this.props.insurance_company}
+     ref={(ref) => this.insurance_company = ref}
+     className={"form-control " + (error['insurance_company'] ? "has-error" : "")}
+     onChange={removeErrorFunc}
+   />
+   {renderErrorFunc(error['insurance_company'])}
+ </div>
+</div>}
+{!isLicense && <div className="form-group">
+ <div className="col-sm-10 text-center">
+   <input
+     type="text"
+     id="policy_number"
+     placeholder="Policy Number"
+     defaultValue={this.props.policy_number}
+     ref={(ref) => this.policy_number = ref}
+     className={"form-control " + (error['policy_number'] ? "has-error" : "")}
+     onChange={removeErrorFunc}
+   />
+   {renderErrorFunc(error['policy_number'])}
+ </div>
+</div>}
+{!isLicense && <div className="form-group">
+ <div className="col-sm-10 text-center">
+   <input
+     type="text"
+     id="policy_expiry_date"
+     placeholder="Policy Expiry Date"
+     defaultValue={this.props.policy_expiry_date}
+     ref={(ref) => this.policy_expiry_date = ref}
+     className={"form-control " + (error['policy_expiry_date'] ? "has-error" : "")}
+     onChange={removeErrorFunc}
+   />
+   {renderErrorFunc(error['policy_expiry_date'])}
+ </div>
+</div>} */;
 var Trady = React.createClass({
   displayName: "Trady",
 
@@ -102369,6 +102843,44 @@ var TradyEdit = React.createClass({
       error: function (err) {}
     });
     return false;
+  },
+
+  uploadDocument: function (images, isLicense, callback) {
+    var self = this;
+    var _props = this.props;
+    var license = _props.license;
+    var insurance = _props.insurance;
+
+    var data = {
+      trady_id: self.props.trady.id,
+      image: JSON.stringify(images[0])
+    };
+    if (isLicense) data.license_id = license && license.id;else data.insurance_id = insurance && insurance.id;
+
+    $.ajax({
+      type: 'POST',
+      url: isLicense ? '/licenses' : '/insurances',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      data: {
+        picture: data
+      },
+      success: function (res) {
+        callback(res.error);
+      },
+      error: function (err) {
+        callback(err.responseText);
+      }
+    });
+  },
+
+  uploadInsurance: function (images, callback) {
+    return uploadDocument(images, false, callback);
+  },
+
+  uploadLicense: function (images, callback) {
+    return uploadDocument(images, true, callback);
   },
 
   onSubmit: function (e) {

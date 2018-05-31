@@ -16,6 +16,7 @@ $color-text: #83878C;
       text-align: center;
       color: $color-text;
       @include flex(1);
+      padding: 1px;
 
       .step-status {
         height: 6px;
@@ -48,6 +49,9 @@ $color-text: #83878C;
     color: $color-green-submit;
     border-bottom: 4px solid $color-green-submit;
     padding-bottom: 20px;
+    &.space-top {
+      padding-top: 20px;
+    }
   }
   form {
     width: 80%;
@@ -99,5 +103,11 @@ $color-text: #83878C;
         font-size: 10px;
       }
     }
+  }
+}
+
+#upload-license-insurance {
+  > div {
+    margin-bottom: 15px;
   }
 }

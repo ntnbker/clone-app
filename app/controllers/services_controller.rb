@@ -47,7 +47,7 @@ class ServicesController < ApplicationController
       end
       # redirect_to new_tradie_term_agreement_path(maintenance_request_id:params[:maintenance_request_id], trady_company_id:params[:trady_company_id], trady_id:params[:trady_id])
       flash[:success] = "Thank you for signing up with Maintenance App. We will strive to help your business grow :)"
-      redirect_to root_path
+      redirect_to new_insurance_path(maintenance_request_id:params[:maintenance_request_id], role:"Trady", trady_id:trady_id)
     else
       # flash[:danger] = "Please choose at least one service from the list below, thank you."
       # redirect_to services_path(maintenance_request_id:params[:maintenance_request_id], trady_id:params[:trady_id], trady_company_id:params[:trady_company_id])
@@ -138,7 +138,7 @@ class ServicesController < ApplicationController
         Skill.create(skill:skill, trady_id:trady_id)
       end
       flash[:success] = "Thank you for signing up with Maintenance App. We will strive to help your business grow :)"
-      redirect_to root_path(maintenance_request_id:params[:maintenance_request_id], role:"Trady")
+      redirect_to new_insurance_path(maintenance_request_id:params[:maintenance_request_id], role:"Trady", trady_id:trady_id)
     else
       # flash[:danger] = "Please choose at least one service from the list below, thank you."
       # redirect_to services_path(maintenance_request_id:params[:maintenance_request_id], trady_id:params[:trady_id], trady_company_id:params[:trady_company_id])

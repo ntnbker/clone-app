@@ -102,29 +102,26 @@ var Invoices = React.createClass({
 		};
 	},
 
-	getPictureImage(invoices) {
-		if (!invoices || invoices.length === 0)
-			return [];
+  getPictureImage(invoice) {
+    const self = this;
+    if (!invoice)
+      return '';
 
-		const pictures = (invoices || []).map((invoice) => {
-			const trady 											= invoice.trady || {};
-			const id 													= trady.id || '';
-			const trady_company 							= trady.trady_company || {};
-			const trady_profile_image 				= trady.trady_profile_image || {};
-			const trady_company_profile_image = trady_company.trady_company_profile_image || {};
+    const trady 											= invoice.trady || {};
+    const id 													= trady.id || '';
+    const trady_company 							= trady.trady_company || {};
+    const trady_profile_image 				= trady.trady_profile_image || {};
+    const trady_company_profile_image = trady_company.trady_company_profile_image || {};
 
-			return trady_company_profile_image && trady_company_profile_image.image_url
-					|| trady_profile_image && trady_profile_image.image_url;
-		});
-
-		return pictures;
-	},
+    return trady_company_profile_image && trady_company_profile_image.image_url
+        || trady_profile_image && trady_profile_image.image_url;
+  },
 
 	render: function() {
 		const self = this;
     const { current_role, invoices } = this.props;
     const role = current_role && current_role.role;
-    const pictures = this.getPictureImage(invoices);
+    const getImage = this.getPictureImage;
 
 		const notPaid = invoices.filter((i) => !i.paid).length !== 0;
 
@@ -143,7 +140,7 @@ var Invoices = React.createClass({
               <div className="user seven columns trady-info-group">
                 <div className="trady-info">
                   <span className="icon-user">
-                    <AvatarImage imageUri={pictures[index]} />
+                    <AvatarImage imageUri={getImage(invoice)} />
                   </span>
                   <div className="info">
                     <div className="name">
@@ -191,7 +188,7 @@ var Invoices = React.createClass({
                       </div>  
                   }
                   { role === 'Trady' && !paid && active !== false &&
-                    <div className="payment-scheduled">
+                    <div className="payment-scheduled long-text">
                       <button type="button" className="btn payment-scheduled" onClick={(item) => self.props.paymentReminder({})}>
                         Remind Agent of Payment
                       </button>

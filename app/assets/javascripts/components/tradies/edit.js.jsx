@@ -89,6 +89,43 @@ var TradyEdit = React.createClass({
     return false;
   },
 
+  uploadDocument(images, isLicense, callback) {
+    const self = this;
+    const {license, insurance} = this.props;
+
+    const data = {
+      trady_id: self.props.trady.id,
+      image: JSON.stringify(images[0]),
+    }
+    if (isLicense) data.license_id = license && license.id;
+    else data.insurance_id = insurance && insurance.id;
+
+    $.ajax({
+      type: 'POST',
+      url: isLicense ? '/licenses' : '/insurances',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      data: {
+        picture: data,
+      },
+      success(res) {
+        callback(res.error);
+      },
+      error(err) {
+        callback(err.responseText);
+      }
+    });
+  },
+
+  uploadInsurance(images, callback) {
+    return uploadDocument(images, false, callback);
+  },
+
+  uploadLicense(images, callback) {
+    return uploadDocument(images, true, callback);
+  },
+
   onSubmit: function(e){
     e.preventDefault();
     var flag = false;

@@ -1,0 +1,220 @@
+$color-text: #83878C;
+$color-red: #e34f4f;
+
+.upload-file {
+  color: $color-text;
+	input {
+		display: block;
+    width: 100%;
+    color: $color-text;
+  }
+  .remove-text {
+    color: $color-red;
+    &:hover {
+      color: red;
+    }
+  }
+	.browse-wrap {
+		top: 0;
+		left: 0;
+		margin: 10px 0px;
+		cursor: pointer;
+		overflow: hidden;
+		padding: 20px 30px;
+		background-color: #f6f7f8;
+		border: solid 1px #d2d2d7;
+		position: relative;
+		text-align: center;
+		@include flexbox;
+		@include flex-direction(column);
+		@include align-items(center);
+    max-width: 420px;
+		margin: 0 auto;
+	}
+	.title {
+    width: 100%;
+    color: #3b5998;
+    font-size:14px;
+    font-weight:bold;
+    font-family:tahoma, arial, sans-serif;
+    cursor: pointer;
+    i {
+        display: inline-block;
+        margin-right: 5px;
+    }
+  }
+  .upload {
+    right:0;
+    margin:0;
+    bottom:0;
+    padding:0;
+    opacity:0;
+    height:300px;
+    outline:none;
+    cursor:inherit;
+    cursor: pointer;
+    position:absolute;
+    font-size:1000px !important;
+  }
+  .progress {
+    //border: 1px solid #2FA342;
+    background: #DCE0E3;
+    border-radius: 10px;
+    margin: 0;
+    padding: 0;
+    height: 7px;
+    overflow: hidden;
+    position: relative;
+    .progress-bar {
+      background-color: #6BB438;
+      color: $color-text;
+      font-size: 12px;
+      z-index: 150;
+      position: relative;
+      overflow: hidden;
+      transition: all 1s linear 0s;
+      height: 100%;
+      &:after {
+        //content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background-image: -webkit-gradient(linear, 0 0, 100% 100%, color-stop(.25, #56aa1c), color-stop(.25, transparent), color-stop(.5, transparent), color-stop(.5, #56aa1c), color-stop(.75, #56aa1c), color-stop(.75, transparent), to(transparent));
+        background-image: -webkit-linear-gradient(-45deg, #56aa1c 25%, transparent 25%, transparent 50%, #56aa1c 50%, #56aa1c 75%, transparent 75%, transparent);
+        background-image: -o-linear-gradient(-45deg, #56aa1c 25%, transparent 25%, transparent 50%, #56aa1c 50%, #56aa1c 75%, transparent 75%, transparent);
+        z-index: 1;
+        background-size: 20px 20px;
+        -webkit-animation: move 2s linear infinite;
+        -webkit-border-top-right-radius: 8px;
+        -webkit-border-bottom-right-radius: 8px;
+        -moz-border-radius-topright: 8px;
+        -moz-border-radius-bottomright: 8px;
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
+        -webkit-border-top-left-radius: 20px;
+        -webkit-border-bottom-left-radius: 20px;
+        -moz-border-radius-topleft: 20px;
+        -moz-border-radius-bottomleft: 20px;
+        border-top-left-radius: 20px;
+        border-bottom-left-radius: 20px;
+        overflow: hidden;
+      }
+    }
+  }
+
+  .file-pdf {
+  	text-align: center;
+  	i {
+  		font-size: 80px;
+  		display: block;
+  	}
+  	span {
+  		cursor: pointer;
+  		text-decoration: blink;
+      width: 100%;
+      text-align: center;
+      word-wrap: break-word;
+      word-break: break-all;
+  	}
+  }
+
+  .radio-same-address {
+    margin: 10px 10% 20px 10%;
+    width: 70%;
+    color: $color-text;
+
+    .radio-option {
+      position: relative;
+      display: inline-block;
+      padding-left: 35px;
+      margin: 5px 10px;
+      cursor: pointer;
+
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      // Hide the radio default
+      input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+      }
+      .radio-checkmark {
+        position: absolute;
+        top: -3px;
+        left: 0;
+        height: 25px;
+        width: 25px;
+        background-color: transparent;
+        border-radius: 50%;
+        border: 2px solid $color-text;
+      }
+      &:hover input ~ .radio-checkmark {
+        background-color: $color-green-submit;
+      }
+
+      /* When the radio button is checked, add a blue background */
+      input:checked ~ .radio-checkmark {
+      }
+      /* Create the indicator (the dot/circle - hidden when not checked) */
+      .radio-checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+      }
+
+      /* Show the indicator (dot/circle) when checked */
+      input:checked ~ .radio-checkmark:after {
+        display: block;
+      }
+
+      /* Style the indicator (dot/circle) */
+      .radio-checkmark:after {
+        top: 13%;
+        left: 13%;
+        width: 74%;
+        height: 74%;
+        border-radius: 50%;
+        background: $color-green-submit;
+      }
+    }
+  }
+  .buttons {
+    text-align: center;
+    @include flexbox;
+    @include justify-content(center);
+
+    button {
+      @include flex(1);
+      margin: 20px;
+      max-width: 300px;
+
+      &:hover {
+        background-color: #619970;
+        border-color: #619970;
+      }
+    }
+
+    .button-submit {
+      color: white;
+      border-color: $color-green-submit;
+      background-color: $color-green-submit;
+    }
+    .button-back {
+      color: white;
+      border-color: $color-blue;
+      background-color: $color-blue;
+    }
+  }
+  @media (max-width: 500px) {
+    .buttons {
+      button {
+        margin-left: 5px;
+        margin-right: 5px;
+      }
+    }
+  }
+}
