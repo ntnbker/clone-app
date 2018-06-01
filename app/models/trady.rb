@@ -20,6 +20,7 @@ class Trady < ApplicationRecord
   has_many :skills
   has_one :trady_profile_image
   has_one :license
+  has_many :receipts
   validates_presence_of :company_name
   validates_presence_of :name
   validates_presence_of :email
