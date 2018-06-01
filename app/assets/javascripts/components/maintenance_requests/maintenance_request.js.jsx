@@ -155,12 +155,14 @@ var FixCSS = React.createClass({
 	
 	resizeSidebar() {
 		const {haveScroll} = this.props;
+		
 		$('.sidebar > .box-shadow').css({height: '', 'overflow-y': ''});
 		let screenHeight = $(window).height();
 		let sidebarHeight = $('.sidebar').height();
+		let boxShadowHeight = $('.sidebar > .box-shadow').height();
 		if (window.innerWidth < 1024) {
 			$('.sidebar').css({height: screenHeight});
-			$('.sidebar > .box-shadow').css({height: Math.max(screenHeight, sidebarHeight)});
+			$('.sidebar > .box-shadow').css({height: Math.max(screenHeight, haveScroll ? boxShadowHeight : sidebarHeight)});
 		} else {
 			let menuHeight = 65;
 			let footerHeight = 58;
@@ -169,7 +171,7 @@ var FixCSS = React.createClass({
 			let fixSidebarHeight = screenHeight - menuHeight - footerHeight - spaceHeight - alertHeight;
 			$('.sidebar').css({height: fixSidebarHeight});
 			if (!haveScroll) $('.sidebar > .box-shadow').css({height: fixSidebarHeight});
-			else $('.sidebar > .box-shadow').css({height: Math.max(fixSidebarHeight - 30,$('.sidebar > .box-shadow').height())})
+			else $('.sidebar > .box-shadow').css({height: Math.max(fixSidebarHeight - 30, boxShadowHeight)})
 		}
 		$('.list-quote .contact-button > div').hide().show(0);
 		if (haveScroll && $('.sidebar').height() < $('.sidebar > .box-shadow').height()) {

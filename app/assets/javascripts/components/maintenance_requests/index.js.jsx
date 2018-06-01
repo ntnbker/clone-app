@@ -263,7 +263,23 @@ var DropDownMobileList = React.createClass({
 			this.setState({showGeneral: false});
 		}
 		$('.sidebar').removeClass('visible');
-	},
+  },
+  
+  checkCloseTouchStart(e) {
+    this.setState({
+      x: e.originalEvent.touches[0].pageX,
+      y: e.originalEvent.touches[0].pageY,
+    })
+  },
+  
+  checkCloseTouchEnd(e) {
+    const {x, y} = this.state;
+    const {pageX: newX, pageY: newY} = e.originalEvent.touches[0];
+
+    if (Math.sqrt(Math.pow(x - newX, 2) + Math.pow(y - newY, 2)) < 5) {
+      this.checkClose(e);
+    }
+  },
 
 	checkClose(e) {
 		const self = this;
@@ -279,12 +295,14 @@ var DropDownMobileList = React.createClass({
 	componentDidMount: function() {
 		const self = this;
 		$(document).on('click.sidebar', this.checkClose);
-		$(document).on('touchstart.sidebar', this.checkClose);
+		$(document).on('touchstart.sidebar', this.checkCloseTouchStart);
+		$(document).on('touchend.sidebar', this.checkCloseTouchEnd);
 	},
 
 	componentWillUnmount() {
 		$(document).unbind('click.sidebar');
 		$(document).unbind('touchstart.sidebar');
+		$(document).unbind('touchend.sidebar');
 	},
 
   render: function() {
