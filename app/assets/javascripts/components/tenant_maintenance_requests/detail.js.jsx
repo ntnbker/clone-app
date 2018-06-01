@@ -1,12 +1,18 @@
 var ContentTenantDetail = React.createClass({
 	render: function() {
-		const selt = this;
+		const self = this;
 		return (
 			<ul>
 				<li>
-					<a onClick={() => selt.props.onModalWith('addPhoto')}>
+					<a onClick={() => self.props.onModalWith('addPhoto')}>
 						<i className="fa fa-commenting" aria-hidden="true" />
 						Add Photo
+					</a>
+				</li>
+				<li>
+					<a onClick={() => self.props.onModalWith('sendAgentMessage')}>
+						<i className="fa fa-commenting" aria-hidden="true" />
+						Send Agent Message
 					</a>
 				</li>
 			</ul>
