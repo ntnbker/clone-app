@@ -1,1 +1,4 @@
-= react_component 'ListMaintenanceRequest', {:link => "/tenant_maintenance_requests", :current_user_tenant => @current_user.tenant, :maintenance_requests => @maintenance_requests_json}
+-edit_tenant = edit_tenant_path(current_user.tenant)
+-user_name = current_user.tenant.name || ''
+- images = profile_and_company_avatar
+= react_component 'ListMaintenanceRequest', {:link => "/tenant_maintenance_requests", :current_user_tenant => @current_user.tenant, :maintenance_requests => @maintenance_requests_json, :authenticity_token => form_authenticity_token,:edit_tenant => edit_tenant, :user_name => user_name, :images => images, logout_path: logout_path, :current_role => @current_user.current_role}

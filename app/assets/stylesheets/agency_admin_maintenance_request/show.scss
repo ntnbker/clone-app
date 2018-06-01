@@ -91,7 +91,7 @@ $color-text: #83878C;
       bottom: 48px;
     }
   }
-  .new-ui-maintenance-request.summary-container-index {
+  .new-ui-maintenance-request.summary-container-index, .maintenance-list.new-maintenance-list {
     color: $color-text;
     background-color: #f4f8fb;
     clear: both;
@@ -136,7 +136,7 @@ $color-text: #83878C;
         }
       }
     }
-    .main-summary {
+    .main-summary, .maintenance-content {
       @include flexbox;
 
       .section {
@@ -179,7 +179,8 @@ $color-text: #83878C;
         @include flex(1 1 300px);
         width: 100%;
         max-width: 300px;
-        padding: 10px 10px 0;
+        margin-top: 10px;
+        padding: 0px 10px;
         position: fixed;
         z-index: 1000;
         padding-right: 0;
@@ -258,6 +259,9 @@ $color-text: #83878C;
             color: inherit;
             font-size: inherit;
             margin-left: 0;
+          }
+          i {
+            float: right;
           }
         }
         .general-actions {

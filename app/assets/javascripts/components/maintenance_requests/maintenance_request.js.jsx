@@ -154,7 +154,8 @@ var FixCSS = React.createClass({
 	},
 	
 	resizeSidebar() {
-		$('.sidebar > .box-shadow').css({height: ''});
+		const {haveScroll} = this.props;
+		$('.sidebar > .box-shadow').css({height: '', 'overflow-y': ''});
 		let screenHeight = $(window).height();
 		let sidebarHeight = $('.sidebar').height();
 		if (window.innerWidth < 1024) {
@@ -163,20 +164,23 @@ var FixCSS = React.createClass({
 		} else {
 			let menuHeight = 65;
 			let footerHeight = 58;
-			let spaceHeight = 55;
 			let alertHeight = $("#main > div.alert").height() || 0;
-			let sidebarHeight = screenHeight - menuHeight - footerHeight - spaceHeight - alertHeight;
-			console.log(sidebarHeight, alertHeight);
-			$('.sidebar').css({height: sidebarHeight});
-			$('.sidebar > .box-shadow').css({height: sidebarHeight});
+			let spaceHeight = !haveScroll || alertHeight ? 55 : 20;
+			let fixSidebarHeight = screenHeight - menuHeight - footerHeight - spaceHeight - alertHeight;
+			$('.sidebar').css({height: fixSidebarHeight});
+			if (!haveScroll) $('.sidebar > .box-shadow').css({height: fixSidebarHeight});
+			else $('.sidebar > .box-shadow').css({height: Math.max(fixSidebarHeight - 30,$('.sidebar > .box-shadow').height())})
 		}
 		$('.list-quote .contact-button > div').hide().show(0);
+		if (haveScroll && $('.sidebar').height() < $('.sidebar > .box-shadow').height()) {
+			$('.sidebar').css({'overflow-y': 'scroll'});
+		}
 	},
 
   componentWillUnmount() {
 		$('.layout').removeClass('new-ui');
 		$('footer').removeClass(this.props.className || '');
-		$('.sidebar').css({height: ''});
+		$('.sidebar').css({height: '', 'overflow-y': ''});
 		$(window).unbind('resize.new_ui orientationchange.new_ui');
 		$('#main > div.alert').unbind('remove.new_ui', self.resizeSidebar);
   },
