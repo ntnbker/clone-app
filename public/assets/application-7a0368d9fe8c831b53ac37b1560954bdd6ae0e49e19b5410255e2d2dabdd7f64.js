@@ -99294,7 +99294,7 @@ var ContentTenantDetail = React.createClass({
 	displayName: "ContentTenantDetail",
 
 	render: function () {
-		var selt = this;
+		var self = this;
 		return React.createElement(
 			"ul",
 			null,
@@ -99304,10 +99304,22 @@ var ContentTenantDetail = React.createClass({
 				React.createElement(
 					"a",
 					{ onClick: function () {
-							return selt.props.onModalWith('addPhoto');
+							return self.props.onModalWith('addPhoto');
 						} },
 					React.createElement("i", { className: "fa fa-commenting", "aria-hidden": "true" }),
 					"Add Photo"
+				)
+			),
+			React.createElement(
+				"li",
+				null,
+				React.createElement(
+					"a",
+					{ onClick: function () {
+							return self.props.onModalWith('sendAgentMessage');
+						} },
+					React.createElement("i", { className: "fa fa-commenting", "aria-hidden": "true" }),
+					"Send Agent Message"
 				)
 			)
 		);
@@ -99603,7 +99615,7 @@ var TenantMaintenanceRequest = React.createClass({
 		}
 	},
 
-	sendAgentMessage: function (params) {
+	sendAgentMessage: function (params, callback) {
 		var self = this;
 		var maintenance_request = this.state.maintenance_request;
 
@@ -99618,6 +99630,9 @@ var TenantMaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function (res) {
+				if (res && res.errors) {
+					return callback(res.errors);
+				}
 				var tenants_conversation = !!self.state.tenants_conversation ? self.state.tenants_conversation : [];
 				tenants_conversation.push(res);
 
