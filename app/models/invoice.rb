@@ -5,7 +5,7 @@ class Invoice < ApplicationRecord
   belongs_to :trady
   belongs_to :ledger, inverse_of: :invoices
   has_many :invoice_items, inverse_of: :invoice
-  belongs_to :receipts
+  belongs_to :receipt
   accepts_nested_attributes_for :invoice_items, allow_destroy: true
   validates_associated :invoice_items
   validates_presence_of :due_date

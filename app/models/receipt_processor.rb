@@ -18,7 +18,7 @@ class ReceiptProcessor
     if !all_invoices.empty?
       prepared_invoices = []
       all_invoices.each do |invoice|
-        if Date.today > invoice.due_date + 30.days
+        if Date.today > invoice.due_date 
           prepared_invoices.push(invoice)
         end
       end
@@ -26,8 +26,11 @@ class ReceiptProcessor
         sum_total = 0
         receipt = Receipt.create(trady_id:trady_id)
         prepared_invoices.each do |invoice|
-          invoice.update_attribute(receipt_id: receipt.id)
-          sum_total+= invoice.service_fee
+          #check to see if invoice already belongs to receipt that should be processed. 
+          if invoice.receipt_id.nil?
+            invoice.update_attribute(:receipt_id, receipt.id)
+            sum_total+= invoice.service_fee
+          end 
         end 
         receipt.update_attribute(:total, sum_total)
       end 
