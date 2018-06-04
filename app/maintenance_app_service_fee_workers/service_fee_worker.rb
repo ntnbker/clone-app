@@ -13,7 +13,7 @@ class ServiceFeeWorker
     
     if Date.today >= run_date
       SystemInvoicesServiceFeeCollectionWorker.perform_async
-      UploadedInvoicesServiceFeeCollectionWorker.perform_async
+      #UploadedInvoicesServiceFeeCollectionWorker.perform_async
       schedule.update_attribute(:run_date, run_date + 7.days)
     else
       

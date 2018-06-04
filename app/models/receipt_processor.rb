@@ -18,7 +18,7 @@ class ReceiptProcessor
     if !all_invoices.empty?
       prepared_invoices = []
       all_invoices.each do |invoice|
-        if Date.today > invoice.due_date
+        if Date.today > invoice.due_date + 30.days
           prepared_invoices.push(invoice)
         end
       end

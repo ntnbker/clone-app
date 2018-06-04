@@ -67,32 +67,6 @@ class SystemInvoicesServiceFeeCollectionWorker
 
 
 
-    # customers_profiles_trady_ids  = CustomerProfile.where.not(trady_id:nil, customer_id:nil).pluck(:trady_id)
-    
-    
-    # system_invoices = Invoice.where(active:true,delivery_status:true, mapp_payment_status:"Outstanding", trady_id:customers_profiles_trady_ids).includes(trady:[:customer_profile])
-    # uploaded_invoices = UploadedInvoice.where(active:true, delivery_status:true, mapp_payment_status:"Outstanding", trady_id:customers_profiles_trady_ids).includes(trady:[:customer_profile])
-    # invoices = []    
-
-
-
-
-
-
-    # invoices.each do |invoice|
-
-    #   if Date.today > invoice.due_date + 30.days
-        
-    #     customer_id = invoice.trady.customer_profile.customer_id
-    #     amount_in_pennies = invoice.service_fee.to_f * 100
-    #     amount  = amount_in_pennies.to_i
-    #     #this is where the stripe stuff was
-         
-    #   else
-    #     #do nothing
-    #   end 
-    
-    # end
 
 
   
