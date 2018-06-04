@@ -18,7 +18,7 @@ class ReceiptProcessor
     if !all_invoices.empty?
       prepared_invoices = []
       all_invoices.each do |invoice|
-        if Date.today > invoice.due_date 
+        if Date.today > invoice.due_date
           prepared_invoices.push(invoice)
         end
       end
@@ -41,28 +41,6 @@ class ReceiptProcessor
 
 
 
-  # system_invoices = Invoice.where(active:true,delivery_status:true, mapp_payment_status:"Outstanding", trady_id:customers_profiles_trady_ids).includes(trady:[:customer_profile]).to_a
-  # uploaded_invoices = UploadedInvoice.where(active:true, delivery_status:true, mapp_payment_status:"Outstanding", trady_id:customers_profiles_trady_ids).includes(trady:[:customer_profile]).to_a
-  
-  # all_invoices = system_invoices + uploaded_invoices
-
-
-  # #it should grab all the invoices that are ready to be processed 
-  # prepared_invoices = []
-    
-  #   all_invoices.each do |invoice|
-  #     if Date.today > invoice.due_date + 30.days
-  #       prepared_invoices.push(invoice)
-  #       # customer_id = invoice.trady.customer_profile.customer_id
-  #       # amount_in_pennies = invoice.service_fee.to_f * 100
-  #       # amount  = amount_in_pennies.to_i
-  #       #this is where the stripe stuff was
-         
-  #     else
-  #       #do nothing
-  #     end
-  #   end
-
     
 
   end 
@@ -70,3 +48,4 @@ class ReceiptProcessor
 
 
 end 
+

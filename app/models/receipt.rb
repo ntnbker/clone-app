@@ -12,4 +12,12 @@ class Receipt < ApplicationRecord
     return  all_invoices
   end
 
+  def mark_as_paid
+    invoices = self.all_invoices
+
+    invoices.each do |invoice|
+      invoice.update_attribute(:mapp_payment_status, "Paid")
+    end 
+  end
+
 end 
