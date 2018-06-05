@@ -219,13 +219,13 @@ var NewDropDownList = React.createClass({
   render: function() {
     return (
       <div className="item">
-        <div className="header action general-action-title" onClick={this.onDrop}>
+        <div className="header action general-action-title">
           {this.props.title}
-					<i
+					{/* <i
 						aria-hidden="true"
 						onClick={this.onDrop}
 						className={"fa " + (this.state.show ? "fa-angle-down" : "fa-angle-right")}
-					/>
+					/> */}
         </div>
         <div className="content">
           {this.state.show &&
