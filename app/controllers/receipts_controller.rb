@@ -29,7 +29,7 @@ class ReceiptsController < ApplicationController
       flash[:danger] = "Sorry you are not allowed to see that. Please log into your own account thank you."
       redirect_to root_path
     end
-    end 
+    
   end
 
 end 
