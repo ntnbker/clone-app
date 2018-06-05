@@ -5,8 +5,8 @@ class ReceiptsController < ApplicationController
   before_action(only:[:show]) {belongs_to_trady}
 
   def index
-    @receipts = Receipt.where(paid:true,trady_id:current_user.trady.id).where("total > ?", 0).as_json(:include => {:invoices => {}, :uploaded_invoices=>{:methods => [:pdf_url]}})
-    binding.pry
+    @receipts = Receipt.where(paid:true,trady_id:current_user.trady.id).where("total > ?", 0).as_json
+    
     respond_to do |format|
       format.json {render :json=>{receipts:@receipts}}
       format.html 
