@@ -274,7 +274,8 @@ var DropDownMobileList = React.createClass({
   
   checkCloseTouchEnd(e) {
     const {x, y} = this.state;
-    const {pageX: newX, pageY: newY} = e.originalEvent.touches[0];
+    const newX = e.originalEvent.changedTouches[0].pageX;
+    const newY = e.originalEvent.changedTouches[0].pageY;
 
     if (Math.sqrt(Math.pow(x - newX, 2) + Math.pow(y - newY, 2)) < 5) {
       this.checkClose(e);
