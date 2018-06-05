@@ -91,7 +91,7 @@ $color-text: #83878C;
       bottom: 48px;
     }
   }
-  .new-ui-maintenance-request.summary-container-index {
+  .new-ui-maintenance-request.summary-container-index, .maintenance-list.new-maintenance-list {
     color: $color-text;
     background-color: #f4f8fb;
     clear: both;
@@ -136,7 +136,7 @@ $color-text: #83878C;
         }
       }
     }
-    .main-summary {
+    .main-summary, .maintenance-content {
       @include flexbox;
 
       .section {
@@ -179,7 +179,8 @@ $color-text: #83878C;
         @include flex(1 1 300px);
         width: 100%;
         max-width: 300px;
-        padding: 10px 10px 0;
+        margin-top: 10px;
+        padding: 0px 10px;
         position: fixed;
         z-index: 1000;
         padding-right: 0;
@@ -258,6 +259,9 @@ $color-text: #83878C;
             color: inherit;
             font-size: inherit;
             margin-left: 0;
+          }
+          i {
+            float: right;
           }
         }
         .general-actions {
@@ -665,6 +669,10 @@ $color-text: #83878C;
           margin: 0 !important;
           line-height: inherit !important;
           display: block;
+          word-wrap: break-word;
+          word-break: break-all;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
         i {
           margin-right: 5px;
@@ -852,6 +860,10 @@ $color-text: #83878C;
               text-overflow: ellipsis;
               color: inherit;
               display: block;
+              word-wrap: break-word;
+              word-break: break-all;
+              overflow: hidden;
+              text-overflow: ellipsis;
             }
           }
           i {
@@ -1009,6 +1021,45 @@ $color-text: #83878C;
           }
         }
       }
+      .main-summary, .maintenance-content {
+        .sidebar {
+          @include flex(1 1 240px);
+          max-width: 240px;
+          .item {
+            overflow: inherit;
+  
+            .content {
+              li a {
+                font-size: 10px;
+                span {
+                  width: 20px;
+                  height: 20px;
+                  line-height: 20px;
+                }
+              }
+            }
+          }
+          .user-avatar {
+            .user-name {
+              font-size: 15px;
+            }
+            button {
+              font-size: 10px;
+            }
+          }
+          .general-action-title {
+            font-size: 14px;
+          }
+          .general-actions {
+            > * {
+              font-size: 10px;
+            }
+            span.icon {
+              font-size: 15px;
+            }
+          }
+        }
+      }
     }
   }
   .maintenance-request-settings {
@@ -1025,6 +1076,10 @@ $color-text: #83878C;
       background-color: $color-green;
       border: $color-green;
       padding: 0;
+      word-wrap: break-word;
+      word-break: break-all;
+      overflow: hidden;
+      text-overflow: ellipsis;
 
       i {
         margin-right: 5px;

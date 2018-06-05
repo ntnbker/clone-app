@@ -186,7 +186,7 @@ var DropDownList = React.createClass({
   render: function() {
     return (
       <div className="droplist">
-        <div className={this.state.hidden ? 'title' : 'title active'} onClick={this.onDrop}>
+        <div className={(this.state.hidden ? 'title' : 'title active')} onClick={this.onDrop}>
           {this.props.title}
         </div>
         <div className="content" style={{display: this.state.hidden ? 'none' : 'block' }}>
@@ -201,33 +201,13 @@ var DropDownList = React.createClass({
   }
 });
 
-var DropDownMobileList = React.createClass({
+var NewDropDownList = React.createClass({
   getInitialState: function() {
-    return {hidden: true, valueAction: this.props.valueAction}
+    return {show : true, valueAction: this.props.valueAction}
   },
 
-  onDrop: function(id) {
-    if(id != "over") {
-      this.setState({
-        hidden: !this.state.hidden
-      });
-    }else if(!this.state.hidden){
-      this.setState({
-        hidden: true
-      });
-    }
-  },
-
-  componentDidMount: function() {
-    const self = this;
-    $(document).bind('click', function(e) {
-      const match = e.target.matches
-                  ? e.target.matches('#' + self.props.id)
-                  : e.target.msMatchesSelector('#' + self.props.id);
-      if (!match) {
-        self.onDrop('over');
-      }
-    });
+  onDrop() {
+    this.setState({show: !this.state.show});
   },
 
   componentWillReceiveProps: function(nextProps) {
@@ -237,30 +217,134 @@ var DropDownMobileList = React.createClass({
   },
 
   render: function() {
+    return (
+      <div className="item">
+        <div className="header action general-action-title">
+          {this.props.title}
+					{/* <i
+						aria-hidden="true"
+						onClick={this.onDrop}
+						className={"fa " + (this.state.show ? "fa-angle-down" : "fa-angle-right")}
+					/> */}
+        </div>
+        <div className="content">
+          {this.state.show &&
+            <DropDownContent
+              content={this.props.content}
+              valueAction={this.state.valueAction}
+              getAction={(value) => this.props.getAction(value)}
+            />
+          }
+        </div>
+      </div>
+    );
+  }
+});
+
+var DropDownMobileList = React.createClass({
+	getInitialState: function() {
+		return {
+			showAction: false,
+			showContact: false,
+			showGeneral: false,
+		};
+	},
+
+	show: function(key) {
+		const height = $( window ).height();
+		if (key == 'general-action') {
+			this.setState({showGeneral: true});
+			return $('.sidebar').addClass('visible');
+		}
+	},
+
+	close: function() {
+		if (!!this.state.showGeneral) {
+			this.setState({showGeneral: false});
+		}
+		$('.sidebar').removeClass('visible');
+  },
+  
+  checkCloseTouchStart(e) {
+    this.setState({
+      x: e.originalEvent.touches[0].pageX,
+      y: e.originalEvent.touches[0].pageY,
+    })
+  },
+  
+  checkCloseTouchEnd(e) {
+    const {x, y} = this.state;
+    const newX = e.originalEvent.changedTouches[0].pageX;
+    const newY = e.originalEvent.changedTouches[0].pageY;
+
+    if (Math.sqrt(Math.pow(x - newX, 2) + Math.pow(y - newY, 2)) < 5) {
+      this.checkClose(e);
+    }
+  },
+
+	checkClose(e) {
+		const self = this;
+		const {className} = e.target;
+		dontCloseMe = !!DONT_CLOSE_WHEN_CLICK_ME_LIST.filter(element => className.includes(element))[0];
+
+		if (!dontCloseMe && self.state.showGeneral) {
+			e.target.click && e.target.click();
+			self.close();
+		}
+	},
+
+	componentDidMount: function() {
+		const self = this;
+		$(document).on('click.sidebar', this.checkClose);
+		$(document).on('touchstart.sidebar', this.checkCloseTouchStart);
+		$(document).on('touchend.sidebar', this.checkCloseTouchEnd);
+	},
+
+	componentWillUnmount() {
+		$(document).unbind('click.sidebar');
+		$(document).unbind('touchstart.sidebar');
+		$(document).unbind('touchend.sidebar');
+	},
+
+  render: function() {
     const props = this.props;
     const state = this.state;
     const { request, awaiting, tradyFilter } = props;
 
     return (
-      <div className="drop-mobile-list">
-        <button
-          id={props.id}
-          onClick={(id) => this.onDrop(props.id)}
-          className={'btn-drop-mobile title ' + props.id + ' ' + (!state.hidden && 'active')}
-        >
-          {this.props.title}
-        </button>
-        <div className={"content-mobile action-mobile " + (!state.hidden && 'show')}>
-          <DropDownContentMobile
-            isHide={state.hidden}
-            action={request || tradyFilter}
-            awaiting={awaiting}
-            actionTitle={request ? 'Action Required' : ''}
-            awaitingTitle={awaiting ? 'Awaiting Action' : ''}
-            title={this.props.title}
-            valueAction={state.valueAction}
-            getAction={(value) => props.getAction(value)}
-          />
+      // <div className="drop-mobile-list">
+      //   <button
+      //     id={props.id}
+      //     onClick={(id) => this.show('general-action')}
+      //     className={'btn-drop-mobile title ' + props.id + ' ' + (!state.hidden && 'active')}
+      //   >
+      //     {this.props.title}
+      //   </button>
+      //   {/* <div className={"content-mobile action-mobile " + (!state.hidden && 'show')}>
+      //     <DropDownContentMobile
+      //       isHide={state.hidden}
+      //       action={request || tradyFilter}
+      //       awaiting={awaiting}
+      //       actionTitle={request ? 'Action Required' : ''}
+      //       awaitingTitle={awaiting ? 'Awaiting Action' : ''}
+      //       title={this.props.title}
+      //       valueAction={state.valueAction}
+      //       getAction={(value) => props.getAction(value)}
+      //     />
+      //   </div> */}
+      // </div>
+      <div className="dontprint">
+				<div className="sidebar-mobile">
+          <div className="fixed">
+            <button
+              data-intro="Select 'Action' to action the maintenance request." data-position="top"
+              className={"button-default show-sidebar-menu " + (this.state.showGeneral && 'active')}
+              onClick={(key) => this.show('general-action')}
+            >
+              {this.props.title}
+            </button>
+            <div className="background" />
+          </div>
         </div>
       </div>
     );
@@ -600,6 +684,18 @@ var ListMaintenanceRequest = React.createClass({
           value: "Cancelled Work Order",
           count: this.props.cancelled_work_orders
         }
+      ],
+      other: [
+        {
+          title: "Archived",
+          value: "Jobs Completed",
+          count: this.props.jobs_completed
+        },
+        {
+          title: "Deferred",
+          value: "Defer",
+          count: this.props.deferred_count
+        },
       ]
     };
   },
@@ -756,8 +852,9 @@ var ListMaintenanceRequest = React.createClass({
     } = this.props;
 
     return (
-      <div className="maintenance-list">
-        <div className="dropdown-MR">
+      <div className="maintenance-list new-maintenance-list">
+        <FixCSS haveScroll={true} />
+        {/* <div className="dropdown-MR">
           {
             <DropforSortDate
               selectFilter={this.selectFilter}
@@ -787,14 +884,82 @@ var ListMaintenanceRequest = React.createClass({
                 </a>
               </div>
           }
-        </div>
+        </div> */}
         <div className="maintenance-content">
-          <div className={"main-column " + ((!!current_user_landlord || !!current_user_tenant) && "main-landlord")}>
+          <div className="sidebar">
+            <div className="box-shadow flexbox flex-column">
+              <GeneralAction
+                {...this.props}
+                listMR={true}
+              />
+              {
+                (!!current_user_agent || !!current_user_agency_admin) &&
+                  <NewDropDownList
+                    class="action"
+                    title="Filter By Action Required"
+                    content={this.state.actionRequests}
+                    valueAction={this.state.valueAction}
+                    getAction={(value) => this.getAction(value)}
+                  />
+              }
+              {
+                (!!current_user_agent || !!current_user_agency_admin) &&
+                  <NewDropDownList
+                    class="awaiting"
+                    title="Filter By Awaiting Action"
+                    content={this.state.awaitingAction}
+                    valueAction={this.state.valueAction}
+                    getAction={(value) => this.getAction(value)}
+                  />
+              }
+              {
+                (!!current_user_agent || !!current_user_agency_admin) &&
+                  <NewDropDownList
+                    class="awaiting"
+                    title="Other"
+                    content={this.state.other}
+                    valueAction={this.state.valueAction}
+                    getAction={(value) => this.getAction(value)}
+                  />
+              }
+              {
+                (!!current_user_trady) &&
+                  <NewDropDownList
+                    class="trady"
+                    id="trady-filter"
+                    title="Trady Filter"
+                    content={this.state.tradyFilter}
+                    valueAction={this.state.valueAction}
+                    getAction={(value) => this.getAction(value)}
+                  />
+              }
+            </div>
+          </div>
+          <div className={"section main-column " + ((!!current_user_landlord || !!current_user_tenant) && "main-landlord")}>
+            {/* <div className="amount-statistics box-shadow">
+              <div className="you-made">
+                <div className="title">This Month You Made</div>
+                <div className="amount">$1500</div>
+              </div>
+              <div className="total-revenue left-border">
+                <div className="title">Total Revenue</div>
+                <div className="amount">$5500</div>
+              </div>
+              <div className="agent-made left-border">
+                <div className="title">Your Agent Have Made An Extra</div>
+                <div className="amount">$500</div>
+              </div>
+            </div> */}
             <div>
               {
                 this.state.dataShow.map((maintenance_request, key) => {
                   return (
-                    <MaintenanceRequestItem key={key} maintenance_request={maintenance_request} link={self.props.link}/>
+                    <NewMaintenanceRequestItem 
+                      key={key} 
+                      maintenance_request={maintenance_request} 
+                      link={self.props.link}
+                      filter_status={self.state.valueAction}
+                    />
                   );
                 })
               }
@@ -808,65 +973,10 @@ var ListMaintenanceRequest = React.createClass({
               }
             </div>
           </div>
-          <div className="side-column">
-            {
-              (!!current_user_agent || !!current_user_agency_admin) &&
-                <DropDownList
-                  class="action"
-                  title="Action Required"
-                  content={this.state.actionRequests}
-                  valueAction={this.state.valueAction}
-                  getAction={(value) => this.getAction(value)}
-                />
-            }
-            {
-              (!!current_user_agent || !!current_user_agency_admin) &&
-                <DropDownList
-                  class="awaiting"
-                  title="Awaiting Action"
-                  content={this.state.awaitingAction}
-                  valueAction={this.state.valueAction}
-                  getAction={(value) => this.getAction(value)}
-                />
-            }
-            {
-              (!!current_user_trady) &&
-                <DropDownList
-                  class="trady"
-                  id="trady-filter"
-                  title="Trady Filter"
-                  content={this.state.tradyFilter}
-                  valueAction={this.state.valueAction}
-                  getAction={(value) => this.getAction(value)}
-                />
-            }
-          </div>
         </div>
-        <div className="action-mobile">
-          {
-            (!!current_user_agent || !!current_user_agency_admin) &&
-              <DropDownMobileList
-                class="action"
-                id="action-required"
-                title="Agent Filters"
-                request={this.state.actionRequests}
-                awaiting={this.state.awaitingAction}
-                valueAction={this.state.valueAction}
-                getAction={(value) => this.getAction(value)}
-              />
-          }
-          {
-            (!!current_user_trady) &&
-              <DropDownMobileList
-                class="trady"
-                id="trady-filter"
-                title="Trady Filters"
-                tradyFilter={this.state.tradyFilter}
-                valueAction={this.state.valueAction}
-                getAction={(value) => this.getAction(value)}
-              />
-          }
-        </div>
+        <DropDownMobileList
+          title="Menu"
+        />
       </div>
     );
   }
@@ -876,7 +986,7 @@ var MaintenanceRequestItem = React.createClass({
   render: function() {
     const maintenance_request = this.props.maintenance_request;
     return (
-      <div className="row maintenance-request">
+      <div className="row maintenance-request box-shadow">
         <div className="image">
           <ImgSlider
             nameClass={"slider-custom-" + maintenance_request.id}
@@ -918,6 +1028,55 @@ var MaintenanceRequestItem = React.createClass({
           <div className="view">
             <a className="btn-view" href={this.props.link + "/" + maintenance_request.id}>View</a>
           </div>
+        </div>
+      </div>
+    );
+  }
+});
+
+var NewMaintenanceRequestItem = React.createClass({
+  render: function() {
+    const {maintenance_request, link, filter_status} = this.props;
+    const {id, maintenance_description, action_status, created_at, service_type, property} = maintenance_request;
+    const mrStatus = action_status && action_status.maintenance_request_status || filter_status;
+    const address = property && property.property_address;
+    return (
+      <div className="row maintenance-request box-shadow">
+        <div className="content">
+          <div className="job-detail">
+            <span className="title">Job Detail:</span>
+            <span className="description">{maintenance_description.length > 40 
+              ? maintenance_description.substring(0,40) + "..." 
+              : maintenance_description}
+            </span>
+          </div>
+          <div className="mr-information">
+            <div className="mr-information">
+                <span className="key">Status:</span>
+                {mrStatus && <span className="data status">{mrStatus}</span>}
+              </div>
+              <div className="mr-information">
+                <span className="key">Address:</span>
+                <span className="data address">{address}</span>
+              </div>
+              <div className="mr-information">
+                <span className="key">Submitted:</span>
+                <span className="data time">{moment(created_at).format('LL')}</span>
+              </div>
+              <div className="mr-information">
+                <span className="key">Service Required:</span>
+                <span className="data service">{service_type}</span>
+              </div>
+          </div>
+        </div>
+        <div className="view-button">
+          <button 
+            type="button"
+            className="btn-view" 
+            onClick={() => location.href = this.props.link + "/" + maintenance_request.id}
+          >
+            View
+          </button>
         </div>
       </div>
     );
@@ -1047,7 +1206,7 @@ var Pagination = React.createClass({
     });
 
     return (
-      <div className="pagination">
+      <div className="pagination box-shadow">
         <div className="content">
           <a
             className={"previous_page fa fa-angle-left " + (this.state.page == 1 && "disabled")}
@@ -1106,13 +1265,22 @@ var SearchResultMaintenanceRequest = React.createClass({
     const isPagination = this.state.data.length > this.state.prePage;
 
     return (
-      <div className="maintenance-list">
+      <div className="maintenance-list new-maintenance-list">
+        <FixCSS haveScroll={true} />
         <div className="maintenance-content">
+          <div className="sidebar">
+            <div className="box-shadow flexbox flex-column">
+              <GeneralAction
+                {...this.props}
+                listMR={true}
+              />
+            </div>
+          </div>
           <div className={"main-column"} style={{ width: '100%' }}>
             {
               this.state.dataShow.map((maintenance_request, key) => {
                 return (
-                  <MaintenanceRequestItem key={key} maintenance_request={maintenance_request} link={this.props.link}/>
+                  <NewMaintenanceRequestItem key={key} maintenance_request={maintenance_request} link={this.props.link}/>
                 );
               })
             }
@@ -1126,6 +1294,9 @@ var SearchResultMaintenanceRequest = React.createClass({
             }
           </div>
         </div>
+        <DropDownMobileList
+          title="Menu"
+        />
       </div>
     );
   }
