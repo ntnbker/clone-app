@@ -334,6 +334,8 @@ Rails.application.routes.draw do
   get "edit_license_onboarding/:id" => "licenses#edit_license_onboarding", :as => "edit_license_onboarding"
   put "edit_license_onboarding" => "licenses#update_license_onboarding"
 
+  resources :receipts, only:[:index,:show]
+
  end
 
 
