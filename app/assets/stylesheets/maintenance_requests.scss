@@ -36,8 +36,6 @@ $color-text: #83878C;
             .amount-statistics {
                 @include flexbox;
                 @include justify-content(center);
-                margin-left: -10px;
-                margin-right: -10px;
 
                 > div {
                     @include flexbox;
@@ -58,7 +56,7 @@ $color-text: #83878C;
                         font-weight: 600;
                     }
                     .amount {
-                        font-size: 30px;
+                        font-size: 25px;
                         font-weight: 300;
                     }
                 }
@@ -91,7 +89,7 @@ $color-text: #83878C;
                     @include align-items(center);
                     @include justify-content(center);
                     max-width: 300px;
-                    margin-left: 15px;
+                    margin-left: 10px;
 
                     button {
                         background-color: $color-green;
@@ -153,12 +151,13 @@ $color-text: #83878C;
         .maintenance-list.new-maintenance-list {
             .section.main-column {
                 .amount-statistics {
+                    padding: 0 5px;
                     > div {
                         .title {
                             font-size: 12px;
                         }
                         .amount {
-                            font-size: 23px;
+                            font-size: 15px;
                         }
                     }
                 }

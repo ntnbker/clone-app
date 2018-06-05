@@ -669,6 +669,10 @@ $color-text: #83878C;
           margin: 0 !important;
           line-height: inherit !important;
           display: block;
+          word-wrap: break-word;
+          word-break: break-all;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
         i {
           margin-right: 5px;
@@ -856,6 +860,10 @@ $color-text: #83878C;
               text-overflow: ellipsis;
               color: inherit;
               display: block;
+              word-wrap: break-word;
+              word-break: break-all;
+              overflow: hidden;
+              text-overflow: ellipsis;
             }
           }
           i {
@@ -1029,6 +1037,10 @@ $color-text: #83878C;
       background-color: $color-green;
       border: $color-green;
       padding: 0;
+      word-wrap: break-word;
+      word-break: break-all;
+      overflow: hidden;
+      text-overflow: ellipsis;
 
       i {
         margin-right: 5px;
