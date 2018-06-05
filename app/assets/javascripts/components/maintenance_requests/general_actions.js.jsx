@@ -89,7 +89,7 @@ var GeneralAction = React.createClass({
   renderActionsForLandlord() {
     return (
       <div className="general-landlord-actions general-actions">
-        {!this.props.listMR &&
+        {
           this.generateActionButton(
             'My Maintenance Requests',
             '/landlord_maintenance_requests',
@@ -110,7 +110,7 @@ var GeneralAction = React.createClass({
             'fa fa-pencil-square-o'
           )
         }
-        {!this.props.listMR &&
+        {
           this.generateActionButton(
             'My Maintenance Requests',
             '/agent_maintenance_requests',
@@ -138,7 +138,7 @@ var GeneralAction = React.createClass({
             'fa fa-pencil-square-o'
           )
         }
-        {!this.props.listMR &&
+        {
           this.generateActionButton(
             'My Maintenance Requests',
             '/agency_admin_maintenance_requests',
@@ -166,7 +166,7 @@ var GeneralAction = React.createClass({
   renderActionsForTrady() {
     return (
       <div className="general-trady-actions general-actions">
-        {!this.props.listMR &&
+        {
           this.generateActionButton(
             'My Maintenance Requests',
             '/trady_maintenance_requests',
@@ -194,7 +194,7 @@ var GeneralAction = React.createClass({
             'fa fa-pencil-square-o'
           )
         }
-        {!this.props.listMR &&
+        {
           this.generateActionButton(
             'My Maintenance Requests',
             '/tenant_maintenance_requests',
@@ -249,7 +249,7 @@ var GeneralAction = React.createClass({
       <div className="user-general-action" id="user-general-action">
         {this.renderUserAvatar()}
         {/* {this.props.showSearchBar && this.generateSearchBar()} */}
-        {!dontShowGeneral && <div className="general-action-title">General</div>}
+        {<div className="general-action-title">General</div>}
         {this.renderActions()}
       </div>
     )

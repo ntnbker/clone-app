@@ -935,7 +935,7 @@ var ListMaintenanceRequest = React.createClass({
             </div>
           </div>
           <div className={"section main-column " + ((!!current_user_landlord || !!current_user_tenant) && "main-landlord")}>
-            <div className="amount-statistics box-shadow">
+            {/* <div className="amount-statistics box-shadow">
               <div className="you-made">
                 <div className="title">This Month You Made</div>
                 <div className="amount">$1500</div>
@@ -948,7 +948,7 @@ var ListMaintenanceRequest = React.createClass({
                 <div className="title">Your Agent Have Made An Extra</div>
                 <div className="amount">$500</div>
               </div>
-            </div>
+            </div> */}
             <div>
               {
                 this.state.dataShow.map((maintenance_request, key) => {
