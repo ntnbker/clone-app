@@ -1021,6 +1021,45 @@ $color-text: #83878C;
           }
         }
       }
+      .main-summary, .maintenance-content {
+        .sidebar {
+          @include flex(1 1 240px);
+          max-width: 240px;
+          .item {
+            overflow: inherit;
+  
+            .content {
+              li a {
+                font-size: 10px;
+                span {
+                  width: 20px;
+                  height: 20px;
+                  line-height: 20px;
+                }
+              }
+            }
+          }
+          .user-avatar {
+            .user-name {
+              font-size: 15px;
+            }
+            button {
+              font-size: 10px;
+            }
+          }
+          .general-action-title {
+            font-size: 14px;
+          }
+          .general-actions {
+            > * {
+              font-size: 10px;
+            }
+            span.icon {
+              font-size: 15px;
+            }
+          }
+        }
+      }
     }
   }
   .maintenance-request-settings {
