@@ -81281,6 +81281,7 @@ var GeneralAction = React.createClass({
   },
 
   render: function () {
+    var dontShowGeneral = this.state.role === 'Landlord' && this.props.listMR;
     return React.createElement(
       'div',
       { className: 'user-general-action', id: 'user-general-action' },
@@ -81295,6 +81296,8 @@ var GeneralAction = React.createClass({
   }
 });
 /* {this.props.showSearchBar && this.generateSearchBar()} */;
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
 
 var DropContent = React.createClass({
@@ -81582,33 +81585,15 @@ var DropDownList = React.createClass({
   }
 });
 
-var DropDownMobileList = React.createClass({
-  displayName: "DropDownMobileList",
+var NewDropDownList = React.createClass({
+  displayName: "NewDropDownList",
 
   getInitialState: function () {
-    return { hidden: true, valueAction: this.props.valueAction };
+    return { show: true, valueAction: this.props.valueAction };
   },
 
-  onDrop: function (id) {
-    if (id != "over") {
-      this.setState({
-        hidden: !this.state.hidden
-      });
-    } else if (!this.state.hidden) {
-      this.setState({
-        hidden: true
-      });
-    }
-  },
-
-  componentDidMount: function () {
-    var self = this;
-    $(document).bind('click', function (e) {
-      var match = e.target.matches ? e.target.matches('#' + self.props.id) : e.target.msMatchesSelector('#' + self.props.id);
-      if (!match) {
-        self.onDrop('over');
-      }
-    });
+  onDrop: function () {
+    this.setState({ show: !this.state.show });
   },
 
   componentWillReceiveProps: function (nextProps) {
@@ -81620,41 +81605,156 @@ var DropDownMobileList = React.createClass({
   render: function () {
     var _this2 = this;
 
+    return React.createElement(
+      "div",
+      { className: "item" },
+      React.createElement(
+        "div",
+        { className: "header action general-action-title" },
+        this.props.title
+      ),
+      React.createElement(
+        "div",
+        { className: "content" },
+        this.state.show && React.createElement(DropDownContent, {
+          content: this.props.content,
+          valueAction: this.state.valueAction,
+          getAction: function (value) {
+            return _this2.props.getAction(value);
+          }
+        })
+      )
+    );
+  }
+});
+
+var DropDownMobileList = React.createClass({
+  displayName: "DropDownMobileList",
+
+  getInitialState: function () {
+    return {
+      showAction: false,
+      showContact: false,
+      showGeneral: false
+    };
+  },
+
+  show: function (key) {
+    var height = $(window).height();
+    if (key == 'general-action') {
+      this.setState({ showGeneral: true });
+      return $('.sidebar').addClass('visible');
+    }
+  },
+
+  close: function () {
+    if (!!this.state.showGeneral) {
+      this.setState({ showGeneral: false });
+    }
+    $('.sidebar').removeClass('visible');
+  },
+
+  checkCloseTouchStart: function (e) {
+    this.setState({
+      x: e.originalEvent.touches[0].pageX,
+      y: e.originalEvent.touches[0].pageY
+    });
+  },
+
+  checkCloseTouchEnd: function (e) {
+    var _state = this.state;
+    var x = _state.x;
+    var y = _state.y;
+
+    var newX = e.originalEvent.changedTouches[0].pageX;
+    var newY = e.originalEvent.changedTouches[0].pageY;
+
+    if (Math.sqrt(Math.pow(x - newX, 2) + Math.pow(y - newY, 2)) < 5) {
+      this.checkClose(e);
+    }
+  },
+
+  checkClose: function (e) {
+    var self = this;
+    var className = e.target.className;
+
+    dontCloseMe = !!DONT_CLOSE_WHEN_CLICK_ME_LIST.filter(function (element) {
+      return className.includes(element);
+    })[0];
+
+    if (!dontCloseMe && self.state.showGeneral) {
+      e.target.click && e.target.click();
+      self.close();
+    }
+  },
+
+  componentDidMount: function () {
+    var self = this;
+    $(document).on('click.sidebar', this.checkClose);
+    $(document).on('touchstart.sidebar', this.checkCloseTouchStart);
+    $(document).on('touchend.sidebar', this.checkCloseTouchEnd);
+  },
+
+  componentWillUnmount: function () {
+    $(document).unbind('click.sidebar');
+    $(document).unbind('touchstart.sidebar');
+    $(document).unbind('touchend.sidebar');
+  },
+
+  render: function () {
+    var _this3 = this;
+
     var props = this.props;
     var state = this.state;
     var request = props.request;
     var awaiting = props.awaiting;
     var tradyFilter = props.tradyFilter;
 
-    return React.createElement(
-      "div",
-      { className: "drop-mobile-list" },
-      React.createElement(
-        "button",
-        {
-          id: props.id,
-          onClick: function (id) {
-            return _this2.onDrop(props.id);
-          },
-          className: 'btn-drop-mobile title ' + props.id + ' ' + (!state.hidden && 'active')
-        },
-        this.props.title
-      ),
+    return(
+      // <div className="drop-mobile-list">
+      //   <button
+      //     id={props.id}
+      //     onClick={(id) => this.show('general-action')}
+      //     className={'btn-drop-mobile title ' + props.id + ' ' + (!state.hidden && 'active')}
+      //   >
+      //     {this.props.title}
+      //   </button>
+      //   {/* <div className={"content-mobile action-mobile " + (!state.hidden && 'show')}>
+      //     <DropDownContentMobile
+      //       isHide={state.hidden}
+      //       action={request || tradyFilter}
+      //       awaiting={awaiting}
+      //       actionTitle={request ? 'Action Required' : ''}
+      //       awaitingTitle={awaiting ? 'Awaiting Action' : ''}
+      //       title={this.props.title}
+      //       valueAction={state.valueAction}
+      //       getAction={(value) => props.getAction(value)}
+      //     />
+      //   </div> */}
+      // </div>
       React.createElement(
         "div",
-        { className: "content-mobile action-mobile " + (!state.hidden && 'show') },
-        React.createElement(DropDownContentMobile, {
-          isHide: state.hidden,
-          action: request || tradyFilter,
-          awaiting: awaiting,
-          actionTitle: request ? 'Action Required' : '',
-          awaitingTitle: awaiting ? 'Awaiting Action' : '',
-          title: this.props.title,
-          valueAction: state.valueAction,
-          getAction: function (value) {
-            return props.getAction(value);
-          }
-        })
+        { className: "dontprint" },
+        React.createElement(
+          "div",
+          { className: "sidebar-mobile" },
+          React.createElement(
+            "div",
+            { className: "fixed" },
+            React.createElement(
+              "button",
+              {
+                "data-intro": "Select 'Action' to action the maintenance request.", "data-position": "top",
+                className: "button-default show-sidebar-menu " + (this.state.showGeneral && 'active'),
+                onClick: function (key) {
+                  return _this3.show('general-action');
+                }
+              },
+              this.props.title
+            ),
+            React.createElement("div", { className: "background" })
+          )
+        )
       )
     );
   }
@@ -81851,12 +81951,12 @@ var DropforSort = React.createClass({
   },
 
   render: function () {
-    var _this3 = this;
+    var _this4 = this;
 
     return React.createElement(
       "form",
       { name: "sort_by_date", action: "/maintenance_requests", method: "get", ref: function (ref) {
-          return _this3.select = ref;
+          return _this4.select = ref;
         } },
       React.createElement("input", { type: "hidden", name: "page", value: this.props.page ? this.props.page : 1 }),
       React.createElement(
@@ -82013,6 +82113,15 @@ var ListMaintenanceRequest = React.createClass({
         title: "Cancelled Work Orders",
         value: "Cancelled Work Order",
         count: this.props.cancelled_work_orders
+      }],
+      other: [{
+        title: "Archived",
+        value: "Jobs Completed",
+        count: this.props.jobs_completed
+      }, {
+        title: "Deferred",
+        value: "Defer",
+        count: this.props.deferred_count
       }]
     };
   },
@@ -82162,7 +82271,7 @@ var ListMaintenanceRequest = React.createClass({
   },
 
   render: function () {
-    var _this4 = this;
+    var _this5 = this;
 
     var self = this;
     var _props2 = this.props;
@@ -82174,59 +82283,72 @@ var ListMaintenanceRequest = React.createClass({
 
     return React.createElement(
       "div",
-      { className: "maintenance-list" },
-      React.createElement(
-        "div",
-        { className: "dropdown-MR" },
-        React.createElement(DropforSortDate, {
-          selectFilter: this.selectFilter,
-          filterDate: this.state.filterDate,
-          valueSelect: this.state.sortByDate
-        }),
-        (!!current_user_agent || !!current_user_agency_admin) && React.createElement(
-          "div",
-          { className: "dropdown-custom archived" },
-          React.createElement(
-            "span",
-            { className: "count" },
-            this.props.deferred_count
-          ),
-          React.createElement(
-            "a",
-            { onClick: function () {
-                return _this4.getAction('Defer');
-              } },
-            "Deferred"
-          )
-        ),
-        (!!current_user_agent || !!current_user_agency_admin) && React.createElement(
-          "div",
-          { className: "dropdown-custom archived" },
-          React.createElement(
-            "span",
-            { className: "count" },
-            this.props.jobs_completed
-          ),
-          React.createElement(
-            "a",
-            { onClick: function () {
-                return _this4.getAction('Jobs Completed');
-              } },
-            "Archived"
-          )
-        )
-      ),
+      { className: "maintenance-list new-maintenance-list" },
+      React.createElement(FixCSS, { haveScroll: true }),
       React.createElement(
         "div",
         { className: "maintenance-content" },
         React.createElement(
           "div",
-          { className: "main-column " + ((!!current_user_landlord || !!current_user_tenant) && "main-landlord") },
+          { className: "sidebar" },
+          React.createElement(
+            "div",
+            { className: "box-shadow flexbox flex-column" },
+            React.createElement(GeneralAction, _extends({}, this.props, {
+              listMR: true
+            })),
+            (!!current_user_agent || !!current_user_agency_admin) && React.createElement(NewDropDownList, {
+              "class": "action",
+              title: "Filter By Action Required",
+              content: this.state.actionRequests,
+              valueAction: this.state.valueAction,
+              getAction: function (value) {
+                return _this5.getAction(value);
+              }
+            }),
+            (!!current_user_agent || !!current_user_agency_admin) && React.createElement(NewDropDownList, {
+              "class": "awaiting",
+              title: "Filter By Awaiting Action",
+              content: this.state.awaitingAction,
+              valueAction: this.state.valueAction,
+              getAction: function (value) {
+                return _this5.getAction(value);
+              }
+            }),
+            (!!current_user_agent || !!current_user_agency_admin) && React.createElement(NewDropDownList, {
+              "class": "awaiting",
+              title: "Other",
+              content: this.state.other,
+              valueAction: this.state.valueAction,
+              getAction: function (value) {
+                return _this5.getAction(value);
+              }
+            }),
+            !!current_user_trady && React.createElement(NewDropDownList, {
+              "class": "trady",
+              id: "trady-filter",
+              title: "Trady Filter",
+              content: this.state.tradyFilter,
+              valueAction: this.state.valueAction,
+              getAction: function (value) {
+                return _this5.getAction(value);
+              }
+            })
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "section main-column " + ((!!current_user_landlord || !!current_user_tenant) && "main-landlord") },
           React.createElement(
             "div",
             null,
             this.state.dataShow.map(function (maintenance_request, key) {
-              return React.createElement(MaintenanceRequestItem, { key: key, maintenance_request: maintenance_request, link: self.props.link });
+              return React.createElement(NewMaintenanceRequestItem, {
+                key: key,
+                maintenance_request: maintenance_request,
+                link: self.props.link,
+                filter_status: self.state.valueAction
+              });
             }),
             this.state.data.length > this.state.prePage && React.createElement(Pagination, {
               page: this.state.page,
@@ -82235,65 +82357,11 @@ var ListMaintenanceRequest = React.createClass({
               prePage: this.state.prePage
             })
           )
-        ),
-        React.createElement(
-          "div",
-          { className: "side-column" },
-          (!!current_user_agent || !!current_user_agency_admin) && React.createElement(DropDownList, {
-            "class": "action",
-            title: "Action Required",
-            content: this.state.actionRequests,
-            valueAction: this.state.valueAction,
-            getAction: function (value) {
-              return _this4.getAction(value);
-            }
-          }),
-          (!!current_user_agent || !!current_user_agency_admin) && React.createElement(DropDownList, {
-            "class": "awaiting",
-            title: "Awaiting Action",
-            content: this.state.awaitingAction,
-            valueAction: this.state.valueAction,
-            getAction: function (value) {
-              return _this4.getAction(value);
-            }
-          }),
-          !!current_user_trady && React.createElement(DropDownList, {
-            "class": "trady",
-            id: "trady-filter",
-            title: "Trady Filter",
-            content: this.state.tradyFilter,
-            valueAction: this.state.valueAction,
-            getAction: function (value) {
-              return _this4.getAction(value);
-            }
-          })
         )
       ),
-      React.createElement(
-        "div",
-        { className: "action-mobile" },
-        (!!current_user_agent || !!current_user_agency_admin) && React.createElement(DropDownMobileList, {
-          "class": "action",
-          id: "action-required",
-          title: "Agent Filters",
-          request: this.state.actionRequests,
-          awaiting: this.state.awaitingAction,
-          valueAction: this.state.valueAction,
-          getAction: function (value) {
-            return _this4.getAction(value);
-          }
-        }),
-        !!current_user_trady && React.createElement(DropDownMobileList, {
-          "class": "trady",
-          id: "trady-filter",
-          title: "Trady Filters",
-          tradyFilter: this.state.tradyFilter,
-          valueAction: this.state.valueAction,
-          getAction: function (value) {
-            return _this4.getAction(value);
-          }
-        })
-      )
+      React.createElement(DropDownMobileList, {
+        title: "Menu"
+      })
     );
   }
 });
@@ -82305,7 +82373,7 @@ var MaintenanceRequestItem = React.createClass({
     var maintenance_request = this.props.maintenance_request;
     return React.createElement(
       "div",
-      { className: "row maintenance-request" },
+      { className: "row maintenance-request box-shadow" },
       React.createElement(
         "div",
         { className: "image" },
@@ -82372,6 +82440,125 @@ var MaintenanceRequestItem = React.createClass({
             { className: "btn-view", href: this.props.link + "/" + maintenance_request.id },
             "View"
           )
+        )
+      )
+    );
+  }
+});
+
+var NewMaintenanceRequestItem = React.createClass({
+  displayName: "NewMaintenanceRequestItem",
+
+  render: function () {
+    var _this6 = this;
+
+    var _props3 = this.props;
+    var maintenance_request = _props3.maintenance_request;
+    var link = _props3.link;
+    var filter_status = _props3.filter_status;
+    var id = maintenance_request.id;
+    var maintenance_description = maintenance_request.maintenance_description;
+    var action_status = maintenance_request.action_status;
+    var created_at = maintenance_request.created_at;
+    var service_type = maintenance_request.service_type;
+    var property = maintenance_request.property;
+
+    var mrStatus = action_status && action_status.maintenance_request_status || filter_status;
+    var address = property && property.property_address;
+    return React.createElement(
+      "div",
+      { className: "row maintenance-request box-shadow" },
+      React.createElement(
+        "div",
+        { className: "content" },
+        React.createElement(
+          "div",
+          { className: "job-detail" },
+          React.createElement(
+            "span",
+            { className: "title" },
+            "Job Detail:"
+          ),
+          React.createElement(
+            "span",
+            { className: "description" },
+            maintenance_description.length > 40 ? maintenance_description.substring(0, 40) + "..." : maintenance_description
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "mr-information" },
+          React.createElement(
+            "div",
+            { className: "mr-information" },
+            React.createElement(
+              "span",
+              { className: "key" },
+              "Status:"
+            ),
+            mrStatus && React.createElement(
+              "span",
+              { className: "data status" },
+              mrStatus
+            )
+          ),
+          React.createElement(
+            "div",
+            { className: "mr-information" },
+            React.createElement(
+              "span",
+              { className: "key" },
+              "Address:"
+            ),
+            React.createElement(
+              "span",
+              { className: "data address" },
+              address
+            )
+          ),
+          React.createElement(
+            "div",
+            { className: "mr-information" },
+            React.createElement(
+              "span",
+              { className: "key" },
+              "Submitted:"
+            ),
+            React.createElement(
+              "span",
+              { className: "data time" },
+              moment(created_at).format('LL')
+            )
+          ),
+          React.createElement(
+            "div",
+            { className: "mr-information" },
+            React.createElement(
+              "span",
+              { className: "key" },
+              "Service Required:"
+            ),
+            React.createElement(
+              "span",
+              { className: "data service" },
+              service_type
+            )
+          )
+        )
+      ),
+      React.createElement(
+        "div",
+        { className: "view-button" },
+        React.createElement(
+          "button",
+          {
+            type: "button",
+            className: "btn-view",
+            onClick: function () {
+              return location.href = _this6.props.link + "/" + maintenance_request.id;
+            }
+          },
+          "View"
         )
       )
     );
@@ -82494,7 +82681,7 @@ var Pagination = React.createClass({
   },
 
   render: function () {
-    var _this5 = this;
+    var _this7 = this;
 
     var self = this;
     var paginations = [].concat(_toConsumableArray(Array(this.state.numbGroup).keys())).map(function (key) {
@@ -82519,20 +82706,20 @@ var Pagination = React.createClass({
 
     return React.createElement(
       "div",
-      { className: "pagination" },
+      { className: "pagination box-shadow" },
       React.createElement(
         "div",
         { className: "content" },
         React.createElement("a", {
           className: "previous_page fa fa-angle-left " + (this.state.page == 1 && "disabled"),
           onClick: this.state.page > 1 ? function (page) {
-            return _this5.switchPage(_this5.state.page - 1);
+            return _this7.switchPage(_this7.state.page - 1);
           } : ""
         }),
         this.state.group > 1 && React.createElement(
           "a",
           { onClick: function (group) {
-              return _this5.switchGroup(_this5.state.group - 1);
+              return _this7.switchGroup(_this7.state.group - 1);
             } },
           "..."
         ),
@@ -82540,7 +82727,7 @@ var Pagination = React.createClass({
         this.state.group < this.state.totalGroup && React.createElement(
           "a",
           { onClick: function (group) {
-              return _this5.switchGroup(_this5.state.group + 1);
+              return _this7.switchGroup(_this7.state.group + 1);
             } },
           "..."
         ),
@@ -82548,7 +82735,7 @@ var Pagination = React.createClass({
           key: "next",
           className: "next_page fa fa-angle-right " + (this.state.page == this.state.totalPage && "disabled"),
           onClick: function (page) {
-            return _this5.switchPage(_this5.state.page < _this5.state.totalPage ? _this5.state.page + 1 : _this5.state.page);
+            return _this7.switchPage(_this7.state.page < _this7.state.totalPage ? _this7.state.page + 1 : _this7.state.page);
           }
         })
       )
@@ -82560,10 +82747,10 @@ var SearchResultMaintenanceRequest = React.createClass({
   displayName: "SearchResultMaintenanceRequest",
 
   getInitialState: function () {
-    var _props3 = this.props;
-    var maintenance_requests = _props3.maintenance_requests;
-    var _props3$query = _props3.query;
-    var query = _props3$query === undefined ? '' : _props3$query;
+    var _props4 = this.props;
+    var maintenance_requests = _props4.maintenance_requests;
+    var _props4$query = _props4.query;
+    var query = _props4$query === undefined ? '' : _props4$query;
 
     var page = 1;
     var prePage = 3;
@@ -82579,31 +82766,43 @@ var SearchResultMaintenanceRequest = React.createClass({
   },
 
   setPage: function (page) {
-    var _state = this.state;
-    var prePage = _state.prePage;
-    var _state$data = _state.data;
-    var data = _state$data === undefined ? [] : _state$data;
+    var _state2 = this.state;
+    var prePage = _state2.prePage;
+    var _state2$data = _state2.data;
+    var data = _state2$data === undefined ? [] : _state2$data;
 
     var dataShow = [].concat(_toConsumableArray(data)).splice((page - 1) * prePage, prePage);
     this.setState({ page: page, dataShow: dataShow });
   },
 
   render: function () {
-    var _this6 = this;
+    var _this8 = this;
 
     var isPagination = this.state.data.length > this.state.prePage;
 
     return React.createElement(
       "div",
-      { className: "maintenance-list" },
+      { className: "maintenance-list new-maintenance-list" },
+      React.createElement(FixCSS, { haveScroll: true }),
       React.createElement(
         "div",
         { className: "maintenance-content" },
         React.createElement(
           "div",
+          { className: "sidebar" },
+          React.createElement(
+            "div",
+            { className: "box-shadow flexbox flex-column" },
+            React.createElement(GeneralAction, _extends({}, this.props, {
+              listMR: true
+            }))
+          )
+        ),
+        React.createElement(
+          "div",
           { className: "main-column", style: { width: '100%' } },
           this.state.dataShow.map(function (maintenance_request, key) {
-            return React.createElement(MaintenanceRequestItem, { key: key, maintenance_request: maintenance_request, link: _this6.props.link });
+            return React.createElement(NewMaintenanceRequestItem, { key: key, maintenance_request: maintenance_request, link: _this8.props.link });
           }),
           isPagination && React.createElement(Pagination, {
             page: this.state.page,
@@ -82612,10 +82811,61 @@ var SearchResultMaintenanceRequest = React.createClass({
             prePage: this.state.prePage
           })
         )
-      )
+      ),
+      React.createElement(DropDownMobileList, {
+        title: "Menu"
+      })
     );
   }
 });
+/* <i
+aria-hidden="true"
+onClick={this.onDrop}
+className={"fa " + (this.state.show ? "fa-angle-down" : "fa-angle-right")}
+/> */ /* <div className="dropdown-MR">
+       {
+         <DropforSortDate
+           selectFilter={this.selectFilter}
+           filterDate={this.state.filterDate}
+           valueSelect={this.state.sortByDate}
+         />
+       }
+       {
+         (!!current_user_agent || !!current_user_agency_admin) &&
+           <div className="dropdown-custom archived">
+             <span className="count">
+               {this.props.deferred_count}
+             </span>
+             <a onClick={() => this.getAction('Defer')}>
+               Deferred
+             </a>
+           </div>
+       }
+       {
+         (!!current_user_agent || !!current_user_agency_admin) &&
+           <div className="dropdown-custom archived">
+             <span className="count">
+               {this.props.jobs_completed}
+             </span>
+             <a onClick={() => this.getAction('Jobs Completed')}>
+               Archived
+             </a>
+           </div>
+       }
+      </div> */ /* <div className="amount-statistics box-shadow">
+                 <div className="you-made">
+                   <div className="title">This Month You Made</div>
+                   <div className="amount">$1500</div>
+                 </div>
+                 <div className="total-revenue left-border">
+                   <div className="title">Total Revenue</div>
+                   <div className="amount">$5500</div>
+                 </div>
+                 <div className="agent-made left-border">
+                   <div className="title">Your Agent Have Made An Extra</div>
+                   <div className="amount">$500</div>
+                 </div>
+                </div> */;
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -82777,29 +83027,34 @@ var FixCSS = React.createClass({
 	},
 
 	resizeSidebar: function () {
-		$('.sidebar > .box-shadow').css({ height: '' });
+		var haveScroll = this.props.haveScroll;
+
+		$('.sidebar > .box-shadow').css({ height: '', 'overflow-y': '' });
 		var screenHeight = $(window).height();
 		var sidebarHeight = $('.sidebar').height();
+		var boxShadowHeight = $('.sidebar > .box-shadow').height();
 		if (window.innerWidth < 1024) {
 			$('.sidebar').css({ height: screenHeight });
-			$('.sidebar > .box-shadow').css({ height: Math.max(screenHeight, sidebarHeight) });
+			$('.sidebar > .box-shadow').css({ height: Math.max(screenHeight, haveScroll ? boxShadowHeight : sidebarHeight) });
 		} else {
 			var menuHeight = 65;
 			var footerHeight = 58;
-			var spaceHeight = 55;
 			var alertHeight = $("#main > div.alert").height() || 0;
-			var _sidebarHeight = screenHeight - menuHeight - footerHeight - spaceHeight - alertHeight;
-			console.log(_sidebarHeight, alertHeight);
-			$('.sidebar').css({ height: _sidebarHeight });
-			$('.sidebar > .box-shadow').css({ height: _sidebarHeight });
+			var spaceHeight = !haveScroll || alertHeight ? 55 : 20;
+			var fixSidebarHeight = screenHeight - menuHeight - footerHeight - spaceHeight - alertHeight;
+			$('.sidebar').css({ height: fixSidebarHeight });
+			if (!haveScroll) $('.sidebar > .box-shadow').css({ height: fixSidebarHeight });else $('.sidebar > .box-shadow').css({ height: Math.max(fixSidebarHeight - 30, boxShadowHeight) });
 		}
 		$('.list-quote .contact-button > div').hide().show(0);
+		if (haveScroll && $('.sidebar').height() < $('.sidebar > .box-shadow').height()) {
+			$('.sidebar').css({ 'overflow-y': 'scroll' });
+		}
 	},
 
 	componentWillUnmount: function () {
 		$('.layout').removeClass('new-ui');
 		$('footer').removeClass(this.props.className || '');
-		$('.sidebar').css({ height: '' });
+		$('.sidebar').css({ height: '', 'overflow-y': '' });
 		$(window).unbind('resize.new_ui orientationchange.new_ui');
 		$('#main > div.alert').unbind('remove.new_ui', self.resizeSidebar);
 	},
