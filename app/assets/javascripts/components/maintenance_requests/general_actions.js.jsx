@@ -244,11 +244,12 @@ var GeneralAction = React.createClass({
   },
 
   render() {
+    const dontShowGeneral = this.state.role === 'Landlord' && this.props.listMR;
     return (
       <div className="user-general-action" id="user-general-action">
         {this.renderUserAvatar()}
         {/* {this.props.showSearchBar && this.generateSearchBar()} */}
-        <div className="general-action-title">General</div>
+        {<div className="general-action-title">General</div>}
         {this.renderActions()}
       </div>
     )

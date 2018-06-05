@@ -182,7 +182,7 @@ var TenantMaintenanceRequest = React.createClass({
 
 	},
 
-	sendAgentMessage: function(params) {
+	sendAgentMessage: function(params, callback) {
 		const self = this;
 		const {maintenance_request} = this.state;
 		params.message.role = 'Tenant';
@@ -196,6 +196,9 @@ var TenantMaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
+				if (res && res.errors) {
+					return callback(res.errors);
+				}
 				const tenants_conversation = !!self.state.tenants_conversation ? self.state.tenants_conversation : [];
 				tenants_conversation.push(res);
 
