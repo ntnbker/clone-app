@@ -14,7 +14,11 @@ class ReceiptsController < ApplicationController
   end
 
   def show
-    
+    Receipt.find_by(id:params[:id]).as_json(:include => {:invoices => {}, :uploaded_invoices=>{:methods => [:pdf_url]}})
+    respond_to do |format|
+      format.json {render :json=>{receipt:@receipt}}
+      format.html 
+    end 
   end
 
   private
