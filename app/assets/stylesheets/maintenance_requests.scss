@@ -15,7 +15,7 @@ $color-blue-light: #7646FF;
 $color-text: #83878C;
 
 .new-ui {
-    .maintenance-list.new-maintenance-list {
+    .maintenance-list.new-maintenance-list, .receipt-list {
         .box-shadow.pagination {
             padding: 0;
             margin: 0;
@@ -32,7 +32,7 @@ $color-text: #83878C;
 
             }
         }
-        .section.main-column {
+        .section.main-column, .section {
             .amount-statistics {
                 @include flexbox;
                 @include justify-content(center);
@@ -61,8 +61,9 @@ $color-text: #83878C;
                     }
                 }
             }
-            .maintenance-request {
+            .maintenance-request, .receipt {
                 padding: 10px;
+                @include flexbox;
                 @include flex-direction(row);
                 color: $color-text;
 
@@ -72,7 +73,7 @@ $color-text: #83878C;
                     margin-right: 0;
                     min-width: 350px;
 
-                    .job-detail {
+                    .job-detail, .receipt-detail {
                         font-size: 15px;
                         margin-bottom: 10px;
                         .title {
@@ -98,43 +99,6 @@ $color-text: #83878C;
                         width: 100%;
                     }
                 }
-                .mr-information .mr-information {
-                    @include flexbox;
-                    .key {
-                        @include flex(0);
-                        @include flex-basis(auto);
-                        margin-right: 10px;
-                        font-weight: 100;
-                    }
-                    .data {
-                        font-weight: 500;
-                        @include flex(1);
-                    }
-                    .status {
-                        @include flex(0);
-                        @include flex-basis(auto);
-                        color: $color-green;
-                        border: 2px solid $color-green;
-                        border-radius: 5px;
-                        display: inline-block;
-                        font-weight: 500;
-                        padding: 0px 5px 0;
-                        height: inherit;
-                        background-color: white;
-                    }
-                    .address {
-                        font-weight: 500;
-                        i {
-                            margin-right: 5px;
-                        }
-                    }
-                    .mr-information, .service {
-                        font-size: 13px;
-                    }
-                }
-            }
-            .box-shadow {
-                margin-bottom: 15px;
             }
         }
         .dontprint .sidebar-mobile {
@@ -148,8 +112,9 @@ $color-text: #83878C;
         }
     }
     @media (max-width: 500px) {
-        .maintenance-list.new-maintenance-list {
-            .section.main-column {
+        .maintenance-list.new-maintenance-list,
+        .receipt-list {
+            .section.main-column, .section {
                 .amount-statistics {
                     padding: 0 5px;
                     > div {
@@ -161,7 +126,7 @@ $color-text: #83878C;
                         }
                     }
                 }
-                .maintenance-request {
+                .maintenance-request, .receipt {
                     @include flex-direction(column);
                     .content {
                         min-width: 280px;

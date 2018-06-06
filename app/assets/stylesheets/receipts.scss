@@ -1,0 +1,104 @@
+$color-white: #FFFFFF;
+$color-grey: #f4f8fb;
+$color-grey-1: #aab8c3;
+$color-grey-dark: #849aaa;
+$color-grey-dark-1: #cedae3;
+$color-green: #7dc691;
+$color-gray: #3e4b54;
+$color-gray-dark: #baccd8;
+$color-red: #e34f4f;
+$color-black: #000000;
+$color-blue-light: #7646FF;
+$color-text: #83878C;
+$color-border: #d6d6d6;
+
+.receipt-list {
+    .receipt-content {
+        .section {
+            position: relative;
+            .receipt {
+              .main-detail {
+                > .receipt-information {
+                  margin-top: 0;
+                }
+              }
+            }
+            .receipt-detail {
+                font-size: 17px;
+                .title {
+                    font-weight: 600;
+                }
+                .description {
+                    margin-left: 10px;
+                }
+            }
+            .print-button {
+              position: absolute;
+              right: 30px;
+              top: 30px;
+              color: white;
+              background-color: #4085f5;
+              border-color: #4085f5;
+              border-radius: 10px;
+              button {
+                border: none;
+
+                &:hover {
+                  color: white;
+                }
+                &:focus {
+                  color: white;
+                }
+              }
+              &:hover {
+                background-color: #0363fd;
+                border-color: #0363fd;
+              }
+            }
+            .receipt-item {
+              border: 1px solid $color-border;
+              border-radius: 5px;
+              margin-top: 10px;
+
+              .invoice-title {
+                font-size: 15px;
+                font-weight: 600;
+              }
+              .last-row {
+                @include flexbox;
+                @include justify-content(space-between);
+
+                .view-mr-link a {
+                  text-decoration: none;
+                  font-weight: 600;
+                  color: #4085f5;
+
+                  &:hover {
+                    color: #075bff;
+                  }
+                }
+              }
+            }
+        }
+    }
+    @media (max-width: 600px) {
+      .print-button {
+        display: none;
+      }
+    }
+    @media (max-width: 500px) {
+      .receipt-content {
+        .section {
+          .receipt-detail {
+            font-size: 13px;
+          }
+          .receipt-item {
+            .last-row {
+              @include flex-direction(column-reverse);
+              @include justify-content(left);
+            }
+          }
+        }
+      }
+    }
+}
