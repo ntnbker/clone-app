@@ -1,30 +1,12 @@
 
 var Receipt = React.createClass({
   getInitialState: function() {
+    const {receipt} = this.props;
+    const {total, invoices, uploaded_invoices} = receipt;
     return {
-      total: 200,
-      invoices: [{
-        id: 1,
-        total: 100,
-        service_fee: 15,
-        status: 'Paid',
-        address: 'Here',
-        maintenance_request_id: 2,
-      }, {
-        id: 2,
-        total: 50,
-        service_fee: 7.5,
-        status: 'Paid',
-        address: 'Here',
-        maintenance_request_id: 2,
-      }, {
-        id: 3,
-        total: 50,
-        service_fee: 7.5,
-        status: 'Paid',
-        address: 'Here',
-        maintenance_request_id: 2,
-      }]
+      total,
+      invoices,
+      uploaded_invoices
     }; 
   },
 
@@ -32,7 +14,8 @@ var Receipt = React.createClass({
     const self = this;
     const {
       total,
-      invoices
+      invoices,
+      uploaded_invoices,
     } = this.state;
 
     return (
@@ -62,6 +45,21 @@ var Receipt = React.createClass({
                   invoices.map((invoice, index) => {
                     return (
                       <ReceiptInvoiceItem 
+                        startIndex={0}
+                        totalKey="amount"
+                        index={index} 
+                        invoice={invoice} 
+                        link={self.props.link}
+                      />
+                    );
+                  })
+                }
+                {
+                  uploaded_invoices.map((invoice, index) => {
+                    return (
+                      <ReceiptInvoiceItem 
+                        startIndex={invoices.length}
+                        totalKey="total_invoice_amount"
                         index={index} 
                         invoice={invoice} 
                         link={self.props.link}
@@ -85,39 +83,41 @@ var Receipt = React.createClass({
 
 var ReceiptInvoiceItem = React.createClass({
   render: function() {
-    const {invoice, link, index} = this.props;
-    const {id, status, service_fee, total, address, maintenance_request_id} = invoice;
+    const {invoice, link, index, startIndex} = this.props;
+    const {id, paid, service_fee, totalKey, address, maintenance_request = {}} = invoice;
+    const {property} = (maintenance_request || {});
+    const {property_address = ''} = (property || {});
 
     return (
       <div className="row receipt receipt-item">
         <div className="content main-detail">
           <div className="invoice-title">
-            <span className="title">Invoice #{index + 1}</span>
+            <span className="title">Invoice #{startIndex + index + 1}</span>
           </div>
           <div className="receipt-information main-information">
             <div className="receipt-information row-information">
                 <span className="key">Invoice Total:</span>
-                <span className="data">${total}</span>
+                <span className="data">${invoice[totalKey] || 0}</span>
               </div>
               <div className="receipt-information row-information">
                 <span className="key">Service Fee:</span>
-                <span className="data">{status}</span>
+                <span className="data">{paid ? 'Paid' : 'Waiting'}</span>
               </div>
               <div className="receipt-information row-information">
                 <span className="key">Work Done at:</span>
-                <span className="data address">{address}</span>
+                <span className="data address">{property_address}</span>
               </div>
               <div className="last-row">
                 <div className="view-mr-link">
                   <a 
-                    href={link + '/' + maintenance_request_id}
+                    href={link + '/' + maintenance_request.id}
                   >
                     View Maintenance Request
                   </a>
                 </div>
                 <div className="receipt-information row-information">
                   <span className="key">Invoice Service Fee:</span>
-                  <span className="data address">${service_fee}</span>
+                  <span className="data address">${service_fee || 0}</span>
                 </div>
               </div>
           </div>
