@@ -14,7 +14,7 @@ class ReceiptsController < ApplicationController
   end
 
   def show
-    @receipt = Receipt.find_by(id:params[:id]).as_json(:include => {:invoices => {:include=>{:maintenance_request=>{:include=>{:property=>{}}}}}}, :uploaded_invoices=>{:include=>{:maintenance_request=>{:include=>{:property=>{}}}} ,:methods => [:pdf_url]})
+    @receipt = Receipt.find_by(id:params[:id]).as_json(:include => {:invoices => {:include=>{:maintenance_request=>{:include=>{:property=>{}}}}}}, :uploaded_invoices=>{:include=>{:maintenance_request=>{:include=>{:property=>{}}}} })
     respond_to do |format|
       format.json {render :json=>{receipt:@receipt}}
       format.html 
