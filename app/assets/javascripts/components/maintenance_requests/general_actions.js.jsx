@@ -164,6 +164,7 @@ var GeneralAction = React.createClass({
   },
 
   renderActionsForTrady() {
+    const {jfmo_participant} = this.props;
     return (
       <div className="general-trady-actions general-actions">
         {
@@ -178,6 +179,13 @@ var GeneralAction = React.createClass({
             'Trady Account Settings',
             this.props.edit_trady,
             'fa fa-user'
+          )
+        }
+        { jfmo_participant &&
+          this.generateActionButton(
+            'Service Fee Receipts',
+            '/receipts',
+            'fa fa-list'
           )
         }
       </div>

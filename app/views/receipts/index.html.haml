@@ -2,4 +2,4 @@
 -user_name = current_user.trady.name || ''
 - images = profile_and_company_avatar
 
-=react_component('ReceiptList', {:authenticity_token => form_authenticity_token, :edit_trady => edit_trady, :user_name => user_name, :images => images, logout_path: logout_path, :current_role => @current_user.current_role, :receipts => @receipts, :link => "receipts"})
+=react_component('ReceiptList', {:authenticity_token => form_authenticity_token, :edit_trady => edit_trady, :user_name => user_name, :images => images, logout_path: logout_path, :current_role => @current_user.current_role, :receipts => @receipts, :link => "receipts", :jfmo_participant => current_user.trady.jfmo_participant})
