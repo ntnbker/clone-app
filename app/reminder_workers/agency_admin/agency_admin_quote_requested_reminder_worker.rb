@@ -1,4 +1,4 @@
-class AgencyAdminQuoteRequestedReminderWorker
+class AgencyAdmin::AgencyAdminQuoteRequestedReminderWorker
   include Sidekiq::Worker
 
   def perform

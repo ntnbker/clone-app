@@ -361,5 +361,16 @@ class AgentMailer < ActionMailer::Base
     mail(to:email, subject:"New maintenance request reminder for property - #{@property.property_address}, sent on #{Date.today}")
   end
 
+  def agency_admin_quote_requested_reminder(maintenance_request)
+    @maintenance_request = maintenance_request
+    
+    @property = @maintenance_request.property
+    @user = @maintenance_request.agency_admin.user
+    email = @maintenance_request.agency_admin.email 
+    
+    
+    mail(to:email, subject:"Quote requested reminder for property - #{@property.property_address}, sent on #{Date.today}")
+  end
+
 end 
 
