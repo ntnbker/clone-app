@@ -2,14 +2,14 @@
 
 - searchText = params[:query]
 
-  -if current_user.logged_in_as("AgencyAdmin")
-    -edit_agency = edit_agency_path(current_user.agency_admin.agency.id)
-    -edit_agency_admin = edit_agency_admin_path(current_user.agency_admin.id)
-    -user_name = (current_user.agency_admin.first_name || '') + ' ' + (current_user.agency_admin.last_name)
+-if current_user.logged_in_as("AgencyAdmin")
+  -edit_agency = edit_agency_path(current_user.agency_admin.agency.id)
+  -edit_agency_admin = edit_agency_admin_path(current_user.agency_admin.id)
+  -user_name = (current_user.agency_admin.first_name || '') + ' ' + (current_user.agency_admin.last_name)
 
-  -elsif current_user.logged_in_as("Agent")
-    -edit_agent = edit_agent_path(current_user.agent.id) 
-    -user_name = current_user.agent.name || ''
+-elsif current_user.logged_in_as("Agent")
+  -edit_agent = edit_agent_path(current_user.agent.id) 
+  -user_name = current_user.agent.name || ''
 
 - images = profile_and_company_avatar
 

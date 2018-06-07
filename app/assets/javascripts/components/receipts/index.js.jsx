@@ -106,7 +106,7 @@ var ReceiptItem = React.createClass({
     const {id, paid, total, number_invoice} = receipt;
 
     return (
-      <div className="row receipt box-shadow">
+      <div className="row main-item box-shadow">
         <div className="content main-detail">
           <div className="receipt-detail">
             <span className="title">Receipt Detail:</span>

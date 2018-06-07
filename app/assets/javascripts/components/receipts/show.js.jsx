@@ -89,7 +89,7 @@ var ReceiptInvoiceItem = React.createClass({
     const {property_address = ''} = (property || {});
 
     return (
-      <div className="row receipt receipt-item">
+      <div className="row main-item receipt-item">
         <div className="content main-detail">
           <div className="invoice-title">
             <span className="title">Invoice #{startIndex + index + 1}</span>

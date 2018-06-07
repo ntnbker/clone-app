@@ -1041,8 +1041,8 @@ var NewMaintenanceRequestItem = React.createClass({
     const mrStatus = action_status && action_status.maintenance_request_status || filter_status;
     const address = property && property.property_address;
     return (
-      <div className="row maintenance-request box-shadow">
-        <div className="content">
+      <div className="row main-item box-shadow">
+        <div className="content main-detail">
           <div className="job-detail">
             <span className="title">Job Detail:</span>
             <span className="description">{maintenance_description.length > 40 
@@ -1265,9 +1265,9 @@ var SearchResultMaintenanceRequest = React.createClass({
     const isPagination = this.state.data.length > this.state.prePage;
 
     return (
-      <div className="maintenance-list new-maintenance-list">
+      <div className="maintenance-list new-maintenance-list main-container">
         <FixCSS haveScroll={true} />
-        <div className="maintenance-content">
+        <div className="maintenance-content main-content">
           <div className="sidebar">
             <div className="box-shadow flexbox flex-column">
               <GeneralAction
@@ -1276,11 +1276,16 @@ var SearchResultMaintenanceRequest = React.createClass({
               />
             </div>
           </div>
-          <div className={"main-column"} style={{ width: '100%' }}>
+          <div className="section main-column">
             {
               this.state.dataShow.map((maintenance_request, key) => {
                 return (
-                  <NewMaintenanceRequestItem key={key} maintenance_request={maintenance_request} link={this.props.link}/>
+                  <NewMaintenanceRequestItem 
+                    key={key} 
+                    maintenance_request={maintenance_request} 
+                    link={this.props.link}
+                    filter_status="New Maintenance Request"
+                  />
                 );
               })
             }
