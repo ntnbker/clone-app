@@ -1,4 +1,4 @@
-class AgencyAdmin::AgencyAdminNewMaintenanceRequestReminderWorker
+class AgencyAdmin::AgencyAdminSendWorkOrderReminderWorker
   include Sidekiq::Worker
 
   def perform
@@ -14,11 +14,10 @@ class AgencyAdmin::AgencyAdminNewMaintenanceRequestReminderWorker
 
     agency_admins.each do |agency_admin|
          
-        maintenance_requests = MaintenanceRequest.all.where({ agency_admin_id: agency_admin.id}).joins(:action_status).where(:action_statuses => { :agent_status =>"Initiate Maintenance Request" }).distinct
-        
+        maintenance_requests = MaintenanceRequest.all.where({ agency_admin_id: agency_admin.id}).joins(:action_status).where(:action_statuses => { :agent_status =>"Send Work Order" }).distinct
         maintenance_requests.each do |maintenance_request|
         
-          AgentMailer.agency_admin_new_maintenance_request_reminder(maintenance_request).deliver
+          AgentMailer.agency_admin_send_work_order_reminder(maintenance_request).deliver
         end 
     end 
 

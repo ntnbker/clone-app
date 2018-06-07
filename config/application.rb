@@ -13,7 +13,7 @@ module Realestate
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
-    #config.autoload_paths += %W( #{config.root}/app/reminder_workers/agency_admin)
+    # config.autoload_paths += %W( #{config.root}/app/reminder_workers/agency_admin)
     # config.autoload_paths += %W( #{config.root}/app/reminder_workers/agent)
     # config.autoload_paths += %W( #{config.root}/app/reminder_workers/landlord)
     # config.autoload_paths += %W( #{config.root}/app/reminder_workers/trady)
