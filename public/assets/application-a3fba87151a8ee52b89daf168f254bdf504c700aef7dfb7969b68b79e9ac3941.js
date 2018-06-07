@@ -82753,13 +82753,13 @@ var SearchResultMaintenanceRequest = React.createClass({
     var query = _props4$query === undefined ? '' : _props4$query;
 
     var page = 1;
-    var prePage = 3;
-    var dataShow = [].concat(_toConsumableArray(maintenance_requests)).splice(0, prePage);
+    var perPage = 5;
+    var dataShow = maintenance_requests.slice(0, perPage);
 
     return {
       page: page,
       query: query,
-      prePage: prePage,
+      perPage: perPage,
       dataShow: dataShow,
       data: maintenance_requests
     };
@@ -82767,18 +82767,18 @@ var SearchResultMaintenanceRequest = React.createClass({
 
   setPage: function (page) {
     var _state2 = this.state;
-    var prePage = _state2.prePage;
+    var perPage = _state2.perPage;
     var _state2$data = _state2.data;
     var data = _state2$data === undefined ? [] : _state2$data;
 
-    var dataShow = [].concat(_toConsumableArray(data)).splice((page - 1) * prePage, prePage);
+    var dataShow = data.slice((page - 1) * perPage, page * perPage);
     this.setState({ page: page, dataShow: dataShow });
   },
 
   render: function () {
     var _this8 = this;
 
-    var isPagination = this.state.data.length > this.state.prePage;
+    var isPagination = this.state.data.length > this.state.perPage;
 
     return React.createElement(
       "div",
@@ -82800,15 +82800,20 @@ var SearchResultMaintenanceRequest = React.createClass({
         ),
         React.createElement(
           "div",
-          { className: "main-column", style: { width: '100%' } },
+          { className: "section main-column" },
           this.state.dataShow.map(function (maintenance_request, key) {
-            return React.createElement(NewMaintenanceRequestItem, { key: key, maintenance_request: maintenance_request, link: _this8.props.link });
+            return React.createElement(NewMaintenanceRequestItem, {
+              key: key,
+              maintenance_request: maintenance_request,
+              link: _this8.props.link,
+              filter_status: "New Maintenance Request"
+            });
           }),
           isPagination && React.createElement(Pagination, {
             page: this.state.page,
             setPage: this.setPage,
             total: this.state.data.length,
-            prePage: this.state.prePage
+            prePage: this.state.perPage
           })
         )
       ),
