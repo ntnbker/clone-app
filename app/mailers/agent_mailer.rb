@@ -391,7 +391,7 @@ class AgentMailer < ActionMailer::Base
     email = @maintenance_request.agency_admin.email 
     
     
-    mail(to:email, subject:"Send worker order reminder for maintenance at property - #{@property.property_address}, sent on #{Date.today}")
+    mail(to:email, subject:"Send work order reminder for maintenance at property - #{@property.property_address}, sent on #{Date.today}")
   end
 
   def agency_admin_new_invoice_reminder(maintenance_request)
@@ -402,7 +402,18 @@ class AgentMailer < ActionMailer::Base
     email = @maintenance_request.agency_admin.email 
     
     
-    mail(to:email, subject:"New invoice reminder for maintenance at property - #{@property.property_address}, sent on #{Date.today}")
+    mail(to:email, subject:"New invoice reminder for maintenance done at property - #{@property.property_address}, sent on #{Date.today}")
+  end
+
+  def agency_admin_cancelled_work_order_reminder(maintenance_request)
+     @maintenance_request = maintenance_request
+    
+    @property = @maintenance_request.property
+    @user = @maintenance_request.agency_admin.user
+    email = @maintenance_request.agency_admin.email 
+    
+    
+    mail(to:email, subject:"Work order cancelled reminder for maintenance required at property - #{@property.property_address}, sent on #{Date.today}")
   end
 
 end 
