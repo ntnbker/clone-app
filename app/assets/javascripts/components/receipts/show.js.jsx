@@ -83,8 +83,8 @@ var Receipt = React.createClass({
 
 var ReceiptInvoiceItem = React.createClass({
   render: function() {
-    const {invoice, link, index, startIndex} = this.props;
-    const {id, paid, service_fee, totalKey, address, maintenance_request = {}} = invoice;
+    const {invoice, link, index, startIndex, totalKey} = this.props;
+    const {id, paid, service_fee, maintenance_request = {}} = invoice;
     const {property} = (maintenance_request || {});
     const {property_address = ''} = (property || {});
 
