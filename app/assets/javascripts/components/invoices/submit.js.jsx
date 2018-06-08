@@ -551,9 +551,11 @@ var InvoiceSubmit = React.createClass({
             </div>
           ))}
         </div>
-        <div className="alert alert-message">
-          Please Note: Every invoice submitted will have an associated service fee. If a mistake has been made on an invoice and it was submitted please void that invoice and submit a new invoice to avoid double service fee payment.
-        </div>
+        { trady && trady.jfmo_participant &&
+          <div className="alert alert-message">
+            Please Note: Every invoice submitted will have an associated service fee. If a mistake has been made on an invoice and it was submitted please void that invoice and submit a new invoice to avoid double service fee payment.
+          </div>
+        }
         <div className="qf-button text-center">
           <button
             className="button-back button-primary"
