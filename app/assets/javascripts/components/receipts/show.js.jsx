@@ -35,7 +35,7 @@ var Receipt = React.createClass({
                 <span className="title">Receipt Details</span>
               </div>
               <div className="receipt-detail">
-                <span className="title">Maintenance App Service Fee Total: ${total}</span>
+                <span className="title">Maintenance App Service Fee Total: ${parseFloat(total || 0).toFixed(2)}</span>
               </div>
               <div className="print-button dontprint">
                 <button type="button" onClick={() => window.print()}>Print</button>
@@ -69,7 +69,7 @@ var Receipt = React.createClass({
                 }
               </div>
               <div className="receipt-detail text-right margin-top-10">
-                <span className="title">Maintenance App Service Fee Total: ${total}</span>
+                <span className="title">Maintenance App Service Fee Total: ${parseFloat(total || 0).toFixed(2)}</span>
               </div>
             </div>
           </div>
@@ -100,7 +100,7 @@ var ReceiptInvoiceItem = React.createClass({
           <div className="receipt-information main-information">
             <div className="receipt-information row-information">
                 <span className="key">Invoice Total:</span>
-                <span className="data">${invoice[totalKey] || 0}</span>
+                <span className="data">${parseFloat(invoice[totalKey] || 0).toFixed(2)}</span>
               </div>
               {/* <div className="receipt-information row-information">
                 <span className="key">Service Fee:</span>
@@ -120,7 +120,7 @@ var ReceiptInvoiceItem = React.createClass({
                 </div>
                 <div className="receipt-information row-information">
                   <span className="key">Invoice Service Fee:</span>
-                  <span className="data address">${service_fee || 0}</span>
+                  <span className="data address">${parseFloat(service_fee || 0).toFixed(2)}</span>
                 </div>
               </div>
           </div>

@@ -122,7 +122,7 @@ var ReceiptItem = React.createClass({
               </div>
               <div className="receipt-information row-information">
                 <span className="key">Service Fee Total:</span>
-                <span className="data">${total}</span>
+                <span className="data">${parseFloat(total || 0).toFixed(2)}</span>
               </div>
           </div>
         </div>

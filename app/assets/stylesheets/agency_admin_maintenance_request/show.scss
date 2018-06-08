@@ -485,6 +485,29 @@ $color-text: #83878C;
         }
       }
     }
+    .sidebar-mobile.trady-menu-button {
+      .fixed {
+        button {
+          width: 45%;
+        }
+        @media (min-width: 579px) {
+          .menu-button {
+            left: calc(33% - 173px);
+          }
+          .create-quote {
+            left: calc(67% - 86px);
+          }
+        }
+        @media (max-width: 578px) {
+          .menu-button {
+            left: 3%;
+          }
+          .create-quote {
+            left: 51.5%;
+          }
+        }
+      }
+    }
 
     @media (max-width: 770px) {
       .contact-button,
