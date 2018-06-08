@@ -196,7 +196,7 @@ $color-text: #83878C;
           .btn-slider {
             position: absolute;
             top: 40%;
-            z-index: 100;
+            z-index: 1;
             cursor: pointer;
             &.btn-next {
               right: 30px;
