@@ -102,10 +102,10 @@ var ReceiptInvoiceItem = React.createClass({
                 <span className="key">Invoice Total:</span>
                 <span className="data">${invoice[totalKey] || 0}</span>
               </div>
-              <div className="receipt-information row-information">
+              {/* <div className="receipt-information row-information">
                 <span className="key">Service Fee:</span>
                 <span className="data">{paid ? 'Paid' : 'Waiting'}</span>
-              </div>
+              </div> */}
               <div className="receipt-information row-information">
                 <span className="key">Work Done at:</span>
                 <span className="data address">{property_address}</span>
