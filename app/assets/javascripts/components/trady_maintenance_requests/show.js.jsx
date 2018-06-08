@@ -1260,7 +1260,6 @@ var TradyMaintenanceRequest = React.createClass({
 	quoteAlreadySent: function() {
 		const self = this;
 		const { quote_request } 		= this.state;
-		const { current_user_role } = this.props;
 
 		const params = {
 			trady_id: quote_request.trady_id,
@@ -1455,7 +1454,6 @@ var TradyMaintenanceRequest = React.createClass({
 		}
 
 		const { quote_request } 		= this.state;
-		const { current_user_role } = this.props;
 
 		const image = images[0];
 
