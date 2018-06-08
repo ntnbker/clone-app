@@ -613,7 +613,7 @@ $color-text: #83878C;
                 .main-item {
                     @include flex-direction(column);
                     .content {
-                        min-width: 280px;
+                        min-width: 240px;
                     }
                     .view-button {
                         @include flex(1);

@@ -82,8 +82,13 @@ $color-border: #d6d6d6;
         }
     }
     @media (max-width: 600px) {
-      .print-button {
-        display: none;
+      .receipt-content .section .print-button {
+        top: 20px;
+        right: 20px;
+        button {
+          height: 25px;
+          line-height: 25px;
+        }
       }
     }
     @media (max-width: 500px) {
