@@ -1017,7 +1017,7 @@ var TradyMaintenanceRequest = React.createClass({
 							 	invoices={this.state.invoices}
 								property={this.props.property}
 								viewInvoice={this.viewItem}
-								role={this.props.current_role ? this.props.current_role.role : ''}
+								role="Trady"
 							/>
 					);
 				}
