@@ -1031,7 +1031,7 @@ var TradyMaintenanceRequest = React.createClass({
 								trady={this.props.assigned_trady}
 								viewInvoice={this.viewItem}
 							 	invoice_pdf_file={this.state.invoice_pdf_file}
-								role={this.props.current_user_role}
+								role="Trady"
 							/>
 					);
 				}
