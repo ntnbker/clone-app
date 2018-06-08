@@ -68,6 +68,9 @@ var Receipt = React.createClass({
                   })
                 }
               </div>
+              <div className="receipt-detail text-right margin-top-10">
+                <span className="title">Maintenance App Service Fee Total: ${total}</span>
+              </div>
             </div>
           </div>
         </div>
