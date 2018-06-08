@@ -596,9 +596,9 @@ $color-text: #83878C;
             }
         }
     }
-    @media (max-width: 500px) {
+    @media (max-width: 499px) {
         .main-container {
-            .section {
+            .main-content .section {
                 .amount-statistics {
                     padding: 0 5px;
                     > div {
