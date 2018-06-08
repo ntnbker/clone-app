@@ -242,7 +242,7 @@ var ModalViewPDFInvoice = React.createClass({
 					        <div className="text-center">
 					          Invoice Due On: {invoice.due_date}
 					        </div>
-					        { role === 'Trady' && trady.jfmo_participant && trady.customer &&
+					        { role === 'Trady' && trady.jfmo_participant && trady.customer_profile &&
                     <div className="text-center">
                       Service Fee: {invoice.service_fee}
                     </div>

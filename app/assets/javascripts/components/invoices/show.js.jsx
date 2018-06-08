@@ -79,7 +79,7 @@ var DetailInvoice = React.createClass({
 						</td>
 					</tr>
 					{
-						role === 'Trady' && trady && trady.jfmo_participant &&
+						role === 'Trady' && trady && trady.jfmo_participant && trady.customer_profile &&
 						<tr>
 							<td colSpan="3" className="border-none"></td>
 							<td className="text-right font-bold border-none">

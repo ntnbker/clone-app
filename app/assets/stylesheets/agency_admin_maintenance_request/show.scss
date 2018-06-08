@@ -13,6 +13,13 @@ $color-text: #83878C;
 
 .new-ui {
   .new-ui-maintenance-request.summary-container-index {
+    .main-summary {
+      .mr-detail {
+        .main-information {
+          margin-top: 20px;
+        }
+      }
+    }
     .item-maintenance-request {
       position: relative;
       .show-settings {
