@@ -350,5 +350,126 @@ class AgentMailer < ActionMailer::Base
     mail(to:email, subject:"The landlord has resolved the issue himself for property - #{@property.property_address}, sent on #{Date.today}")
   end
 
+  def agency_admin_new_maintenance_request_reminder(maintenance_request)
+    @maintenance_request = maintenance_request
+    
+    @property = @maintenance_request.property
+    @user = @maintenance_request.agency_admin.user
+    email = @maintenance_request.agency_admin.email 
+    
+    
+    mail(to:email, subject:"New maintenance request reminder for property - #{@property.property_address}, sent on #{Date.today}")
+  end
+
+  def agency_admin_quote_requested_reminder(maintenance_request)
+    @maintenance_request = maintenance_request
+    
+    @property = @maintenance_request.property
+    @user = @maintenance_request.agency_admin.user
+    email = @maintenance_request.agency_admin.email 
+    
+    
+    mail(to:email, subject:"Quote requested reminder for property - #{@property.property_address}, sent on #{Date.today}")
+  end
+
+  def agency_admin_quote_received_reminder(maintenance_request)
+    @maintenance_request = maintenance_request
+    
+    @property = @maintenance_request.property
+    @user = @maintenance_request.agency_admin.user
+    email = @maintenance_request.agency_admin.email 
+    
+    
+    mail(to:email, subject:"Quote received reminder for maintenance at property - #{@property.property_address}, sent on #{Date.today}")
+  end
+
+  def agency_admin_send_work_order_reminder(maintenance_request)
+    @maintenance_request = maintenance_request
+    
+    @property = @maintenance_request.property
+    @user = @maintenance_request.agency_admin.user
+    email = @maintenance_request.agency_admin.email 
+    
+    
+    mail(to:email, subject:"Send work order reminder for maintenance at property - #{@property.property_address}, sent on #{Date.today}")
+  end
+
+  def agency_admin_new_invoice_reminder(maintenance_request)
+    @maintenance_request = maintenance_request
+    
+    @property = @maintenance_request.property
+    @user = @maintenance_request.agency_admin.user
+    email = @maintenance_request.agency_admin.email 
+    
+    
+    mail(to:email, subject:"New invoice reminder for maintenance done at property - #{@property.property_address}, sent on #{Date.today}")
+  end
+
+  def agency_admin_cancelled_work_order_reminder(maintenance_request)
+     @maintenance_request = maintenance_request
+    
+    @property = @maintenance_request.property
+    @user = @maintenance_request.agency_admin.user
+    email = @maintenance_request.agency_admin.email 
+    
+    
+    mail(to:email, subject:"Work order cancelled reminder for maintenance required at property - #{@property.property_address}, sent on #{Date.today}")
+  end
+
+  def agent_new_maintenance_request_reminder(maintenance_request)
+    @maintenance_request = maintenance_request
+    
+    @property = @maintenance_request.property
+    @user = @maintenance_request.agent.user
+    email = @maintenance_request.agent.email
+    mail(to:email, subject:"New maintenance request reminder for property - #{@property.property_address}, sent on #{Date.today}")
+  end
+
+  def agent_new_invoice_reminder(maintenance_request)
+    @maintenance_request = maintenance_request
+    
+    @property = @maintenance_request.property
+    @user = @maintenance_request.agent.user
+    email = @maintenance_request.agent.email
+   
+    
+    mail(to:email, subject:"New invoice reminder for maintenance done at property - #{@property.property_address}, sent on #{Date.today}")
+  end
+
+  def agent_cancelled_work_order_reminder(maintenance_request)
+    @maintenance_request = maintenance_request
+    
+    @property = @maintenance_request.property
+    @user = @maintenance_request.agent.user
+    email = @maintenance_request.agent.email
+   
+    
+    mail(to:email, subject:"Work order cancelled reminder for maintenance required at property - #{@property.property_address}, sent on #{Date.today}")
+  end
+
+  def agent_quote_received_reminder(maintenance_request)
+    @maintenance_request = maintenance_request
+    @property = @maintenance_request.property
+    @user = @maintenance_request.agent.user
+    email = @maintenance_request.agent.email
+    mail(to:email, subject:"Quote received reminder for maintenance at property - #{@property.property_address}, sent on #{Date.today}")
+  end
+
+  def agent_quote_requested_reminder(maintenance_request)
+    @maintenance_request = maintenance_request
+    @property = @maintenance_request.property
+    @user = @maintenance_request.agent.user
+    email = @maintenance_request.agent.email
+    mail(to:email, subject:"Quote requested reminder for property - #{@property.property_address}, sent on #{Date.today}")
+  end
+
+  def agent_send_work_order_reminder(maintenance_request)
+    @maintenance_request = maintenance_request
+    @property = @maintenance_request.property
+    @user = @maintenance_request.agent.user
+    email = @maintenance_request.agent.email
+    mail(to:email, subject:"Send work order reminder for maintenance at property - #{@property.property_address}, sent on #{Date.today}")
+  end
+
 end 
 
