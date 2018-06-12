@@ -86,7 +86,7 @@ class TradiesController < ApplicationController
         else
           QuoteRequest.create(trady_id:@user.trady.id, maintenance_request_id:mr.id)
         end
-
+        QuoteRequest.expire(mr.id)
       end 
       
       #mr.action_status.update_attribute(:agent_status,"Awaiting Tradie Initiation")
@@ -141,6 +141,7 @@ class TradiesController < ApplicationController
         else
           QuoteRequest.create(trady_id:@user.trady.id, maintenance_request_id:mr.id)
         end
+        QuoteRequest.expire(mr.id)
       end 
       
       #mr.action_status.update_attribute(:agent_status,"Awaiting Tradie Initiation")
@@ -196,7 +197,7 @@ class TradiesController < ApplicationController
           else
             QuoteRequest.create(trady_id:@trady.id, maintenance_request_id:mr.id)
           end
-
+          QuoteRequest.expire(mr.id)
 
 
 

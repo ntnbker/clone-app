@@ -109,7 +109,7 @@ var ReceiptItem = React.createClass({
       <div className="row main-item box-shadow">
         <div className="content main-detail">
           <div className="receipt-detail">
-            <span className="title">Receipt Detail:</span>
+            <span className="title">Receipt Details:</span>
           </div>
           <div className="receipt-information main-information">
             <div className="receipt-information row-information">
@@ -117,7 +117,7 @@ var ReceiptItem = React.createClass({
                 <span className="data status">{paid ? 'Paid' : 'Waiting'}</span>
               </div>
               <div className="receipt-information row-information">
-                <span className="key">Number of Invoice Processed:</span>
+                <span className="key">Number of Invoices Processed:</span>
                 <span className="data address">{number_invoice}</span>
               </div>
               <div className="receipt-information row-information">

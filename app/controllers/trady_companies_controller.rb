@@ -1,6 +1,7 @@
 class TradyCompaniesController < ApplicationController
   before_action(only: [:new]) { email_auto_login(params[:user_id]) }
   before_action :require_login, only:[:new,:create,:edit,:update]
+  #before_action :jfmo_terms_and_conditions
   before_action(only:[:show,:index,:edit]) {allow("Trady")}
 
   
