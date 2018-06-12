@@ -768,9 +768,9 @@ var TenantMaintenanceRequest = React.createClass({
 	render: function() {
 		const {appointments, quote_appointments, landlord_appointments} = this.state;
 		return (
-			<div className="summary-container-index new-ui-maintenance-request" id="summary-container-index">
+			<div className="summary-container-index new-ui-maintenance-request main-container" id="summary-container-index">
 				<FixCSS />
-				<div className="main-summary dontprint">	
+				<div className="main-summary dontprint main-content">	
 					<div className="sidebar">
 						<div className="box-shadow flexbox flex-column">
 							{

@@ -3,7 +3,7 @@ class UploadedInvoice < ApplicationRecord
   include InvoicePdfUploader::Attachment.new(:pdf) 
   belongs_to :maintenance_request
   belongs_to :trady
-
+  belongs_to :receipt
   validates :total_invoice_amount, presence: true, numericality: true
 
   validates_presence_of :due_date

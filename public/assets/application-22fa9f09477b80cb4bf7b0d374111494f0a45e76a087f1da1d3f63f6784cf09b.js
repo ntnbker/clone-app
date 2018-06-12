@@ -72050,6 +72050,11 @@ ModalImageUpload = React.createClass({
     );
   }
 });
+var trimMaxLength = function (str, maxLength) {
+  if (!str) return '';
+  if (maxLength == null) return str;
+  return str.length > maxLength ? str.slice(0, maxLength - 3) + '...' : str;
+};
 var ModalInstruction = React.createClass({
 	displayName: 'ModalInstruction',
 
@@ -74483,7 +74488,7 @@ var DetailInvoice = React.createClass({
 							subTotal.toFixed(2)
 						)
 					),
-					role === 'Trady' && trady && trady.jfmo_participant && React.createElement(
+					role === 'Trady' && trady && trady.jfmo_participant && invoice.service_fee && React.createElement(
 						"tr",
 						null,
 						React.createElement("td", { colSpan: "3", className: "border-none" }),
@@ -75634,7 +75639,7 @@ var InvoiceSubmit = React.createClass({
           );
         })
       ),
-      React.createElement(
+      trady && trady.jfmo_participant && React.createElement(
         'div',
         { className: 'alert alert-message' },
         'Please Note: Every invoice submitted will have an associated service fee. If a mistake has been made on an invoice and it was submitted please void that invoice and submit a new invoice to avoid double service fee payment.'
@@ -76714,17 +76719,17 @@ var ModalViewPDFInvoice = React.createClass({
                   "Invoice Total: ",
                   invoice.total_invoice_amount || 0
                 ),
+                role === 'Trady' && trady.jfmo_participant && invoice.service_fee && React.createElement(
+                  "div",
+                  { className: "text-center" },
+                  "Service Fee: ",
+                  invoice.service_fee
+                ),
                 React.createElement(
                   "div",
                   { className: "text-center" },
                   "Invoice Due On: ",
                   invoice.due_date
-                ),
-                role === 'Trady' && trady.jfmo_participant && trady.customer && React.createElement(
-                  "div",
-                  { className: "text-center" },
-                  "Service Fee: ",
-                  invoice.service_fee
                 )
               )
             )
@@ -76951,13 +76956,13 @@ var SubmitInvoicePDF = React.createClass({
         "Invoice Due On : ",
         pdf.due_date
       ),
-      trady.jfmo_participant && !!customer && React.createElement(
+      trady.jfmo_participant && React.createElement(
         "div",
         { className: "text-center m-b-lg" },
         "Service Fee: ",
         pdf.service_fee
       ),
-      React.createElement(
+      trady.jfmo_participant && React.createElement(
         "div",
         { className: "alert alert-message" },
         "Please Note: Every invoice submitted will have an associated service fee. If a mistake has been made on an invoice and it was submitted please void that invoice and submit a new invoice to avoid double service fee payment."
@@ -78570,11 +78575,11 @@ var LandlordMaintenanceRequest = React.createClass({
 
 		return React.createElement(
 			'div',
-			{ className: 'summary-container-index new-ui-maintenance-request', id: 'summary-container-index' },
+			{ className: 'summary-container-index new-ui-maintenance-request main-container', id: 'summary-container-index' },
 			React.createElement(FixCSS, null),
 			React.createElement(
 				'div',
-				{ className: 'main-summary dontprint' },
+				{ className: 'main-summary dontprint main-content' },
 				React.createElement(
 					'div',
 					{ className: 'sidebar' },
@@ -81219,11 +81224,14 @@ var GeneralAction = React.createClass({
   },
 
   renderActionsForTrady: function () {
+    var jfmo_participant = this.props.jfmo_participant;
+
     return React.createElement(
       'div',
       { className: 'general-trady-actions general-actions' },
       this.generateActionButton('My Maintenance Requests', '/trady_maintenance_requests', 'fa fa-list'),
-      this.generateActionButton('Trady Account Settings', this.props.edit_trady, 'fa fa-user')
+      this.generateActionButton('Trady Account Settings', this.props.edit_trady, 'fa fa-user'),
+      jfmo_participant && this.generateActionButton('Service Fee Receipts', '/receipts', 'fa fa-list')
     );
   },
 
@@ -82283,11 +82291,11 @@ var ListMaintenanceRequest = React.createClass({
 
     return React.createElement(
       "div",
-      { className: "maintenance-list new-maintenance-list" },
+      { className: "maintenance-list new-maintenance-list main-container" },
       React.createElement(FixCSS, { haveScroll: true }),
       React.createElement(
         "div",
-        { className: "maintenance-content" },
+        { className: "maintenance-content main-content" },
         React.createElement(
           "div",
           { className: "sidebar" },
@@ -82467,10 +82475,10 @@ var NewMaintenanceRequestItem = React.createClass({
     var address = property && property.property_address;
     return React.createElement(
       "div",
-      { className: "row maintenance-request box-shadow" },
+      { className: "row main-item box-shadow" },
       React.createElement(
         "div",
-        { className: "content" },
+        { className: "content main-detail" },
         React.createElement(
           "div",
           { className: "job-detail" },
@@ -82487,10 +82495,10 @@ var NewMaintenanceRequestItem = React.createClass({
         ),
         React.createElement(
           "div",
-          { className: "mr-information" },
+          { className: "mr-information main-information" },
           React.createElement(
             "div",
-            { className: "mr-information" },
+            { className: "mr-information row-information" },
             React.createElement(
               "span",
               { className: "key" },
@@ -82504,7 +82512,7 @@ var NewMaintenanceRequestItem = React.createClass({
           ),
           React.createElement(
             "div",
-            { className: "mr-information" },
+            { className: "mr-information row-information" },
             React.createElement(
               "span",
               { className: "key" },
@@ -82518,7 +82526,7 @@ var NewMaintenanceRequestItem = React.createClass({
           ),
           React.createElement(
             "div",
-            { className: "mr-information" },
+            { className: "mr-information row-information" },
             React.createElement(
               "span",
               { className: "key" },
@@ -82532,7 +82540,7 @@ var NewMaintenanceRequestItem = React.createClass({
           ),
           React.createElement(
             "div",
-            { className: "mr-information" },
+            { className: "mr-information row-information" },
             React.createElement(
               "span",
               { className: "key" },
@@ -82782,11 +82790,11 @@ var SearchResultMaintenanceRequest = React.createClass({
 
     return React.createElement(
       "div",
-      { className: "maintenance-list new-maintenance-list" },
+      { className: "maintenance-list new-maintenance-list main-container" },
       React.createElement(FixCSS, { haveScroll: true }),
       React.createElement(
         "div",
-        { className: "maintenance-content" },
+        { className: "maintenance-content main-content" },
         React.createElement(
           "div",
           { className: "sidebar" },
@@ -84066,7 +84074,7 @@ var MaintenaceRequestDetail = React.createClass({
 
 		return React.createElement(
 			'div',
-			{ className: 'mr-detail box-shadow' },
+			{ className: 'mr-detail box-shadow main-detail' },
 			React.createElement(MaintenanceRequestInformation, this.props),
 			React.createElement(
 				'div',
@@ -84161,10 +84169,10 @@ var MaintenanceRequestInformation = React.createClass({
 
 		return React.createElement(
 			'div',
-			{ className: 'mr-information' },
+			{ className: 'mr-information main-information' },
 			show_assign && React.createElement(
 				'div',
-				{ className: 'mr-information' },
+				{ className: 'mr-information row-information' },
 				React.createElement(
 					'span',
 					{ className: 'key' },
@@ -84188,7 +84196,7 @@ var MaintenanceRequestInformation = React.createClass({
 			),
 			React.createElement(
 				'div',
-				{ className: 'mr-information' },
+				{ className: 'mr-information row-information' },
 				React.createElement(
 					'span',
 					{ className: 'key' },
@@ -84203,7 +84211,7 @@ var MaintenanceRequestInformation = React.createClass({
 			),
 			React.createElement(
 				'div',
-				{ className: 'mr-information' },
+				{ className: 'mr-information row-information' },
 				React.createElement(
 					'span',
 					{ className: 'key' },
@@ -84217,7 +84225,7 @@ var MaintenanceRequestInformation = React.createClass({
 			),
 			React.createElement(
 				'div',
-				{ className: 'mr-information' },
+				{ className: 'mr-information row-information' },
 				React.createElement(
 					'span',
 					{ className: 'key' },
@@ -84413,7 +84421,9 @@ var TenantContactButton = React.createClass({
 								React.createElement(
 									'span',
 									{ className: 'key' },
-									'Phone Number: '
+									'Phone Number - ',
+									trimMaxLength(tenant.name, 20),
+									': '
 								),
 								React.createElement(
 									'span',
@@ -89148,10 +89158,10 @@ var MaintenanceRequest = React.createClass({
 
 		return React.createElement(
 			"div",
-			{ className: "summary-container-index new-ui-maintenance-request", id: "summary-container-index" },
+			{ className: "summary-container-index new-ui-maintenance-request main-container", id: "summary-container-index" },
 			React.createElement(
 				"div",
-				{ className: "main-summary dontprint" },
+				{ className: "main-summary dontprint main-content" },
 				React.createElement(
 					"div",
 					{ className: "sidebar" },
@@ -98392,6 +98402,443 @@ var QuoteSubmit = React.createClass({
     );
   }
 });
+
+var ReceiptList = React.createClass({
+  displayName: "ReceiptList",
+
+  getInitialState: function () {
+    var receipts = this.props.receipts;
+
+    var perPage = 5;
+    var dataShow = (receipts || []).slice(0, perPage);
+    return {
+      page: 1,
+      count: (receipts || []).length,
+      perPage: perPage,
+      dataShow: dataShow,
+      receipts: receipts || []
+    };
+  },
+
+  getData: function (link, page) {
+    var params = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+
+    params.page = page;
+    var _state = this.state;
+    var receipts = _state.receipts;
+    var perPage = _state.perPage;
+
+    var dataShow = receipts.slice((page - 1) * perPage, page * perPage);
+
+    this.setState({ page: page, dataShow: dataShow });
+    // const self = this;
+    // $.ajax({
+    //   type: 'GET',
+    //   url: link,
+    //   data: params,
+    //   success: function(res){
+    //     const dataShow = res.entries;
+    //     self.setState({
+    //       count: res.total_entries,
+    //       dataShow: dataShow,
+    //       perPage: res.per_page,
+    //       page: res.current_page,
+    //     });
+    //   },
+    //   error: function(err) {
+    //     self.setState({
+    //       count: 0,
+    //       dataShow: [],
+    //     });
+    //   }
+    // });
+  },
+
+  componentWillMount: function () {
+    //this.getMaintenanceRequests();
+    // this.setPage(1);
+  },
+
+  setPage: function (page) {
+    this.setState({
+      page: page
+    });
+    this.getData(this.props.link, page, {});
+  },
+
+  render: function () {
+    var self = this;
+
+    return React.createElement(
+      "div",
+      { className: "receipt-list main-container" },
+      React.createElement(FixCSS, null),
+      React.createElement(
+        "div",
+        { className: "receipt-content main-content" },
+        React.createElement(
+          "div",
+          { className: "sidebar" },
+          React.createElement(
+            "div",
+            { className: "box-shadow flexbox flex-column" },
+            React.createElement(GeneralAction, this.props)
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "section" },
+          React.createElement(
+            "div",
+            null,
+            this.state.dataShow.map(function (receipt, key) {
+              return React.createElement(ReceiptItem, {
+                key: key,
+                receipt: receipt,
+                link: self.props.link
+              });
+            }),
+            this.state.count > this.state.perPage && React.createElement(Pagination, {
+              page: this.state.page,
+              setPage: this.setPage,
+              total: this.state.count,
+              prePage: this.state.perPage
+            })
+          )
+        )
+      ),
+      React.createElement(DropDownMobileList, {
+        title: "Menu"
+      })
+    );
+  }
+});
+
+var ReceiptItem = React.createClass({
+  displayName: "ReceiptItem",
+
+  render: function () {
+    var _this = this;
+
+    var _props = this.props;
+    var receipt = _props.receipt;
+    var link = _props.link;
+    var id = receipt.id;
+    var paid = receipt.paid;
+    var total = receipt.total;
+    var number_invoice = receipt.number_invoice;
+
+    return React.createElement(
+      "div",
+      { className: "row main-item box-shadow" },
+      React.createElement(
+        "div",
+        { className: "content main-detail" },
+        React.createElement(
+          "div",
+          { className: "receipt-detail" },
+          React.createElement(
+            "span",
+            { className: "title" },
+            "Receipt Details:"
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "receipt-information main-information" },
+          React.createElement(
+            "div",
+            { className: "receipt-information row-information" },
+            React.createElement(
+              "span",
+              { className: "key" },
+              "Status:"
+            ),
+            React.createElement(
+              "span",
+              { className: "data status" },
+              paid ? 'Paid' : 'Waiting'
+            )
+          ),
+          React.createElement(
+            "div",
+            { className: "receipt-information row-information" },
+            React.createElement(
+              "span",
+              { className: "key" },
+              "Number of Invoices Processed:"
+            ),
+            React.createElement(
+              "span",
+              { className: "data address" },
+              number_invoice
+            )
+          ),
+          React.createElement(
+            "div",
+            { className: "receipt-information row-information" },
+            React.createElement(
+              "span",
+              { className: "key" },
+              "Service Fee Total:"
+            ),
+            React.createElement(
+              "span",
+              { className: "data" },
+              "$",
+              parseFloat(total || 0).toFixed(2)
+            )
+          )
+        )
+      ),
+      React.createElement(
+        "div",
+        { className: "view-button" },
+        React.createElement(
+          "button",
+          {
+            type: "button",
+            className: "btn-view",
+            onClick: function () {
+              return location.href = _this.props.link + "/" + id;
+            }
+          },
+          "View"
+        )
+      )
+    );
+  }
+});
+
+var Receipt = React.createClass({
+  displayName: "Receipt",
+
+  getInitialState: function () {
+    var receipt = this.props.receipt;
+    var total = receipt.total;
+    var invoices = receipt.invoices;
+    var uploaded_invoices = receipt.uploaded_invoices;
+
+    return {
+      total: total,
+      invoices: invoices,
+      uploaded_invoices: uploaded_invoices
+    };
+  },
+
+  render: function () {
+    var self = this;
+    var _state = this.state;
+    var total = _state.total;
+    var invoices = _state.invoices;
+    var uploaded_invoices = _state.uploaded_invoices;
+
+    return React.createElement(
+      "div",
+      { className: "receipt-list main-container" },
+      React.createElement(FixCSS, null),
+      React.createElement(
+        "div",
+        { className: "receipt-content main-content" },
+        React.createElement(
+          "div",
+          { className: "sidebar dontprint" },
+          React.createElement(
+            "div",
+            { className: "box-shadow flexbox flex-column" },
+            React.createElement(GeneralAction, this.props)
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "section" },
+          React.createElement(
+            "div",
+            { className: "box-shadow" },
+            React.createElement(
+              "div",
+              { className: "receipt-detail" },
+              React.createElement(
+                "span",
+                { className: "title" },
+                "Receipt Details"
+              )
+            ),
+            React.createElement(
+              "div",
+              { className: "receipt-detail" },
+              React.createElement(
+                "span",
+                { className: "title" },
+                "Maintenance App Service Fee Total: $",
+                parseFloat(total || 0).toFixed(2)
+              )
+            ),
+            React.createElement(
+              "div",
+              { className: "print-button dontprint" },
+              React.createElement(
+                "button",
+                { type: "button", onClick: function () {
+                    return window.print();
+                  } },
+                "Print"
+              )
+            ),
+            React.createElement(
+              "div",
+              null,
+              invoices.map(function (invoice, index) {
+                return React.createElement(ReceiptInvoiceItem, {
+                  startIndex: 0,
+                  totalKey: "amount",
+                  index: index,
+                  invoice: invoice,
+                  link: self.props.link
+                });
+              }),
+              uploaded_invoices.map(function (invoice, index) {
+                return React.createElement(ReceiptInvoiceItem, {
+                  startIndex: invoices.length,
+                  totalKey: "total_invoice_amount",
+                  index: index,
+                  invoice: invoice,
+                  link: self.props.link
+                });
+              })
+            ),
+            React.createElement(
+              "div",
+              { className: "receipt-detail text-right margin-top-10" },
+              React.createElement(
+                "span",
+                { className: "title" },
+                "Maintenance App Service Fee Total: $",
+                parseFloat(total || 0).toFixed(2)
+              )
+            )
+          )
+        )
+      ),
+      React.createElement(DropDownMobileList, {
+        title: "Menu"
+      })
+    );
+  }
+});
+
+var ReceiptInvoiceItem = React.createClass({
+  displayName: "ReceiptInvoiceItem",
+
+  render: function () {
+    var _props = this.props;
+    var invoice = _props.invoice;
+    var link = _props.link;
+    var index = _props.index;
+    var startIndex = _props.startIndex;
+    var totalKey = _props.totalKey;
+    var id = invoice.id;
+    var paid = invoice.paid;
+    var service_fee = invoice.service_fee;
+    var _invoice$maintenance_request = invoice.maintenance_request;
+    var maintenance_request = _invoice$maintenance_request === undefined ? {} : _invoice$maintenance_request;
+
+    var _ref = maintenance_request || {};
+
+    var property = _ref.property;
+
+    var _ref2 = property || {};
+
+    var _ref2$property_address = _ref2.property_address;
+    var property_address = _ref2$property_address === undefined ? '' : _ref2$property_address;
+
+    return React.createElement(
+      "div",
+      { className: "row main-item receipt-item" },
+      React.createElement(
+        "div",
+        { className: "content main-detail" },
+        React.createElement(
+          "div",
+          { className: "invoice-title" },
+          React.createElement(
+            "span",
+            { className: "title" },
+            "Invoice #",
+            startIndex + index + 1
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "receipt-information main-information" },
+          React.createElement(
+            "div",
+            { className: "receipt-information row-information" },
+            React.createElement(
+              "span",
+              { className: "key" },
+              "Invoice Total:"
+            ),
+            React.createElement(
+              "span",
+              { className: "data" },
+              "$",
+              parseFloat(invoice[totalKey] || 0).toFixed(2)
+            )
+          ),
+          React.createElement(
+            "div",
+            { className: "receipt-information row-information" },
+            React.createElement(
+              "span",
+              { className: "key" },
+              "Work Done at:"
+            ),
+            React.createElement(
+              "span",
+              { className: "data address" },
+              property_address
+            )
+          ),
+          React.createElement(
+            "div",
+            { className: "last-row" },
+            React.createElement(
+              "div",
+              { className: "view-mr-link" },
+              React.createElement(
+                "a",
+                {
+                  href: link + '/' + maintenance_request.id
+                },
+                "View Maintenance Request"
+              )
+            ),
+            React.createElement(
+              "div",
+              { className: "receipt-information row-information" },
+              React.createElement(
+                "span",
+                { className: "key" },
+                "Invoice Service Fee:"
+              ),
+              React.createElement(
+                "span",
+                { className: "data address" },
+                "$",
+                parseFloat(service_fee || 0).toFixed(2)
+              )
+            )
+          )
+        )
+      )
+    );
+  }
+});
+/* <div className="receipt-information row-information">
+ <span className="key">Service Fee:</span>
+ <span className="data">{paid ? 'Paid' : 'Waiting'}</span>
+</div> */;
 var RecruitList = React.createClass({
   displayName: "RecruitList",
 
@@ -100526,11 +100973,11 @@ var TenantMaintenanceRequest = React.createClass({
 
 		return React.createElement(
 			'div',
-			{ className: 'summary-container-index new-ui-maintenance-request', id: 'summary-container-index' },
+			{ className: 'summary-container-index new-ui-maintenance-request main-container', id: 'summary-container-index' },
 			React.createElement(FixCSS, null),
 			React.createElement(
 				'div',
-				{ className: 'main-summary dontprint' },
+				{ className: 'main-summary dontprint main-content' },
 				React.createElement(
 					'div',
 					{ className: 'sidebar' },
@@ -106625,7 +107072,7 @@ var TradyMaintenanceRequest = React.createClass({
 							invoices: this.state.invoices,
 							property: this.props.property,
 							viewInvoice: this.viewItem,
-							role: this.props.current_role ? this.props.current_role.role : ''
+							role: 'Trady'
 						});
 					}
 
@@ -106638,7 +107085,7 @@ var TradyMaintenanceRequest = React.createClass({
 							trady: this.props.assigned_trady,
 							viewInvoice: this.viewItem,
 							invoice_pdf_file: this.state.invoice_pdf_file,
-							role: this.props.current_user_role
+							role: 'Trady'
 						});
 					}
 
@@ -106854,7 +107301,6 @@ var TradyMaintenanceRequest = React.createClass({
 	quoteAlreadySent: function () {
 		var self = this;
 		var quote_request = this.state.quote_request;
-		var current_user_role = this.props.current_user_role;
 
 		var params = {
 			trady_id: quote_request.trady_id,
@@ -107051,7 +107497,6 @@ var TradyMaintenanceRequest = React.createClass({
 		}
 
 		var quote_request = this.state.quote_request;
-		var current_user_role = this.props.current_user_role;
 
 		var image = images[0];
 
@@ -107258,11 +107703,11 @@ var TradyMaintenanceRequest = React.createClass({
 
 		return React.createElement(
 			'div',
-			{ className: 'summary-container-index new-ui-maintenance-request', id: 'summary-container-index' },
+			{ className: 'summary-container-index new-ui-maintenance-request main-container', id: 'summary-container-index' },
 			React.createElement(FixCSS, null),
 			React.createElement(
 				'div',
-				{ className: 'main-summary dontprint' },
+				{ className: 'main-summary dontprint main-content' },
 				React.createElement(
 					'div',
 					{ className: 'sidebar' },

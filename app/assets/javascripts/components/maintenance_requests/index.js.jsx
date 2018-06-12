@@ -852,7 +852,7 @@ var ListMaintenanceRequest = React.createClass({
     } = this.props;
 
     return (
-      <div className="maintenance-list new-maintenance-list">
+      <div className="maintenance-list new-maintenance-list main-container">
         <FixCSS haveScroll={true} />
         {/* <div className="dropdown-MR">
           {
@@ -885,7 +885,7 @@ var ListMaintenanceRequest = React.createClass({
               </div>
           }
         </div> */}
-        <div className="maintenance-content">
+        <div className="maintenance-content main-content">
           <div className="sidebar">
             <div className="box-shadow flexbox flex-column">
               <GeneralAction
@@ -1041,8 +1041,8 @@ var NewMaintenanceRequestItem = React.createClass({
     const mrStatus = action_status && action_status.maintenance_request_status || filter_status;
     const address = property && property.property_address;
     return (
-      <div className="row maintenance-request box-shadow">
-        <div className="content">
+      <div className="row main-item box-shadow">
+        <div className="content main-detail">
           <div className="job-detail">
             <span className="title">Job Detail:</span>
             <span className="description">{maintenance_description.length > 40 
@@ -1050,20 +1050,20 @@ var NewMaintenanceRequestItem = React.createClass({
               : maintenance_description}
             </span>
           </div>
-          <div className="mr-information">
-            <div className="mr-information">
+          <div className="mr-information main-information">
+            <div className="mr-information row-information">
                 <span className="key">Status:</span>
                 {mrStatus && <span className="data status">{mrStatus}</span>}
               </div>
-              <div className="mr-information">
+              <div className="mr-information row-information">
                 <span className="key">Address:</span>
                 <span className="data address">{address}</span>
               </div>
-              <div className="mr-information">
+              <div className="mr-information row-information">
                 <span className="key">Submitted:</span>
                 <span className="data time">{moment(created_at).format('LL')}</span>
               </div>
-              <div className="mr-information">
+              <div className="mr-information row-information">
                 <span className="key">Service Required:</span>
                 <span className="data service">{service_type}</span>
               </div>
@@ -1264,9 +1264,9 @@ var SearchResultMaintenanceRequest = React.createClass({
     const isPagination = this.state.data.length > this.state.perPage;
 
     return (
-      <div className="maintenance-list new-maintenance-list">
+      <div className="maintenance-list new-maintenance-list main-container">
         <FixCSS haveScroll={true} />
-        <div className="maintenance-content">
+        <div className="maintenance-content main-content">
           <div className="sidebar">
             <div className="box-shadow flexbox flex-column">
               <GeneralAction

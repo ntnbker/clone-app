@@ -239,14 +239,14 @@ var ModalViewPDFInvoice = React.createClass({
 									<div className="text-center">
 										Invoice Total: {invoice.total_invoice_amount || 0}
 									</div>
-					        <div className="text-center">
-					          Invoice Due On: {invoice.due_date}
-					        </div>
-					        { role === 'Trady' && trady.jfmo_participant && trady.customer &&
+					        { role === 'Trady' && trady.jfmo_participant && invoice.service_fee &&
                     <div className="text-center">
                       Service Fee: {invoice.service_fee}
                     </div>
                   }
+					        <div className="text-center">
+					          Invoice Due On: {invoice.due_date}
+					        </div>
 								</div>
 							</div>
 						</div>
@@ -449,14 +449,16 @@ var SubmitInvoicePDF = React.createClass({
         <div className="text-center m-b-lg">
           Invoice Due On : {pdf.due_date}
         </div>
-			  { trady.jfmo_participant && !!customer &&
+			  { trady.jfmo_participant &&
           <div className="text-center m-b-lg">
             Service Fee: {pdf.service_fee}
           </div>
         }
-        <div className="alert alert-message">
-          Please Note: Every invoice submitted will have an associated service fee. If a mistake has been made on an invoice and it was submitted please void that invoice and submit a new invoice to avoid double service fee payment.
-        </div>
+        { trady.jfmo_participant && 
+          <div className="alert alert-message">
+            Please Note: Every invoice submitted will have an associated service fee. If a mistake has been made on an invoice and it was submitted please void that invoice and submit a new invoice to avoid double service fee payment.
+          </div>
+        }
 			  <div className="text-center m-b-lg qf-button">
 		      <button
 		      	type="button"

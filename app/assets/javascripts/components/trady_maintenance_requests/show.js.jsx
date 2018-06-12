@@ -1017,7 +1017,7 @@ var TradyMaintenanceRequest = React.createClass({
 							 	invoices={this.state.invoices}
 								property={this.props.property}
 								viewInvoice={this.viewItem}
-								role={this.props.current_role ? this.props.current_role.role : ''}
+								role="Trady"
 							/>
 					);
 				}
@@ -1031,7 +1031,7 @@ var TradyMaintenanceRequest = React.createClass({
 								trady={this.props.assigned_trady}
 								viewInvoice={this.viewItem}
 							 	invoice_pdf_file={this.state.invoice_pdf_file}
-								role={this.props.current_user_role}
+								role="Trady"
 							/>
 					);
 				}
@@ -1260,7 +1260,6 @@ var TradyMaintenanceRequest = React.createClass({
 	quoteAlreadySent: function() {
 		const self = this;
 		const { quote_request } 		= this.state;
-		const { current_user_role } = this.props;
 
 		const params = {
 			trady_id: quote_request.trady_id,
@@ -1455,7 +1454,6 @@ var TradyMaintenanceRequest = React.createClass({
 		}
 
 		const { quote_request } 		= this.state;
-		const { current_user_role } = this.props;
 
 		const image = images[0];
 
@@ -1642,9 +1640,9 @@ var TradyMaintenanceRequest = React.createClass({
 		const needShowInfo = (!trady || trady.id === this.props.signed_in_trady.id);
 
 		return (
-			<div className="summary-container-index new-ui-maintenance-request" id="summary-container-index">
+			<div className="summary-container-index new-ui-maintenance-request main-container" id="summary-container-index">
 				<FixCSS />
-				<div className="main-summary dontprint">
+				<div className="main-summary dontprint main-content">
 					<div className="sidebar">
 						<div className="box-shadow flexbox flex-column">
 							{

@@ -10,6 +10,12 @@ body {
   height: 100%;
 
 }
+.text-right {
+  text-align: right;
+}
+.margin-top-10 {
+  margin-top: 10px;
+}
 .flexbox {
   @include flexbox;
 

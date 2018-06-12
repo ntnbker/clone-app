@@ -972,9 +972,9 @@ var LandlordMaintenanceRequest = React.createClass({
 		const hasApproved = quote_requests.some(quote_request => quote_request.quotes.some(quote => quote.status === 'Approved'));
 
 		return (
-			<div className="summary-container-index new-ui-maintenance-request" id="summary-container-index">
+			<div className="summary-container-index new-ui-maintenance-request main-container" id="summary-container-index">
 				<FixCSS />
-				<div className="main-summary dontprint">
+				<div className="main-summary dontprint main-content">
 					<div className="sidebar">
 						<div className="box-shadow flexbox flex-column">
 							{

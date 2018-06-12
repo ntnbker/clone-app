@@ -954,7 +954,7 @@ var MaintenaceRequestDetail = React.createClass({
 		} = this.props;
 
 		return (
-			<div className="mr-detail box-shadow">
+			<div className="mr-detail box-shadow main-detail">
 				<MaintenanceRequestInformation {...this.props} />
 				<div className="content">
 					<div className="description">
@@ -1016,10 +1016,10 @@ var MaintenanceRequestInformation = React.createClass({
 		let created_at = moment(date).add(-n/60).fromNow();
 
 		return (
-			<div className="mr-information">
+			<div className="mr-information main-information">
 				{
 					show_assign &&
-					<div className="mr-information">
+					<div className="mr-information row-information">
 						<span className="key">Status: </span>
 						<span className="data status">{status && status.agent_status}</span>
 						<span 
@@ -1030,20 +1030,20 @@ var MaintenanceRequestInformation = React.createClass({
 						</span>
 					</div>
 				}
-				<div className="mr-information">
+				<div className="mr-information row-information">
 					<span className="key">Address: </span>
 					<span className="data address">
 						<i className="fa fa-map-marker" aria-hidden="true" />
 						{property.property_address}
 					</span>
 				</div>
-				<div className="mr-information">
+				<div className="mr-information row-information">
 					<span className="key">Submitted: </span>
 					<span className="data time">
 						{created_at}
 					</span>
 				</div>
-				<div className="mr-information">
+				<div className="mr-information row-information">
 					<span className="key">Service Required: </span>
 					<span className="data service">
 						{maintenance_request.service_type}
@@ -1148,7 +1148,7 @@ var TenantContactButton = React.createClass({
 						<div className="tenant-detail">
 							<div className="phone-desktop">
 								<div className="phone">
-									<span className="key">Phone Number: </span>
+									<span className="key">Phone Number - {trimMaxLength(tenant.name, 20)}: </span>
 									<span className="value">{tenant.mobile}</span>
 								</div>
 							</div>

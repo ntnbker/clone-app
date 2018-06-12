@@ -10,9 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-
-ActiveRecord::Schema.define(version: 20180525094611) do
-
+ActiveRecord::Schema.define(version: 20180612154954) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -285,6 +283,7 @@ ActiveRecord::Schema.define(version: 20180525094611) do
     t.decimal  "service_fee",             precision: 8, scale: 2
     t.boolean  "active",                                          default: true
     t.text     "void_reason"
+    t.integer  "receipt_id"
   end
 
   create_table "jfmo_requests", force: :cascade do |t|
@@ -442,6 +441,14 @@ ActiveRecord::Schema.define(version: 20180525094611) do
     t.integer  "quote_request_id"
   end
 
+  create_table "receipts", force: :cascade do |t|
+    t.integer  "trady_id"
+    t.decimal  "total",      precision: 8, scale: 2
+    t.datetime "created_at",                                         null: false
+    t.datetime "updated_at",                                         null: false
+    t.boolean  "paid",                               default: false
+  end
+
   create_table "reminder_schedulers", force: :cascade do |t|
     t.date     "run_date"
     t.datetime "created_at", null: false
@@ -542,11 +549,12 @@ ActiveRecord::Schema.define(version: 20180525094611) do
   end
 
   create_table "trady_payment_errors", force: :cascade do |t|
-    t.text   "message"
-    t.string "http_status"
-    t.string "error_type"
-    t.string "error_code"
-    t.string "charge_id"
+    t.text    "message"
+    t.string  "http_status"
+    t.string  "error_type"
+    t.string  "error_code"
+    t.string  "charge_id"
+    t.integer "trady_id"
   end
 
   create_table "trady_profile_images", force: :cascade do |t|
@@ -577,6 +585,7 @@ ActiveRecord::Schema.define(version: 20180525094611) do
     t.string   "mapp_payment_status",                            default: "Outstanding"
     t.boolean  "active",                                         default: true
     t.text     "void_reason"
+    t.integer  "receipt_id"
   end
 
   create_table "uploaded_quotes", force: :cascade do |t|
