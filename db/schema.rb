@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180601043412) do
+ActiveRecord::Schema.define(version: 20180612154954) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -549,11 +549,12 @@ ActiveRecord::Schema.define(version: 20180601043412) do
   end
 
   create_table "trady_payment_errors", force: :cascade do |t|
-    t.text   "message"
-    t.string "http_status"
-    t.string "error_type"
-    t.string "error_code"
-    t.string "charge_id"
+    t.text    "message"
+    t.string  "http_status"
+    t.string  "error_type"
+    t.string  "error_code"
+    t.string  "charge_id"
+    t.integer "trady_id"
   end
 
   create_table "trady_profile_images", force: :cascade do |t|

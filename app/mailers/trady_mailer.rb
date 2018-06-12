@@ -236,6 +236,12 @@ class TradyMailer < ActionMailer::Base
     end 
     mail(to:@trady.email, subject:"Invoice void and rejected by agent view for details, sent on #{Date.today}")
   end
+
+  def trady_service_fee_payment_receipt(receipt)
+    @receipt = receipt
+    @trady = receipt.trady
+    mail(to:@trady.email, subject:"Service Fee Invoice/Receipt , sent on #{Date.today}")
+  end
   
 end 
 

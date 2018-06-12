@@ -36,6 +36,7 @@ class SystemInvoicesServiceFeeCollectionWorker
         if charge["paid"] == true
           receipt.update_attribute(:paid, true)
           receipt.mark_as_paid
+          TradyServiceFeePaymentReceiptEmailWorker.perform_async(receipt.id)
           #send an email about this charge to the trady
         end 
 
