@@ -18,7 +18,7 @@ class AgencyAdminOutstandingMaintenanceRequestReminderWorker
         
         quote_requested_count = MaintenanceRequest.all.where({ agency_admin_id: agency_admin.id}).joins(:action_status).where(:action_statuses => { :agent_status =>"Quote Requested" }).distinct.count
 
-        quote_recieved_count = MaintenanceRequest.all.where({ agency_admin_id: agency_admin.id}).joins(:action_status).where(:action_statuses => { :agent_status =>"Quote Received" }).distinct.count
+        quote_recieved_count = MaintenanceRequest.all.where({ agency_admin_id: agency_admin.id}).joins(:action_status).where(:action_statuses => { :agent_status =>"Quote Recieved" }).distinct.count
 
         send_work_order_count = MaintenanceRequest.all.where({ agency_admin_id: agency_admin.id}).joins(:action_status).where(:action_statuses => { :agent_status =>"Send Work Order" }).distinct.count
 
