@@ -62,6 +62,7 @@ class RecruitsController < ApplicationController
         redirect_to recruit_path(id:params[:trady][:jfmo_request_id])
       else
         QuoteRequest.create(trady_id:trady.id, maintenance_request_id:maintenance_request.id)
+        maintenance_request.action_status.update_attribute(:agent_status,"Awaiting Quote")
         TradyEmailWorker.perform_async(trady.id,maintenance_request.id)
       end 
         
@@ -77,8 +78,10 @@ class RecruitsController < ApplicationController
         @trady.update_columns(user_id: user.id, jfmo_participant:true)
         @trady.roles << role
         role.save
+
         QuoteRequest.create(trady_id:@trady.id, maintenance_request_id:maintenance_request.id)
         JfmoEmailWorker.perform_async(maintenance_request_id, @trady.id)
+        maintenance_request.action_status.update_attribute(:agent_status,"Awaiting Quote")
         flash[:success] = "We have sent and email to #{@trady.email}. So they can accept terms, create PW and add their services."
         redirect_to recruit_path(id:params[:trady][:jfmo_request_id])
 
@@ -89,6 +92,7 @@ class RecruitsController < ApplicationController
         flash[:danger] = "Sorry you missed some information below, make sure all fields are completed."
         render :show
       end 
+      
 
     end 
 

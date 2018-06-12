@@ -1238,31 +1238,30 @@ var Pagination = React.createClass({
   }
 });
 
-
 var SearchResultMaintenanceRequest = React.createClass({
   getInitialState: function() {
     const { maintenance_requests, query = '' } = this.props;
     const page = 1;
-    const prePage = 3;
-    const dataShow = [...maintenance_requests].splice(0, prePage);
+    const perPage = 5;
+    const dataShow = maintenance_requests.slice(0, perPage);
 
     return {
       page: page,
       query: query,
-      prePage: prePage,
+      perPage: perPage,
       dataShow: dataShow,
       data: maintenance_requests,
     };
   },
 
   setPage: function(page){
-    const { prePage, data = [] } = this.state;
-    const dataShow = [...data].splice((page - 1) * prePage, prePage);
+    const { perPage, data = [] } = this.state;
+    const dataShow = data.slice((page - 1) * perPage, page * perPage);
     this.setState({ page, dataShow });
   },
 
   render: function() {
-    const isPagination = this.state.data.length > this.state.prePage;
+    const isPagination = this.state.data.length > this.state.perPage;
 
     return (
       <div className="maintenance-list new-maintenance-list main-container">
@@ -1294,7 +1293,7 @@ var SearchResultMaintenanceRequest = React.createClass({
                 page={this.state.page}
                 setPage={this.setPage}
                 total={this.state.data.length}
-                prePage={this.state.prePage}
+                prePage={this.state.perPage}
               />
             }
           </div>
