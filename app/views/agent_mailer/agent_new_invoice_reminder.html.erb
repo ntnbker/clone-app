@@ -226,24 +226,27 @@
                             <tr>
                                 <td style="padding: 100px 40px 40px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #849aaa; text-align: leftt;">
                                     <p style="margin: 0;">
-                                      Hi <%= @maintenance_request.agency_admin.first_name.capitalize %>, <br/>
-                                      This is a friendly reminder that the landlord  for the property at <%=@property.property_address%>, has requested quotes from tradies to fix the issue(s) in the maintenance request. To view the maintenance request and quickly request quotes from tradies click the button below.
+                                      
+                                        Hi <%= @maintenance_request.agent.name.capitalize %>, <br/>
+                                        This is a friendly reminder that a tradie has submitted an invoice for maintenance done at <%=@property.property_address%>. To view the invoice for the maintenance request, please click the View Maintenance Request button below. 
+
+
                                     </p>
                                     
                                     
 
                                 </td>
                             </tr>
-                           
+                            
                               <tr>
                                 <td style="padding: 0 40px 133px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #7dc691;">
                                     <!-- Button : BEGIN -->
                                     <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin: auto;">
                                         <tr>
                                             <td style="border-radius: 3px; background: #7dc691; text-align: center;" class="button-td">
-                                              <%=link_to "View Maintenance Request", agency_admin_maintenance_request_url(@maintenance_request, user_id: @user.id, role: "AgencyAdmin"), :style=>"background: #7dc691; border: 15px solid #7dc691; font-family: sans-serif; font-size: 13px; line-height: 1.1; text-align: center; text-decoration: none; display: block; border-radius: 3px; font-weight: bold; color:#ffffff;"%>
-            
-                              
+                                                <%=link_to "View Maintenance Request", agent_maintenance_request_url(@maintenance_request, user_id: @user.id, role: "Agent"), :style=>"background: #7dc691; border: 15px solid #7dc691; font-family: sans-serif; font-size: 13px; line-height: 1.1; text-align: center; text-decoration: none; display: block; border-radius: 3px; font-weight: bold; color:#ffffff;"%>
+                                                    
+                                                
                                             </td>
                                         </tr>
                                     </table>
@@ -251,8 +254,7 @@
                                 </td>
                               </tr>
                                         
-                           
-                            
+                                        
 
                         </table>
                     </td>
