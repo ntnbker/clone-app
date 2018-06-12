@@ -1,4 +1,4 @@
-class AgencyAdminOutstandingMaintenanceRequestReminderWorker
+class AgencyAdmin::AgencyAdminOutstandingMaintenanceRequestReminderWorker
   include Sidekiq::Worker
 
   def perform
