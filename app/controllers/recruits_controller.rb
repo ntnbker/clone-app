@@ -26,7 +26,11 @@ class RecruitsController < ApplicationController
   end
 
   def index
-    @jfmo_requests = JfmoRequest.all
+    @jfmo_requests = JfmoRequest.all.includes(maintenance_request:[:action_status, :property])
+
+    
+
+    # includes(trady:[:customer_profile, :trady_profile_image, :trady_company=> :trady_company_profile_image], quotes:[:quote_items, :quote_image],:conversation=>:messages)
   end
 
   def show
