@@ -318,6 +318,8 @@ var UpdateStatusModal = React.createClass({
 
 	render() {
 		const {standBy, actionRequired, awaitingAction} = this.state;
+		const {current_role} = this.props;
+		const isNotAgent = !current_role || current_role.role !== 'Agent';
 
 		return <div className="modal-custom fade update-status-modal">
 			<div className="modal-dialog">
@@ -339,14 +341,18 @@ var UpdateStatusModal = React.createClass({
 							<p>Stand By</p>
 							<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={standBy}/>
 						</div>
-						<div className="dropdown-assign">
-							<p className="awaiting">Action Required</p>
-							<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={actionRequired}/>
-						</div>
-						<div className="dropdown-assign">
-							<p className="awaiting">Awaiting Action</p>
-							<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={awaitingAction}/>
-						</div>
+						{isNotAgent && 
+							<div className="dropdown-assign">
+								<p className="awaiting">Action Required</p>
+								<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={actionRequired}/>
+							</div>
+						}
+						{isNotAgent && 
+							<div className="dropdown-assign">
+								<p className="awaiting">Awaiting Action</p>
+								<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={awaitingAction}/>
+							</div>
+						}
 					</div>
 				</div>
 			</div>
@@ -428,7 +434,7 @@ var DropDownStatus = React.createClass({
 				{
 					this.props.data.map((item, key) => {
 						return (
-							<li key={key} onClick={(status) => this.viewItem(item)}>
+							<li key={key} onClick={() => this.viewItem(item)}>
 								{item.title}
 							</li>
 						);
