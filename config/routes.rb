@@ -338,6 +338,11 @@ Rails.application.routes.draw do
   ###########################################################
   resources :receipts, only:[:index,:show]
 
+  ###########################################################
+  ##########RECEIPTS RESOURCES/ROUTES#####
+  ###########################################################
+  resources :screen_tradies, only:[:index, :show]
+
  end
 
 
