@@ -98,7 +98,7 @@ class RecruitsController < ApplicationController
         
         respond_to do |format|
           format.json {render :json=>{errors:@trady.errors.to_hash(true).as_json}}
-          format.html render :show
+          format.html {render :show}
         end 
       end 
       
