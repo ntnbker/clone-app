@@ -208,10 +208,14 @@ $color-text: #83878C;
                         min-width: 350px;
                         .job-detail,
                         .receipt-detail {
+                            @include flexbox;
+
                             font-size: 15px;
                             margin-bottom: 10px;
                             .title {
                                 font-weight: 600;
+                                min-width: 200px;
+                                text-align: left;
                             }
                             .description {
                                 margin-left: 10px;
@@ -438,6 +442,7 @@ $color-text: #83878C;
                 margin-top: 20px;
             }
             .row-information {
+                @include flexbox;
                 .key {
                     margin-right: 10px;
                     font-weight: 100;
@@ -593,7 +598,7 @@ $color-text: #83878C;
             }
         }
     }
-    @media (max-width: 499px) {
+    @media (max-width: 599px) {
         .main-container {
             .main-content .section {
                 .amount-statistics {
@@ -611,6 +616,9 @@ $color-text: #83878C;
                     @include flex-direction(column);
                     .content {
                         min-width: 240px;
+                        .job-detail {
+                            @include flex-wrap(wrap);
+                        }
                     }
                     .view-button {
                         @include flex(1);

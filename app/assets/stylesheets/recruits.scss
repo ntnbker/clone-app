@@ -1,0 +1,102 @@
+$color-white: #FFFFFF;
+$color-grey: #f4f8fb;
+$color-grey-1: #aab8c3;
+$color-grey-dark: #849aaa;
+$color-grey-dark-1: #cedae3;
+$color-green: #7dc691;
+$color-gray: #3e4b54;
+$color-gray-dark: #baccd8;
+$color-red: #e34f4f;
+$color-black: #000000;
+$color-blue-light: #7646FF;
+$color-text: #83878C;
+
+.recruit {
+  .main-content .section {
+    .title {
+      text-align: center;
+      p {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+    }
+    .quote-request-table {
+      margin-bottom: 20px;
+      .table {
+        font-size: 12.5px;
+
+        > div {
+          @include flexbox;
+
+          > div {
+            @include text-ellipsis;
+            @include flex(4);
+            margin: 8px 3px;
+          }
+          .email {
+            @include flex(8);
+          }
+          .password-set, .tc-set {
+            @include flex(3);
+          }
+          .quote-submit-status {
+            @include flex(5);
+          }
+        }
+        .table-title {
+          font-weight: 200;
+          border-bottom: 1px solid #e2e2e2;
+          background-color: white;
+        }
+        .table-item {
+          font-weight: 500;
+        }
+        .table-item:nth-child(odd) {
+          background-color: #f1f1f1;
+        }
+      }
+    }
+    .send-tradie {
+      text-align: center;
+      .send-tradie-form {
+        width: 240px;
+        margin: auto;
+        div {
+          input, button {
+            width: 100%;
+            border-radius: 10px;
+            @include input-placeholder {
+              color: $color-text;
+            }
+          }
+          .submit-button {
+            background-color: $color-green;
+            border: none;
+            color: white;
+
+            &:hover {
+              background-color: #2fa750;
+            }
+
+          }
+        }
+      }
+    }
+  }
+  @media (max-width: 699px) {
+    .main-content .section {
+      .title {
+        p {
+          font-size: 16px;
+        }
+      }
+      .quote-request-table {
+        overflow-y: scroll;
+        .table {
+          min-width: 635px;
+        }
+      }
+    }
+  }
+}
