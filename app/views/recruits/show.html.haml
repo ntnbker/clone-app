@@ -13,8 +13,8 @@
 
 -# - images = profile_and_company_avatar
 
-=react_component('Recruit', {:jfmo_request => @jfmo_request})
--# , :current_role => current_user.current_role, :edit_agency => edit_agency, :edit_agency_admin => edit_agency_admin, :edit_agent => edit_agent, :user_name => user_name, :images => images, logout_path: logout_path, :searchText => params[:query], :authenticity_token => form_authenticity_token, :link => "/recruits"
+=react_component('Recruit', {:jfmo_request => @jfmo_request, :authenticity_token => form_authenticity_token})
+-# , :current_role => current_user.current_role, :edit_agency => edit_agency, :edit_agency_admin => edit_agency_admin, :edit_agent => edit_agent, :user_name => user_name, :images => images, logout_path: logout_path, :searchText => params[:query], :link => "/recruits"
 -# =link_to "JFMO request list", recruits_path
 
 -# %br

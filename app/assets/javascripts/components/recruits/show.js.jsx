@@ -4,6 +4,13 @@ Recruit = React.createClass({
     return {
       errors: {}
     }
+  }, 
+  
+  removeError: function(name) {
+    const {errors} = this.state;
+    errors[name] = '';
+
+    return this.setState({errors});
   },
 
   renderError: function(key) {
@@ -49,8 +56,10 @@ Recruit = React.createClass({
     } = maintenance_request;
     const mrStatus = action_status && action_status.agent_status;
     const address = property && property.property_address;
-    const QRCount = quote_requests.length;
-    const QCount = quote_requests.reduce((count, qr) => count + qr.quotes.length, 0);
+    const qrCount = quote_requests.length;
+    const qCount = quote_requests.reduce((count, qr) => {
+      count + qr.quotes.filter(q => q.delivery_status).length
+    }, 0);
     
     const renderError = this.renderError;
 
@@ -99,11 +108,11 @@ Recruit = React.createClass({
                     </div>
                     <div className="row-information">
                       <span className="key">Quote Request Sent Count:</span>
-                      <span className="data service">{QRCount}</span>
+                      <span className="data service">{qrCount}</span>
                     </div>
                     <div className="row-information">
                       <span className="key">Quote Submitted Count:</span>
-                      <span className="data service">{QCount}</span>
+                      <span className="data service">{qCount}</span>
                     </div>
                   </div>
                 </div>
@@ -120,20 +129,44 @@ Recruit = React.createClass({
                   <input type="hidden" name="trady[maintenance_request_id]" value={id} />
                   <input type="hidden" name="trady[jfmo_request_id]" value={jfmo_request.id} />
                   <div className="name">
-                    <input type="text" name="trady[name]" placeholder="Name" />
-                    {renderError('trady[name')}
+                    <input 
+                      onChange={() => this.removeError('name')} 
+                      className={this.state.errors['name'] ? 'has-error' : ''}
+                      type="text" 
+                      name="trady[name]" 
+                      placeholder="Name" 
+                    />
+                    {renderError('name')}
                   </div>
                   <div className="name">
-                    <input type="text" name="trady[company_name]" placeholder="Business Name" />
-                    {renderError('trady[company_name')}
+                    <input 
+                      onChange={() => this.removeError('company_name')} 
+                      className={this.state.errors['company_name'] ? 'has-error' : ''}
+                      type="text" 
+                      name="trady[company_name]" 
+                      placeholder="Business Name"
+                    />
+                    {renderError('company_name')}
                   </div>
                   <div className="name">
-                    <input type="text" name="trady[email]" placeholder="Email" />
-                    {renderError('trady[email')}
+                    <input 
+                      onChange={() => this.removeError('email')} 
+                      className={this.state.errors['email'] ? 'has-error' : ''}
+                      type="text" 
+                      name="trady[email]" 
+                      placeholder="Email" 
+                    />
+                    {renderError('email')}
                   </div>
                   <div className="name">
-                    <input type="text" name="trady[mobile]" placeholder="Phone" />
-                    {renderError('trady[mobile')}
+                    <input 
+                      onChange={() => this.removeError('mobile')} 
+                      className={this.state.errors['mobile'] ? 'has-error' : ''}
+                      type="text" 
+                      name="trady[mobile]" 
+                      placeholder="Phone" 
+                    />
+                    {renderError('mobile')}
                   </div>
                   <div className="submit-button">
                     <button type="submit" className="submit-button">
@@ -168,6 +201,7 @@ const QuoteRequestTable = React.createClass({
           const {trady: {customer_profile, user, name, mobile, email}, quotes} = qr;
           const {password_set} = (user || {});
           const {terms_and_conditions} = (customer_profile || {});
+          const qCount = quotes.filter(q => q.delivery_status).length;
 
           return (
             <div className="table-item" key={index}>
@@ -176,7 +210,7 @@ const QuoteRequestTable = React.createClass({
               <div className="phone">{mobile}</div>
               <div className="password-set">{password_set ? 'true' : 'false'}</div>
               <div className="tc-set">{!!terms_and_conditions ? 'true' : 'false'}</div>
-              <div className="quote-submit-status">{quotes.length > 0 ? 'true' : 'false'}</div>
+              <div className="quote-submit-status">{qCount}</div>
             </div>
           )
         })}
