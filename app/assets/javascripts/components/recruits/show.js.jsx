@@ -58,7 +58,7 @@ Recruit = React.createClass({
     const address = property && property.property_address;
     const qrCount = quote_requests.length;
     const qCount = quote_requests.reduce((count, qr) => {
-      count + qr.quotes.filter(q => q.delivery_status).length
+      return count + qr.quotes.filter(q => q.delivery_status).length
     }, 0);
     
     const renderError = this.renderError;
