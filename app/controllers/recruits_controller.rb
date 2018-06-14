@@ -26,7 +26,7 @@ class RecruitsController < ApplicationController
   end
 
   def index
-    @jfmo_requests = JfmoRequest.all.includes(maintenance_request:[:action_status, :property]).as_json(:include=>{:maintenance_request=>{:include=>{:action_status,:property}}})
+    @jfmo_requests = JfmoRequest.all.includes(maintenance_request:[:action_status, :property]).as_json(:include=>{:maintenance_request=>{:include=>{:action_status=>{},:property=>{}}}})
 
     # .as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:customer_profile=>{},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}},:conversation=>{:include=>{:messages=>{:include=>{:user=>{:include=>{:trady=>{}, :agent=>{},:agency_admin=>{} }}}}}} ,:quotes=>{:include=> {:quote_image=>{:methods=>[:image_url]},:quote_items=>{}} }})
 
