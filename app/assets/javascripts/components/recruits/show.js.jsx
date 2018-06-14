@@ -55,27 +55,27 @@ Recruit = React.createClass({
     const renderError = this.renderError;
 
     return (
-    <div className="main-container recruit">
-        <FixCSS haveScroll={true} />
+    <div id="recruit" className="main-container">
+        <FixCSS className='no-sidebar' />
         <div className="main-content">
-          <div className="sidebar">
+          {/* <div className="sidebar">
             <div className="box-shadow flexbox flex-column">
               <GeneralAction
                 {...this.props}
               />
             </div>
-          </div>
+          </div> */}
           <div className="section">
             <div className="box-shadow">
               <div className="row main-item">
-                <div className="content main-detail">
-                  <div className="job-detail">
-                    <span className="title">Maintenance Description:</span>
-                    <span className="description">{maintenance_description.length > 40 
-                      ? maintenance_description.substring(0,37) + "..." 
-                      : maintenance_description}
-                    </span>
-                  </div>
+                <div className="job-detail maintenance-request-detail">
+                  <span className="title">Maintenance Description:</span>
+                  <span className="description">{maintenance_description.length > 40 
+                    ? maintenance_description.substring(0,37) + "..." 
+                    : maintenance_description}
+                  </span>
+                </div>
+                <div className="content main-detail item-data">
                   <div className="main-information">
                     <div className="row-information">
                       <span className="key">Maintenance Request ID:</span>
@@ -145,9 +145,6 @@ Recruit = React.createClass({
             </div>
           </div>
         </div>
-        <DropDownMobileList
-          title="Menu"
-        />
       </div>
     );
   }

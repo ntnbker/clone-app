@@ -11,8 +11,10 @@ $color-black: #000000;
 $color-blue-light: #7646FF;
 $color-text: #83878C;
 
-.recruit {
+#recruit {
   .main-content .section {
+    margin: 0 10px;
+    width: calc(100% - 20px);
     .title {
       text-align: center;
       p {

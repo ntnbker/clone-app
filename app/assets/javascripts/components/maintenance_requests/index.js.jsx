@@ -1042,41 +1042,43 @@ var NewMaintenanceRequestItem = React.createClass({
     const address = property && property.property_address;
     return (
       <div className="row main-item box-shadow">
-        <div className="content main-detail">
-          <div className="job-detail">
-            <span className="title">Job Detail:</span>
-            <span className="description">{maintenance_description.length > 40 
-              ? maintenance_description.substring(0,40) + "..." 
-              : maintenance_description}
-            </span>
-          </div>
-          <div className="mr-information main-information">
-            <div className="mr-information row-information">
-                <span className="key">Status:</span>
-                {mrStatus && <span className="data status">{mrStatus}</span>}
-              </div>
-              <div className="mr-information row-information">
-                <span className="key">Address:</span>
-                <span className="data address">{address}</span>
-              </div>
-              <div className="mr-information row-information">
-                <span className="key">Submitted:</span>
-                <span className="data time">{moment(created_at).format('LL')}</span>
-              </div>
-              <div className="mr-information row-information">
-                <span className="key">Service Required:</span>
-                <span className="data service">{service_type}</span>
-              </div>
-          </div>
+        <div className="job-detail">
+          <span className="title">Job Detail:</span>
+          <span className="description">{maintenance_description.length > 40 
+            ? maintenance_description.substring(0,40) + "..." 
+            : maintenance_description}
+          </span>
         </div>
-        <div className="view-button">
-          <button 
-            type="button"
-            className="btn-view" 
-            onClick={() => location.href = this.props.link + "/" + maintenance_request.id}
-          >
-            View
-          </button>
+        <div className="item-data">
+          <div className="content main-detail">
+            <div className="mr-information main-information">
+              <div className="mr-information row-information">
+                  <span className="key">Status:</span>
+                  {mrStatus && <span className="data status">{mrStatus}</span>}
+                </div>
+                <div className="mr-information row-information">
+                  <span className="key">Address:</span>
+                  <span className="data address">{address}</span>
+                </div>
+                <div className="mr-information row-information">
+                  <span className="key">Submitted:</span>
+                  <span className="data time">{moment(created_at).format('LL')}</span>
+                </div>
+                <div className="mr-information row-information">
+                  <span className="key">Service Required:</span>
+                  <span className="data service">{service_type}</span>
+                </div>
+            </div>
+          </div>
+          <div className="view-button">
+            <button 
+              type="button"
+              className="btn-view" 
+              onClick={() => location.href = this.props.link + "/" + maintenance_request.id}
+            >
+              View
+            </button>
+          </div>
         </div>
       </div>
     );
