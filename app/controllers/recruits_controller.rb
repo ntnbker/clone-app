@@ -96,8 +96,10 @@ class RecruitsController < ApplicationController
         @maintenance_request = maintenance_request
         @jfmo_request = jfmo
         
-        flash[:danger] = "Sorry you missed some information below, make sure all fields are completed."
-        render :show
+        respond_to do |format|
+          format.json {render :json=>{errors:@trady.errors.to_hash(true).as_json}}
+          format.html render :show
+        end 
       end 
       
 
