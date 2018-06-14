@@ -35,7 +35,7 @@ class RecruitsController < ApplicationController
 
   def show
     
-    @jfmo_request = JfmoRequest.includes(maintenance_request:[:action_status, :property,quote_requests:[:quotes, :trady]]).find_by(id:params[:id]).as_json(:include=>{:maintenance_request=>{:include=>{:action_status=>{},:property=>{}}}})
+    @jfmo_request = JfmoRequest.includes(maintenance_request:[:action_status, :property,quote_requests:[:quotes, :trady]]).find_by(id:params[:id]).as_json(:include=>{:maintenance_request=>{:include=>{:action_status=>{},:property=>{},:quote_requests=>{:include=>{:quotes=>{},:trady=>{}}}}}})
     
 
     @trady = Trady.new
