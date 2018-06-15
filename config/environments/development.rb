@@ -55,7 +55,7 @@ Rails.application.configure do
 
   #Variant setting for react-rails
   config.react.variant = :development
-
+ 
 
 
   config.time_zone = 'Sydney'
