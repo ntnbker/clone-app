@@ -142,7 +142,7 @@ var HomeComponent = React.createClass({
     return (
       <div className="row how-it-works">
         <div className="three columns">
-          <img src="/icons/pen.png" alt=""/>
+          <img src= {this.props.pen_img} alt=""/>
           <h4>Quickly organize maintenance requests</h4>
           <p>Instantly deal with maintenance requests submitted by tenants</p>
         </div>
