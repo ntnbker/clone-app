@@ -18,7 +18,7 @@ module Realestate
     # config.autoload_paths += %W( #{config.root}/app/reminder_workers/landlord)
     # config.autoload_paths += %W( #{config.root}/app/reminder_workers/trady)
     # config.autoload_paths += %W( #{config.root}/app/reminder_workers/tenant)
-    
+    config.serve_static_assets = true
     config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins '*'
