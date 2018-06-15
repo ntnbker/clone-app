@@ -79,7 +79,7 @@ class TradiesController < ApplicationController
         TradyWorkOrderEmailWorker.perform_async(@user.trady.id, mr.id)
         mr.update_attribute(:trady_id, @user.trady.id )
 
-        mr.action_status.update_columns(agent_status:"Quote Approved Tradie To Organise Appointment", trady_status:"Maintenance Scheduled - Awaiting Invoice")
+        mr.action_status.update_columns(agent_status:"Maintenance Scheduled - Awaiting Invoice", trady_status:"Job Booked")
         quote_request = QuoteRequest.where(:trady_id=>@user.trady.id, :maintenance_request_id=>mr.id).first
         if quote_request
           #do nothing
@@ -134,7 +134,7 @@ class TradiesController < ApplicationController
         TradyWorkOrderEmailWorker.perform_async(@user.trady.id, mr.id)
         mr.update_attribute(:trady_id, @user.trady.id )
 
-        mr.action_status.update_columns(agent_status:"Quote Approved Tradie To Organise Appointment", trady_status:"Maintenance Scheduled - Awaiting Invoice")
+        mr.action_status.update_columns(agent_status:"Maintenance Scheduled - Awaiting Invoice", trady_status:"Job Booked")
         quote_request = QuoteRequest.where(:trady_id=>@user.trady.id, :maintenance_request_id=>mr.id).first
         if quote_request
           #do nothing
@@ -189,7 +189,7 @@ class TradiesController < ApplicationController
           TradyWorkOrderEmailWorker.perform_async(@trady.id, mr.id)
           mr.update_attribute(:trady_id, @trady.id )
 
-          mr.action_status.update_columns(agent_status:"Quote Approved Tradie To Organise Appointment", trady_status:"Maintenance Scheduled - Awaiting Invoice")
+          mr.action_status.update_columns(agent_status:"Maintenance Scheduled - Awaiting Invoice", trady_status:"Job Booked")
 
           quote_request = QuoteRequest.where(:trady_id=>@trady.id, :maintenance_request_id=>mr.id).first
           if quote_request

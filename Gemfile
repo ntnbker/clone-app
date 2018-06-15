@@ -51,6 +51,7 @@ gem 'twilio-ruby', '~> 4.11.1'
 gem 'rails_12factor', group: :production
 gem 'actionpack-action_caching'
 gem 'rails-observers'
+gem 'where_exists'
 # gem "tod"
 # gem "chronic"
 gem 'rufus-scheduler'
