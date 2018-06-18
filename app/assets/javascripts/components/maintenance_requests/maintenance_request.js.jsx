@@ -155,7 +155,7 @@ var FixCSS = React.createClass({
 	
 	resizeSidebar() {
 		const {haveScroll} = this.props;
-		
+
 		$('.sidebar > .box-shadow').css({height: '', 'overflow-y': ''});
 		let screenHeight = $(window).height();
 		let sidebarHeight = $('.sidebar').height();
