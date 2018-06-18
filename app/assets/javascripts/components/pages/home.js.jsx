@@ -618,7 +618,7 @@ var HomeComponent = React.createClass({
               <AvatarImage
                 className="home-logo"
                 imageUri={this.props.logo_img}
-                defaultImage="/assets/logo.png"
+                defaultImage={this.props.logo_img}
                 alt="logo"
                />
               <h3>MaintenanceApp</h3>
