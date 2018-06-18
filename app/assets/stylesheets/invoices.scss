@@ -324,10 +324,10 @@ $color-text: #83878C;
             background-repeat: no-repeat;
             margin-bottom: -3px;
             &.icon-reload {
-              background-image: url(/assets/icon-reload.png);
+              background-image: image-url("icon-reload.png");
             }
             &.icon-close {
-              background-image: url(/assets/icon-close.png);
+              background-image: image-url("icon-close.png");
             }
           }
           &.money {

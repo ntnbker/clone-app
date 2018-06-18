@@ -8,7 +8,7 @@ var Footer = React.createClass({
                 <div className="row">
                     <div className="one-third column">
                         <div className="footer-logo">
-                            <img src="/assets/logo.png" alt="logo" />
+                            <img src={defaultImages.logo} alt="logo" />
                             MaintenanceApp
                             <p>Copyright © 2016 - MaintenanceApp.</p>
                         </div>

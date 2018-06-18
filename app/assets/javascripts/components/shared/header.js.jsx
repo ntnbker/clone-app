@@ -1,3 +1,6 @@
+const defaultImages = {
+
+}
 const MenuAgency = function(edit_agency, edit_agency_admin) {
   return [
     {
@@ -124,6 +127,12 @@ var MobileMenu = React.createClass({
 });
 var Header = React.createClass({
   getInitialState: function() {
+    const {default_image_img, logo_img, empty_image_img, invalid_img} = this.props;
+    defaultImages.defaultAvatar = default_image_img;
+    defaultImages.logo = logo_img;
+    defaultImages.emptyImage = empty_image_img;
+    defaultImages.invalidFile = invalid_img;
+
     return {
       isShow: false,
       isShowBar: false,
@@ -309,7 +318,7 @@ var Header = React.createClass({
         <div className={"container " + (expanded ? 'full-header' : '')} >
           <div className={"column header-custom " + (e && "forhome ")}>
             <div className="logo">
-              <img src="/assets/logo.png" alt="logo" onClick={() => location.href = '/'} />
+              <img src={defaultImages.logo} alt="logo" onClick={() => location.href = '/'} />
               <a href={props.root_path}> MaintenanceApp </a>
             </div>
             {
