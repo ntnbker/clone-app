@@ -169,6 +169,20 @@ $color-text: #83878C;
         font-weight: 600;
       }
     }
+    .submit-button {
+      text-align: center;
+
+      button {
+        width: 250px;
+        background-color: $color-green;
+        color: white;
+        border: none;
+
+        &:hover, &:active, &:focus {
+          background-color: #2fa750;
+        }
+      }
+    }
   }
     
   .service-placeholder {

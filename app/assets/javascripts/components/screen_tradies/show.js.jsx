@@ -3,7 +3,7 @@ const ScreenTradie = React.createClass({
     const {insurance, license} = this.props.trady;
 
     return {
-      skills: this.props.trady.skills,
+      skills: (this.props.trady.skills || []).map(({skill}) => skill),
       insured: insurance && insurance.insured,
       licensed: license && license.licensed,
     };
@@ -34,7 +34,40 @@ const ScreenTradie = React.createClass({
   },
 
   changeRadio({target: {value, name}}) {
-    this.setState({[name]: value === 'yes'});
+    this.setState({[name]: value === 'true'});
+  },
+
+  submit() {
+    const self = this;
+    const {authenticity_token, trady: {id}} = this.props;
+    const {skills, insured, licensed} = this.state;
+    debugger
+    const data = {
+      id,
+      insured,
+      licensed,
+      skill: {
+        skill: skills
+      }
+    }
+
+    $.ajax({
+      type: 'PUT',
+      url: '/screen_tradies/' + id,
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+      },
+      data,
+      success: function (res) {
+        if (res.errors) {
+          self.setState({errors: res.errors});
+        }
+      },
+      error: function (err) {
+
+      }
+    });
+    return false;
   },
 
   render() {
@@ -135,7 +168,7 @@ const ScreenTradie = React.createClass({
                         No
                         <input
                           type="radio"
-                          value={true}
+                          value={false}
                           defaultChecked={!insured}
                           ref={e => this.insured = e}
                           name="insured"
@@ -191,7 +224,7 @@ const ScreenTradie = React.createClass({
                         No
                         <input
                           type="radio"
-                          value={true}
+                          value={false}
                           defaultChecked={!licensed}
                           ref={e => this.licensed = e}
                           name="licensed"
@@ -222,6 +255,9 @@ const ScreenTradie = React.createClass({
                     </label>
                   ))}
                 </div>
+              </div>
+              <div className="submit-button">
+                <button type="button" onClick={this.submit}>Submit</button>
               </div>
             </div>
           </div>
