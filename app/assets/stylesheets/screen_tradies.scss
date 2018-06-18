@@ -99,6 +99,7 @@ $color-text: #83878C;
         .no-file {
           img {
             margin-top: 50px;
+            margin-left: calc(15vw - 150px);
           }
         }
       }
@@ -290,6 +291,10 @@ $color-text: #83878C;
         @include align-items(center);
         .pdf-view {
           max-width: 60%;
+          
+          .no-file {
+            margin-left: calc(30vw - 150px);
+          }
         }
       }
     }
@@ -299,6 +304,10 @@ $color-text: #83878C;
       .view-uploader {
         .pdf-view {
           max-width: 70%;
+          
+          .no-file {
+            margin-left: calc(35vw - 150px);
+          }
         }
       }
     }
