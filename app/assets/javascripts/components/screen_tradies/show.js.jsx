@@ -41,7 +41,7 @@ const ScreenTradie = React.createClass({
     const self = this;
     const {authenticity_token, trady: {id}} = this.props;
     const {skills, insured, licensed} = this.state;
-    debugger
+
     const data = {
       id,
       insured,
@@ -52,7 +52,7 @@ const ScreenTradie = React.createClass({
     }
 
     $.ajax({
-      type: 'PUT',
+      type: 'POST',
       url: '/screen_tradies/' + id,
       beforeSend: function (xhr) {
         xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
