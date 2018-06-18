@@ -124,7 +124,7 @@ const ScreenTradie = React.createClass({
               </div>
               <div className="view-uploader">
                 <div className="pdf-view insurance">
-                  <div className="title">License</div>
+                  <div className="title">Insurance</div>
                   {insurance_url ?
                     <div id="Iframe-Master-CC-and-Rs" className="set-padding set-border set-box-shadow center-block-horiz">
                       <div
