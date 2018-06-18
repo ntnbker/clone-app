@@ -146,7 +146,7 @@ const ScreenTradie = React.createClass({
                     </div>
                     :
                     <div className="no-file" style={{width: "100%", height: "400px"}}>
-                      <img src="no-image.png" alt="" style={{width: "100%", height: "400px"}}/>
+                      <img src="/assets/no-image-available.png" alt=""/>
                     </div>
                   }
                   <div className="radio-valid-uploader text-center">
@@ -202,7 +202,7 @@ const ScreenTradie = React.createClass({
                     </div>
                     :
                     <div className="no-file" style={{width: "100%", height: "400px"}}>
-                      <img src="no-image.png" alt="" style={{width: "100%", height: "400px"}}/>
+                      <img src="/assets/no-image-available.png" alt=""/>
                     </div>
                   }
                   <div className="radio-valid-uploader text-center">
