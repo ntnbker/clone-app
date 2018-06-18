@@ -87,6 +87,7 @@ var ReceiptList = React.createClass({
                   setPage={this.setPage}
                   total={this.state.count}
                   prePage={this.state.perPage}
+                  needShadow={true}
                 />
               }
             </div>

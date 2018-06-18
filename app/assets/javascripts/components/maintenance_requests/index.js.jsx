@@ -969,6 +969,7 @@ var ListMaintenanceRequest = React.createClass({
                   setPage={this.setPage}
                   total={this.state.data.length}
                   prePage={this.state.prePage}
+                  needShadow={true}
                 />
               }
             </div>
@@ -1208,7 +1209,7 @@ var Pagination = React.createClass({
     });
 
     return (
-      <div className="pagination box-shadow">
+      <div className={"pagination " + (this.props.needShadow && 'box-shadow')}>
         <div className="content">
           <a
             className={"previous_page fa fa-angle-left " + (this.state.page == 1 && "disabled")}
@@ -1296,6 +1297,7 @@ var SearchResultMaintenanceRequest = React.createClass({
                 setPage={this.setPage}
                 total={this.state.data.length}
                 prePage={this.state.perPage}
+                needShadow={true}
               />
             }
           </div>

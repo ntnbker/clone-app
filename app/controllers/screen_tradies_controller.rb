@@ -5,7 +5,7 @@ class ScreenTradiesController < ApplicationController
   end
 
   def show
-    @trady = Trady.includes(:insurance, :license,:skills).find_by(id:params[:id]).as_json(:include=>{:insurance=>{:methods=>[:image_url]}, :license=>{:methods=>[:image_url], :skills=>{}}})
+    @trady = Trady.includes(:insurance, :license,:skills).find_by(id:params[:id]).as_json(:include=>{:insurance=>{:methods=>[:image_url]}, :license=>{:methods=>[:image_url]}, :skills=>{}})
   end
 
 end 
