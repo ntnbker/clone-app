@@ -4,8 +4,8 @@ const ScreenTradie = React.createClass({
 
     return {
       skills: (this.props.trady.skills || []).map(({skill}) => skill),
-      insured: insurance && insurance.insured,
-      licensed: license && license.licensed,
+      insured: !!insurance && insurance.insured,
+      licensed: !!license && license.licensed,
     };
   },
 
