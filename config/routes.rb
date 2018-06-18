@@ -342,6 +342,8 @@ Rails.application.routes.draw do
   ##########RECEIPTS RESOURCES/ROUTES#####
   ###########################################################
   resources :screen_tradies, only:[:index, :show]
+  post "screen_tradies/:id" => "screen_tradies#screen"
+  
 
  end
 
