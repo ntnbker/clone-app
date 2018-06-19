@@ -6,6 +6,7 @@ const ScreenTradie = React.createClass({
       skills: (this.props.trady.skills || []).map(({skill}) => skill),
       insured: !!(insurance && insurance.insured),
       licensed: !!(license && license.licensed),
+      errors: '',
     };
   },
 
@@ -35,6 +36,11 @@ const ScreenTradie = React.createClass({
 
   changeRadio({target: {value, name}}) {
     this.setState({[name]: value === 'true'});
+  },
+
+  renderError: function() {
+    const {errors} = this.state;
+    return <p id="errorbox" className="error">{errors || ''}</p>;
   },
 
   submit() {
@@ -259,6 +265,7 @@ const ScreenTradie = React.createClass({
                     </label>
                   ))}
                 </div>
+                {this.renderError()}
               </div>
               <div className="submit-button">
                 <button type="button" onClick={this.submit}>Submit</button>
