@@ -152,18 +152,20 @@ const ScreenTradie = React.createClass({
                   <div className="radio-valid-uploader text-center">
                     <div className="valid-title"> Is this Insurance Valid? </div>
                     <div className="radio-same-address">
-                      <label className="radio-option">
-                        Yes
-                        <input
-                          type="radio"
-                          value={true}
-                          defaultChecked={!!insured}
-                          ref={e => this.insured = e}
-                          name="insured"
-                          onChange={this.changeRadio}
-                        />
-                        <span className="radio-checkmark"></span>
-                      </label>
+                      {insurance_url && 
+                        <label className="radio-option">
+                          Yes
+                          <input
+                            type="radio"
+                            value={true}
+                            defaultChecked={!!insured}
+                            ref={e => this.insured = e}
+                            name="insured"
+                            onChange={this.changeRadio}
+                          />
+                          <span className="radio-checkmark"></span>
+                        </label>
+                      }
                       <label className="radio-option">
                         No
                         <input
@@ -208,18 +210,20 @@ const ScreenTradie = React.createClass({
                   <div className="radio-valid-uploader text-center">
                     <div className="valid-title"> Is this License Valid? </div>
                     <div className="radio-same-address">
-                      <label className="radio-option">
-                        Yes
-                        <input
-                          type="radio"
-                          value={true}
-                          defaultChecked={!!licensed}
-                          ref={e => this.licensed = e}
-                          name="licensed"
-                          onChange={this.changeRadio}
-                        />
-                        <span className="radio-checkmark"></span>
-                      </label>
+                      {license_url && 
+                        <label className="radio-option">
+                          Yes
+                          <input
+                            type="radio"
+                            value={true}
+                            defaultChecked={!!licensed}
+                            ref={e => this.licensed = e}
+                            name="licensed"
+                            onChange={this.changeRadio}
+                          />
+                          <span className="radio-checkmark"></span>
+                        </label>
+                      }
                       <label className="radio-option">
                         No
                         <input
