@@ -5,7 +5,7 @@ const Support = React.createClass({
     };
   },
 
-  removeError: function({ target: { id } }) {
+  removeError: function({ tarsget: { id } }) {
     this.setState({
       errors: {
         ...this.state.errors,
