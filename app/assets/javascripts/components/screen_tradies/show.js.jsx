@@ -152,7 +152,7 @@ const ScreenTradie = React.createClass({
                   <div className="radio-valid-uploader text-center">
                     <div className="valid-title"> Is this Insurance Valid? </div>
                     <div className="radio-same-address">
-                      {insurance_url && 
+                      {!!insurance_url && 
                         <label className="radio-option">
                           Yes
                           <input
@@ -210,7 +210,7 @@ const ScreenTradie = React.createClass({
                   <div className="radio-valid-uploader text-center">
                     <div className="valid-title"> Is this License Valid? </div>
                     <div className="radio-same-address">
-                      {license_url && 
+                      {!!license_url && 
                         <label className="radio-option">
                           Yes
                           <input
