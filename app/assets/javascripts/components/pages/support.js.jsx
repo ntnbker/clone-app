@@ -5,6 +5,14 @@ const Support = React.createClass({
     };
   },
 
+  componentWillMount() {
+    $('.layout').css({'background-color': '#7dc691'});
+  },
+
+  componentWillUnmount() {
+    $('.layout').css({'background-color': ''});
+  },
+
   removeError: function({ tarsget: { id } }) {
     this.setState({
       errors: {
@@ -62,29 +70,37 @@ const Support = React.createClass({
             <div className="title">CONTACT US</div>
             <div className="description">ansod naosind aonsd inao ndiansd oansod naio</div>
             <div className="contact-detail">
-              <div className="item activity-time">
-                <div className="icon"></div>
+              <div className="item">
+                <div className="icon">
+                <i className="fa fa-clock-o" aria-hidden="true" />
+                </div>
                 <div className="content">
                   <div className="content-title">OPENING HOURS</div>
                   <div className="content-description">9:00 / 18:00</div>
                 </div>
               </div>
-              <div className="item activity-time">
-                <div className="icon"></div>
+              <div className="item">
+                <div className="icon">
+                  <i className="fa fa-envelope-o" aria-hidden="true" />
+                </div>
                 <div className="content">
                   <div className="content-title">MAIL</div>
                   <div className="content-description">youremail@mail.com</div>
                 </div>
               </div>
-              <div className="item activity-time">
-                <div className="icon"></div>
+              <div className="item">
+                <div className="icon">
+                  <i className="fa fa-phone" aria-hidden="true" />
+                </div>
                 <div className="content">
                   <div className="content-title">PHONE</div>
                   <div className="content-description">345678901</div>
                 </div>
               </div>
-              <div className="item activity-time">
-                <div className="icon"></div>
+              <div className="item">
+                <div className="icon">
+                  <i className="fa fa-map-marker" aria-hidden="true" />
+                </div>
                 <div className="content">
                   <div className="content-title">MAPS</div>
                   <div className="content-description">Avenue Street 90 New York</div>

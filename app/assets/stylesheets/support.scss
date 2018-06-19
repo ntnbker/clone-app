@@ -10,20 +10,25 @@ $color-red: #e34f4f;
 $color-black: #000000;
 $color-blue-light: #7646FF;
 $color-text: #83878C;
-s
+
 #support-page {
+  color: $color-gray;
   .main-content {
     @include flexbox;
-    background-color: $color-green;
+    height: calc(100vh - 110px);
 
     > div {
       @include flex(1);
     }
     .contact-information {
+      @include flexbox;
+      @include flex-direction(column);
+      @include justify-content(center);
+
       color: white;
-      margin-left: 15%;
+      margin-left: 5%;
       .title {
-        font-size: 30px;
+        font-size: 35px;
         font-weight: 600;
       }
       .description {
@@ -31,11 +36,13 @@ s
         font-weight: 300;
       }
       .contact-detail {
+        margin-top: 20px;
         .item {
           @include flexbox;
           margin-top: 10px;
           .icon {
-            width: 50px;
+            width: 60px;
+            text-align: center;
             font-size: 27px;
           }
           .content {
@@ -47,7 +54,6 @@ s
               font-weight: 600;
             }
             .content-description {
-              margin-top: 10px;
               font-size: 18px;
               font-weight: 200;
               font-style: italic;
@@ -57,30 +63,51 @@ s
       }
     }
     .contact-form {
+      @include flexbox;
+      @include flex-direction(column);
       margin: 5px;
       padding: 10px;
       background-color: white;
-      color: black;
 
+      form#contact {
+        @include flex(1 1 100%);
+        @include flexbox;
+        @include flex-direction(column);
+        @include justify-content(center);
+      }
       .form-title {
-        font-size: 28px;
+        font-size: 33px;
         font-weight: 600;
         text-align: center;
       }
       .form-subtitle {
-        font-size: 16px;
+        font-size: 20px;
         font-weight: 400;
         text-align: center;
       }
       .main-input {
-        margin-top: 30px;
+        margin-top: 20px;
         .input-item {
           margin: 10px;
+          font-size: 20px;
         }
       }
       input, textarea {
         width: 100%;
         resize: none;
+        border: none;
+        color: $color-text;
+        background-color: #f5f5f5;
+
+        @include input-placeholder {
+          color: #a1a1a1;
+        }
+      }
+      input {
+        height: 50px;
+      }
+      textarea {
+        height: 150px;
       }
       .submit-button {
         button {
@@ -89,12 +116,28 @@ s
           width: calc(100% - 20px);
           background-color: $color-green;
           color: white;
+          height: unset;
           border: none;
+          font-size: 20px;
 
           &:hover, &:focus, &:active {
-            background-color: deepskyblue;
+            background-color: #429a5a;
           }
         }
+      }
+    }
+  }
+  @media (max-width: 800px) {
+    margin-bottom: 115px;
+    .main-content {
+      height: unset;
+      @include flex-direction(column-reverse);
+
+      .contact-information {
+        max-width: 500px;
+        margin: auto;
+        padding: 15px;
+        width: 100%;
       }
     }
   }
