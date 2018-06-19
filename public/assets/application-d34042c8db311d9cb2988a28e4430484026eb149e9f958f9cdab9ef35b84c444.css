@@ -11173,6 +11173,12 @@ footer .footer-other p {
     display: none;
   }
 }
+@media print {
+  /* line 635, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/new_ui.scss */
+  .new-ui .modal-custom {
+    top: 0;
+  }
+}
 
 /* line 5, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/trady_companies.scss */
 form#new_trady_company {
@@ -12577,11 +12583,11 @@ form#new_quote .service-fee-group .service-fee-split {
 }
 /* line 326, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 .invoice-form .quotes .item-quote .actions button i.icon-reload {
-  background-image: url(/assets/icon-reload.png);
+  background-image: url(/assets/icon-reload-4e0dd6c92896f991a12447fc71c3383272d99263fd370326d7ea790b88a3a77a.png);
 }
 /* line 329, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 .invoice-form .quotes .item-quote .actions button i.icon-close {
-  background-image: url(/assets/icon-close.png);
+  background-image: url(/assets/icon-close-44fdffaa800777e5a76583ae3e689e4f2310f3b7447eec34146c8ebdee8c4ae2.png);
 }
 /* line 333, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 .invoice-form .quotes .item-quote .actions button.money {
@@ -15442,7 +15448,7 @@ span.index.index-invoice {
   height: 19px;
   background-repeat: no-repeat;
   margin-bottom: -3px;
-  background-image: url(/assets/icon-user.png);
+  background-image: url(/assets/icon-user-f2081046904f17adb19e4c7c4d2f3a121f52ef5b8300ca7be85204446fd3be32.png);
 }
 /* line 1261, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .post .info .actions .assign {
@@ -15594,11 +15600,11 @@ span.index.index-invoice {
 }
 /* line 1392, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .quotes .item-quote .actions button i.icon-reload {
-  background-image: url(/assets/icon-reload.png);
+  background-image: url(/assets/icon-reload-4e0dd6c92896f991a12447fc71c3383272d99263fd370326d7ea790b88a3a77a.png);
 }
 /* line 1395, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .quotes .item-quote .actions button i.icon-close {
-  background-image: url(/assets/icon-close.png);
+  background-image: url(/assets/icon-close-44fdffaa800777e5a76583ae3e689e4f2310f3b7447eec34146c8ebdee8c4ae2.png);
 }
 /* line 1399, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .quotes .item-quote .actions button.money {
@@ -15924,23 +15930,23 @@ span.index.index-invoice {
 }
 /* line 1665, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .item .content li a i.icon-field, .summary-container-index .actions-full .content li a i.icon-field {
-  background-image: url(/assets/icon-field.png);
+  background-image: url(/assets/icon-field-fac18842a74d695c088fba792b29c2a49bf0cbe197f730e426d8ec510e928673.png);
 }
 /* line 1668, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .item .content li a i.icon-user, .summary-container-index .actions-full .content li a i.icon-user {
-  background-image: url(/assets/icon-user.png);
+  background-image: url(/assets/icon-user-f2081046904f17adb19e4c7c4d2f3a121f52ef5b8300ca7be85204446fd3be32.png);
 }
 /* line 1671, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .item .content li a i.icon-send, .summary-container-index .actions-full .content li a i.icon-send {
-  background-image: url(/assets/icon-send.png);
+  background-image: url(/assets/icon-send-180cad3e22cf2af98b4c534e753d63d554e47ab28d2b3117fa0a6d8dbffd68a5.png);
 }
 /* line 1674, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .item .content li a i.icon-setup, .summary-container-index .actions-full .content li a i.icon-setup {
-  background-image: url(/assets/icon-setup.png);
+  background-image: url(/assets/icon-setup-432fed2a3181dd24d462b955ff2603cda3d6a2850e9809526d694aa9eec7432c.png);
 }
 /* line 1677, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .item .content li a i.icon-print, .summary-container-index .actions-full .content li a i.icon-print {
-  background-image: url(/assets/icon-print.png);
+  background-image: url(/assets/icon-print-5ecf4bfbd6cada47b99a9ef046456a0dcdb990582a95c37944e6fd9abfaece28.png);
 }
 /* line 1683, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .item .content li:hover a, .summary-container-index .item .content li.active a, .summary-container-index .actions-full .content li:hover a, .summary-container-index .actions-full .content li.active a {
@@ -19697,7 +19703,7 @@ form#terms-and-conditions .TAC-buttons .button-submit:hover {
   height: 50vw;
   max-height: 600px;
   background-repeat: round;
-  background-image: url(/assets/about-top-image.jpg);
+  background-image: url(/assets/about-top-image-f2a66c271d6a1b590e27159e96074fee24bc35a431309f42a0af059807c04ad9.jpg);
 }
 /* line 35, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/about.scss */
 .about .about-bottom-image {
@@ -19722,15 +19728,15 @@ form#terms-and-conditions .TAC-buttons .button-submit:hover {
 }
 /* line 46, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/about.scss */
 .about .about-bottom-image .first-image {
-  background-image: url(/assets/about-bottom-first-image.jpg);
+  background-image: url(/assets/about-bottom-first-image-cb1b4392711ca8f9f364c1db9b2f1b2f094b8c4673b4ef4050eb9ad9a981e9c0.jpg);
 }
 /* line 49, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/about.scss */
 .about .about-bottom-image .second-image {
-  background-image: url(/assets/about-bottom-second-image.jpg);
+  background-image: url(/assets/about-bottom-second-image-e3d5a55a3d52a7cffdb4f8ded1c8754f82dc06579cd85083c3070347c55aff07.jpg);
 }
 /* line 52, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/about.scss */
 .about .about-bottom-image .third-image {
-  background-image: url(/assets/about-bottom-third-image.jpg);
+  background-image: url(/assets/about-bottom-third-image-d8ca6a9a08c5a0323f2282bbfe0bca424aa66dd149505623d1273e58e6d2d402.jpg);
 }
 @media (max-width: 448px) {
   /* line 1, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/about.scss */

@@ -71340,11 +71340,11 @@ var AMOUNT_REGEX = /^\d+(\.\d+)?$/;
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 AvatarImage = React.createClass({
-  displayName: 'AvatarImage',
+  displayName: "AvatarImage",
 
   getInitialState: function () {
     return {
-      imageUri: this.props.imageUri || this.props.defaultImage || '/default-avatar.png'
+      imageUri: this.props.imageUri || this.props.defaultImage || defaultImages.defaultAvatar
     };
   },
 
@@ -71355,15 +71355,15 @@ AvatarImage = React.createClass({
   },
 
   handleError: function () {
-    this.setState({ imageUri: this.props.defaultImage || '/default-avatar.png' });
+    this.setState({ imageUri: this.props.defaultImage || defaultImages.defaultAvatar });
   },
 
   render: function () {
     var imageUri = this.state.imageUri;
 
-    return React.createElement('img', _extends({
-      id: 'avatar',
-      alt: 'Avatar Image',
+    return React.createElement("img", _extends({
+      id: "avatar",
+      alt: "Avatar Image",
       onClick: this.props.onClick || function () {}
     }, this.props, {
       src: imageUri,
@@ -74601,7 +74601,7 @@ var ModalViewInvoice = React.createClass({
 								!!image_url && React.createElement(AvatarImage, {
 									id: "logo",
 									imageUri: image_url,
-									defaultImage: "/empty.png"
+									defaultImage: defaultImages.defaultImage
 								})
 							)
 						),
@@ -75350,7 +75350,7 @@ var InvoiceSubmit = React.createClass({
               'div',
               { className: 'logo' },
               React.createElement('a', { href: '/' }),
-              React.createElement('img', { src: '/assets/logo.png', 'class': 'img', alt: 'logo' })
+              React.createElement('img', { src: defaultImages.logo, 'class': 'img', alt: 'logo' })
             ),
             React.createElement(
               'div',
@@ -90213,7 +90213,7 @@ var About = React.createClass({
       React.createElement(
         "div",
         { className: "about-content" },
-        React.createElement(AvatarImage, { className: "about-logo", alt: "Logo", imageUri: "/assets/logo.png" }),
+        React.createElement(AvatarImage, { className: "about-logo", alt: "Logo", imageUri: defaultImages.logo }),
         React.createElement(
           "p",
           { className: "app-name" },
@@ -93530,7 +93530,7 @@ var HomeComponent = React.createClass({
             React.createElement(AvatarImage, {
               className: 'home-logo',
               imageUri: this.props.logo_img,
-              defaultImage: '/assets/logo.png',
+              defaultImage: this.props.logo_img,
               alt: 'logo'
             }),
             React.createElement(
@@ -96299,7 +96299,7 @@ var ModalViewQuote = React.createClass({
                 React.createElement(AvatarImage, {
                   id: "logo",
                   imageUri: image_url,
-                  defaultValue: "/empty.png"
+                  defaultValue: defaultImages.emptyImage
                 })
               )
             ),
@@ -98194,7 +98194,7 @@ var QuoteSubmit = React.createClass({
             'div',
             { className: 'logo' },
             React.createElement('a', { href: '/' }),
-            React.createElement('img', { src: '/assets/logo.png', 'class': 'img', alt: 'logo' })
+            React.createElement('img', { src: defaultImages.logo, 'class': 'img', alt: 'logo' })
           ),
           React.createElement(
             'div',
@@ -99217,7 +99217,7 @@ var Footer = React.createClass({
                         React.createElement(
                             "div",
                             { className: "footer-logo" },
-                            React.createElement("img", { src: "/assets/logo.png", alt: "logo" }),
+                            React.createElement("img", { src: defaultImages.logo, alt: "logo" }),
                             "MaintenanceApp",
                             React.createElement(
                                 "p",
@@ -99363,6 +99363,7 @@ var Footer = React.createClass({
                                                                                                                                                                                                                                                                                                         </div>*/ /*<a href="/">Blog</a>*/;
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
 
+var defaultImages = {};
 var MenuAgency = function (edit_agency, edit_agency_admin) {
   return [{
     url: "/",
@@ -99499,6 +99500,17 @@ var Header = React.createClass({
   displayName: "Header",
 
   getInitialState: function () {
+    var _props = this.props;
+    var default_image_img = _props.default_image_img;
+    var logo_img = _props.logo_img;
+    var empty_image_img = _props.empty_image_img;
+    var invalid_img = _props.invalid_img;
+
+    defaultImages.defaultAvatar = default_image_img;
+    defaultImages.logo = logo_img;
+    defaultImages.emptyImage = empty_image_img;
+    defaultImages.invalidFile = invalid_img;
+
     return {
       isShow: false,
       isShowBar: false,
@@ -99568,17 +99580,17 @@ var Header = React.createClass({
     });
   },
   menuBar: function () {
-    var _props = this.props;
-    var edit_agency = _props.edit_agency;
-    var edit_agency_admin = _props.edit_agency_admin;
-    var edit_agent = _props.edit_agent;
-    var edit_trady = _props.edit_trady;
-    var edit_tenant = _props.edit_tenant;
-    var user_agency_admin = _props.user_agency_admin;
-    var user_agent = _props.user_agent;
-    var user_trady = _props.user_trady;
-    var user_tenant = _props.user_tenant;
-    var user_landlord = _props.user_landlord;
+    var _props2 = this.props;
+    var edit_agency = _props2.edit_agency;
+    var edit_agency_admin = _props2.edit_agency_admin;
+    var edit_agent = _props2.edit_agent;
+    var edit_trady = _props2.edit_trady;
+    var edit_tenant = _props2.edit_tenant;
+    var user_agency_admin = _props2.user_agency_admin;
+    var user_agent = _props2.user_agent;
+    var user_trady = _props2.user_trady;
+    var user_tenant = _props2.user_tenant;
+    var user_landlord = _props2.user_landlord;
 
     var dataMenu = [];
     if (user_agency_admin) dataMenu = [].concat(_toConsumableArray(MenuAgency(edit_agency, edit_agency_admin)));else if (user_agent) dataMenu = [].concat(_toConsumableArray(MenuAgent(edit_agent)));else if (user_trady) dataMenu = [].concat(_toConsumableArray(MenuTrady(edit_trady)));else if (user_tenant) dataMenu = [].concat(_toConsumableArray(MenuTenant(edit_tenant)));else if (user_landlord) dataMenu = [].concat(_toConsumableArray(MenuLandlord()));
@@ -99595,10 +99607,10 @@ var Header = React.createClass({
     });
   },
   search: function (hidden) {
-    var _props2 = this.props;
-    var role = _props2.role;
-    var _props2$searchText = _props2.searchText;
-    var searchText = _props2$searchText === undefined ? '' : _props2$searchText;
+    var _props3 = this.props;
+    var role = _props3.role;
+    var _props3$searchText = _props3.searchText;
+    var searchText = _props3$searchText === undefined ? '' : _props3$searchText;
 
     var hiddenSearch = hidden || ['AgencyAdmin', 'Agent'].indexOf(role) === -1;
     var style = hiddenSearch ? { visibility: 'hidden' } : {};
@@ -99713,7 +99725,7 @@ var Header = React.createClass({
           React.createElement(
             "div",
             { className: "logo" },
-            React.createElement("img", { src: "/assets/logo.png", alt: "logo", onClick: function () {
+            React.createElement("img", { src: defaultImages.logo, alt: "logo", onClick: function () {
                 return location.href = '/';
               } }),
             React.createElement(
@@ -99842,7 +99854,8 @@ var Spinner = React.createClass({
 	getInitialState: function () {
 		triggerSpinner = this.showSpinner.bind(this);
 		return {
-			isShow: false
+			isShow: false,
+			currentTop: 0
 		};
 	},
 
@@ -99875,6 +99888,34 @@ var Spinner = React.createClass({
 				}, 500);
 			}
 		});
+		if (window.matchMedia) {
+			var mediaQueryList = window.matchMedia('print');
+			mediaQueryList.addListener(function (mql) {
+				if (mql.matches) {
+					if ($('.modal-custom')) {
+						$('html, body').animate({ scrollTop: 0 }, 0);
+					}
+				} else {
+					if ($('.modal-custom')) {
+						$('html, body').animate({ scrollTop: self.state.currentTop }, 0);
+					}
+				}
+			});
+		}
+		window.onbeforeprint = function (e) {
+			if ($('.modal-custom')) {
+				self.setState({
+					currentTop: e.target.scrollY
+				});
+				$('html, body').animate({ scrollTop: 0 }, 0);
+			}
+		};
+		window.onafterprint = function (e) {
+			console.log(self.state.currentTop);
+			if ($('.modal-custom')) {
+				$('html, body').animate({ scrollTop: self.state.currentTop }, 0);
+			}
+		};
 	},
 
 	render: function () {
