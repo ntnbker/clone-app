@@ -30,7 +30,7 @@
     height: 50vw;
     max-height: 600px;
     background-repeat: round;
-    background-image: url(/assets/about-top-image.jpg);
+    background-image: image-url('about-top-image.jpg');
   }
   .about-bottom-image {
     @include flexbox;
@@ -44,13 +44,13 @@
       background-repeat: round;
     }
     .first-image {
-      background-image: url(/assets/about-bottom-first-image.jpg);
+      background-image: image-url("about-bottom-first-image.jpg");
     }
     .second-image {
-      background-image: url(/assets/about-bottom-second-image.jpg);
+      background-image: image-url("about-bottom-second-image.jpg");
     }
     .third-image {
-      background-image: url(/assets/about-bottom-third-image.jpg);
+      background-image: image-url("about-bottom-third-image.jpg");
     }
   }
 

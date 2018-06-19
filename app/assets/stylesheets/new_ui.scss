@@ -631,4 +631,9 @@ $color-text: #83878C;
             display: none;
         }
     }
+    @media print {
+        .modal-custom {
+            top: 0;
+        }
+    }
 }

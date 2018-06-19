@@ -167,7 +167,7 @@ var QuoteSubmit = React.createClass({
           <div className="header-quote">
             <div className="logo">
               <a href="/"></a>
-                <img src="/assets/logo.png" class="img" alt="logo"/>
+                <img src={defaultImages.logo} class="img" alt="logo"/>
             </div>
             <div className="info-quote">
               <p>
