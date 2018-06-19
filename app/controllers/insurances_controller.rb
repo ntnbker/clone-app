@@ -55,7 +55,7 @@ class InsurancesController < ApplicationController
 
     if @insurance.save
       trady = Trady.find_by(id:@trady_id)
-      #trady.update_attribute(:registration_status,"Pending")
+      trady.update_attribute(:registration_status,"Pending")
       insurance_image = @image.as_json(methods: :image_url)
       #flash[:success] = "Thank you for adding your insurance to your registration."
       redirect_to trady_maintenance_requests_path

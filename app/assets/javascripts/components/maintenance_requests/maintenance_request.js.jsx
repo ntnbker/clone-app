@@ -146,6 +146,7 @@ var FixCSS = React.createClass({
 		const self = this;
 		const {className} = this.props;
 		$('.layout').addClass('new-ui');
+		
 		$('footer').addClass(className || '');
 		self.resizeSidebar();
 

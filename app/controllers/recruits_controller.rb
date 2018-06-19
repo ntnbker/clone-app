@@ -26,13 +26,20 @@ class RecruitsController < ApplicationController
   end
 
   def index
-    @jfmo_requests = JfmoRequest.all
+    @jfmo_requests = JfmoRequest.all.includes(maintenance_request:[:action_status, :property]).as_json(:include=>{:maintenance_request=>{:include=>{:action_status=>{},:property=>{}}}})
+
+    # .as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:customer_profile=>{},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}},:conversation=>{:include=>{:messages=>{:include=>{:user=>{:include=>{:trady=>{}, :agent=>{},:agency_admin=>{} }}}}}} ,:quotes=>{:include=> {:quote_image=>{:methods=>[:image_url]},:quote_items=>{}} }})
+
+    # includes(trady:[:customer_profile, :trady_profile_image, :trady_company=> :trady_company_profile_image], quotes:[:quote_items, :quote_image],:conversation=>:messages)
   end
 
   def show
     
-    @jfmo_request = JfmoRequest.find_by(id:params[:id])
-    @maintenance_request = MaintenanceRequest.find_by(id:@jfmo_request.maintenance_request_id)
+    @jfmo_request = JfmoRequest.includes(maintenance_request:[:action_status, :property,quote_requests:[:quotes, :trady]]).find_by(id:params[:id]).as_json(:include=>{:maintenance_request=>{:include=>{:action_status=>{},:property=>{},:quote_requests=>{:include=>{:quotes=>{},:trady=>{:include=>{:user=>{}, :customer_profile=>{}}}}}}}})
+
+    
+    
+
     @trady = Trady.new
   end
 
@@ -89,8 +96,10 @@ class RecruitsController < ApplicationController
         @maintenance_request = maintenance_request
         @jfmo_request = jfmo
         
-        flash[:danger] = "Sorry you missed some information below, make sure all fields are completed."
-        render :show
+        respond_to do |format|
+          format.json {render :json=>{errors:@trady.errors.to_hash(true).as_json}}
+          format.html {render :show}
+        end 
       end 
       
 
