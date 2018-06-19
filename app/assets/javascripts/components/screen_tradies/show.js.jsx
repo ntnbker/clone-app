@@ -43,6 +43,10 @@ const ScreenTradie = React.createClass({
     return <p id="errorbox" className="error">{errors || ''}</p>;
   },
 
+  checkPdf(url) {
+    return (url || '').split`/`.reverse()[0].replace(/.*(\.\w+)\??.*/, '$1').includes('pdf');
+  },
+
   submit() {
     const self = this;
     const {authenticity_token, trady: {id}} = this.props;
@@ -135,19 +139,29 @@ const ScreenTradie = React.createClass({
                     <div id="Iframe-Master-CC-and-Rs" className="set-padding set-border set-box-shadow center-block-horiz">
                       <div
                         className="responsive-wrapper responsive-wrapper-wxh-572x612"
+                        style={{height: "400px"}}
                       >
-                        <object
-                          width="100%"
-                          height="400px"
-                          data={insurance_url}
-                        >
+                        {this.checkPdf(insurance_url) ? 
                           <iframe
                             width="100%"
                             height="400px"
                             src={`https://docs.google.com/gview?url=${insurance_url.replace(/(\..*)\?.*/g, '$1&embedded=true')}`}
                             className="scroll-custom" 
                           />
-                        </object>
+                          :
+                          <object
+                            width="100%"
+                            height="400px"
+                            data={insurance_url}
+                          >
+                            <iframe
+                              width="100%"
+                              height="400px"
+                              src={`https://docs.google.com/gview?url=${insurance_url.replace(/(\..*)\?.*/g, '$1&embedded=true')}`}
+                              className="scroll-custom" 
+                            />
+                          </object>
+                        }
                       </div>
                     </div>
                     :
@@ -193,19 +207,29 @@ const ScreenTradie = React.createClass({
                     <div id="Iframe-Master-CC-and-Rs" className="set-padding set-border set-box-shadow center-block-horiz">
                       <div
                         className="responsive-wrapper responsive-wrapper-wxh-572x612"
+                        style={{height: "400px"}}
                       >
-                        <object
-                          width="100%"
-                          height="400px"
-                          data={license_url}
-                        >
+                       {this.checkPdf(license_url) ? 
                           <iframe
                             width="100%"
                             height="400px"
                             src={`https://docs.google.com/gview?url=${license_url.replace(/(\..*)\?.*/g, '$1&embedded=true')}`}
                             className="scroll-custom" 
                           />
-                        </object>
+                          :
+                          <object
+                            width="100%"
+                            height="400px"
+                            data={license_url}
+                          >
+                            <iframe
+                              width="100%"
+                              height="400px"
+                              src={`https://docs.google.com/gview?url=${license_url.replace(/(\..*)\?.*/g, '$1&embedded=true')}`}
+                              className="scroll-custom" 
+                            />
+                          </object>
+                        }
                       </div>
                     </div>
                     :
