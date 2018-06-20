@@ -185,7 +185,7 @@ var PrivacyPolicy = React.createClass({
             9. Making a complaint
           </h5>
           <p className="content level-1">
-            If you think we have breached the Privacy Act, or you wish to make a complaint about the way we have handled your personal information, you can contact us [include hyperlink]. Please include your name, email address and/or telephone number and clearly describe your complaint. We will acknowledge your complaint and respond to you regarding your complaint within a reasonable period of time. If you think that we have failed to resolve the complaint satisfactorily, we will provide you with information about the further steps you can take.
+            If you think we have breached the Privacy Act, or you wish to make a complaint about the way we have handled your personal information, you can <a href="/support">contact us</a>. Please include your name, email address and/or telephone number and clearly describe your complaint. We will acknowledge your complaint and respond to you regarding your complaint within a reasonable period of time. If you think that we have failed to resolve the complaint satisfactorily, we will provide you with information about the further steps you can take.
           </p>
           <h5 className="content level-0">
             10. Contact Us

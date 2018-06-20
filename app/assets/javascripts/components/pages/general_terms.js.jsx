@@ -11,13 +11,13 @@ var GeneralTerms = React.createClass({
             <b className="numbering">1.1.1</b> This website, app, platform and any service offered under the name “Maintenance App” (“<b>Platform</b>”) is operated and owned by Lab Developed Pty Ltd (ACN 608 599 293) and its related entities or body corporates (“<b>us</b>”, “<b>we</b>” and “<b>our</b>”).
           </p>
           <p className="content level-1">
-            <b className="numbering">1.1.2</b> Your use of this Platform is subject to these terms of use (“<b>General Terms</b>”).  The General Terms constitute a binding legal agreement between you and us, and your continued use of the website constitutes your acceptance of these General Terms and also our Privacy Policy <a no-href>[CREATE LINK]</a> and any other policy displayed on the Platform, which constitutes a part of the General Terms. If you do not agree to the General Terms and our Privacy Policy, you must not use the Platform.
+            <b className="numbering">1.1.2</b> Your use of this Platform is subject to these terms of use (“<b>General Terms</b>”).  The General Terms constitute a binding legal agreement between you and us, and your continued use of the website constitutes your acceptance of these General Terms and also our <a href="/privacy_policy">Privacy Policy</a> and any other policy displayed on the Platform, which constitutes a part of the General Terms. If you do not agree to the General Terms and our Privacy Policy, you must not use the Platform.
           </p>
           <p className="content level-1">
             <b className="numbering">1.1.3</b> We may amend or modify the Platform, the General Terms and/or the Privacy Policy at our sole discretion and at any time.  Any amendments are effective immediately upon publication on the Platform. Your continued use of the Platform indicates your continued acceptance of the General Terms as modified.
           </p>
           <p className="content level-1">
-            <b className="numbering">1.1.4</b> These General Terms will prevail over any other terms or agreement between you and us, except the Tradie Terms or Agent Terms <a no-href>[CREATE LINKS]</a> (if Applicable).
+            <b className="numbering">1.1.4</b> These General Terms will prevail over any other terms or agreement between you and us, except the <a href="/tradie_terms_and_conditions">Tradie Terms</a> or <a href="/agent_terms_and_conditions">Agent Terms</a> (if Applicable).
           </p>
           <h5 className="content level-0">
             <b className="numbering">2</b> Definitions

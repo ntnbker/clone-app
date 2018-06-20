@@ -11,7 +11,7 @@ var TradieTermsAndConditions = React.createClass({
             <b className="numbering">1.</b> This website, app, platform and any service offered under the name “Maintenance App” (“Platform”) is operated and owned by Lab Developed Pty Ltd (ACN 608 599 293) and its related entities or body corporates (“us”, “we” and “our”).
           </p>
           <p className="content level-1">
-            <b className="numbering">2.</b> All use of this Platform is subject to the General Terms of Use (“General Terms”) <a no-href>[CREATE LINK]</a>. In addition, if you have registered to Platform as a Tradies, you also agree to be bound by these Tradies Terms (“Tradies Terms”). Your continued use of the Platform constitutes acceptance of these Tradies Terms and is strictly conditional on full compliance with these Tradies Terms.
+            <b className="numbering">2.</b> All use of this Platform is subject to the General Terms of Use (“<a href="/general_terms_and_conditions"><b>General Terms</b></a>”). In addition, if you have registered to Platform as a Tradies, you also agree to be bound by these Tradies Terms (“Tradies Terms”). Your continued use of the Platform constitutes acceptance of these Tradies Terms and is strictly conditional on full compliance with these Tradies Terms.
           </p>
           <p className="content level-1">
             <b className="numbering">3.</b> All capitalised words used in these Tradies Terms have the same meaning as in the General Terms unless the context requires otherwise.
