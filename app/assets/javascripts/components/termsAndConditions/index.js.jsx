@@ -12,7 +12,7 @@ var TermsAndConditions = React.createClass({
           </p>
           <p className="level-1">
 
-            2. All use of this Platform is subject to the General Terms of Use (“General Terms”) [CREATE LINK]. In addition, if you have registered to Platform as a Tradies, you also agree to be bound by these Tradies Terms (“Tradies Terms”). Your continued use of the Platform constitutes acceptance of these Tradies Terms and is strictly conditional on full compliance with these Tradies Terms.
+            2. All use of this Platform is subject to the General Terms of Use (“<a href="/general_terms_and_conditions">General Terms</a>”). In addition, if you have registered to Platform as a Tradies, you also agree to be bound by these Tradies Terms (“Tradies Terms”). Your continued use of the Platform constitutes acceptance of these Tradies Terms and is strictly conditional on full compliance with these Tradies Terms.
           </p>
           <p className="level-1">
             3. All capitalised words used in these Tradies Terms have the same meaning as in the General Terms unless the context requires otherwise. 
