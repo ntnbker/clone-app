@@ -1039,7 +1039,7 @@ var NewMaintenanceRequestItem = React.createClass({
   render: function() {
     const {maintenance_request, link, filter_status} = this.props;
     const {id, maintenance_description, action_status, created_at, service_type, property} = maintenance_request;
-    const mrStatus = action_status && action_status.maintenance_request_status || filter_status;
+    const mrStatus = action_status && action_status.agent_status || filter_status;
     const address = property && property.property_address;
     return (
       <div className="row main-item box-shadow">
@@ -1075,7 +1075,7 @@ var NewMaintenanceRequestItem = React.createClass({
             <button 
               type="button"
               className="btn-view" 
-              onClick={() => location.href = this.props.link + "/" + maintenance_request.id}
+              onClick={() => location.href = link + "/" + id}
             >
               View
             </button>
