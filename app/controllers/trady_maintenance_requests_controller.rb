@@ -21,7 +21,7 @@ class TradyMaintenanceRequestsController < ApplicationController
     end 
 
     
-    
+    binding.pry
     trady_id = current_user.trady.id
 
     if params[:sort_by_date] == "Oldest to Newest"
