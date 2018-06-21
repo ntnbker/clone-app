@@ -31,7 +31,7 @@ var TradyTermsAndConditions = React.createClass({
         </div>
         <div className="how-it-works-item">
           <label className="number">4</label>
-          <label className="text">When you have recieved payment MaintenanceApp will process a service fee totaling 15% of the total invoices you have submitted in the previouse month. Please note MaintenanceApp shares 33% of this service fee with the agency. So everybody wins :)</label>
+          <label className="text">When you have received payment, Maintenance App will process a service fee of 10% if the invoice total is more than $500.00 or 15% if the invoice total is less than $500.00. Please note MaintenanceApp shares this service fee with the property management agency. So everybody wins :)</label>
         </div>
       </div>
     )

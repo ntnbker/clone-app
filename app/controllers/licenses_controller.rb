@@ -20,7 +20,7 @@ class LicensesController < ApplicationController
 
     if @license.save
       trady = Trady.find_by(id:@trady_id)
-      #trady.update_attribute(:registration_status,"Pending")
+      trady.update_attribute(:registration_status,"Pending")
       license_image = @image.as_json(methods: :image_url)
       flash[:success] = "Thank you for joining the maintenance app network. Be ready to receive free job leads."
       redirect_to root_path(trady_id:params[:picture][:trady_id], role:"Trady", maintenance_request_id:params[:picture][:maintenance_request_id])
@@ -45,7 +45,7 @@ class LicensesController < ApplicationController
     #@license.perform_presence_validation = true
     if @license.save
       trady = Trady.find_by(id:@trady_id)
-      #trady.update_attribute(:registration_status,"Pending")
+      trady.update_attribute(:registration_status,"Pending")
       license_image = @image.as_json(methods: :image_url)
       flash[:success] = "Thank you for joining the maintenance app network. Be ready to receive free job leads."
       redirect_to trady_maintenance_requests_path

@@ -82,6 +82,9 @@ $color-text: #83878C;
         }
     }
     footer {
+        &.no-sidebar {
+            bottom: 0;
+        }
         @media (max-width: 1023px) {
             bottom: 57px;
         }
@@ -143,8 +146,6 @@ $color-text: #83878C;
             .section {
                 @include flex(1);
                 padding: 10px 10px 0px;
-                margin: auto 10px;
-                margin-left: 320px;
                 margin: 0 10px auto 320px;
                 width: calc(100% - 340px);
                 .item {
@@ -197,39 +198,53 @@ $color-text: #83878C;
                     }
                 }
                 .main-item {
-                    padding: 10px;
                     @include flexbox;
-                    @include flex-direction(row);
+                    @include flex-direction(column);
+                    padding: 10px;
                     color: $color-text;
-                    .content {
-                        @include flex(1);
-                        margin-left: 0;
-                        margin-right: 0;
-                        min-width: 350px;
-                        .job-detail,
-                        .receipt-detail {
-                            font-size: 15px;
-                            margin-bottom: 10px;
-                            .title {
-                                font-weight: 600;
-                            }
-                            .description {
-                                margin-left: 10px;
-                            }
+
+                    .job-detail,
+                    .receipt-detail {
+                        @include flexbox;
+
+                        font-size: 15px;
+                        margin-bottom: 10px;
+                        .title {
+                            font-weight: 600;
+                            min-width: 80px;
+                            text-align: left;
+                        }
+                        .description {
+                            margin-left: 10px;
                         }
                     }
-                    .view-button {
+                    .maintenance-request-detail {
+                        .title {
+                            min-width: 200px;
+                        }
+                    }
+                    .item-data {
                         @include flexbox;
-                        @include flex(1 1 300px);
-                        @include align-items(center);
-                        @include justify-content(center);
-                        max-width: 300px;
-                        margin-left: 10px;
-                        button {
-                            background-color: $color-green;
-                            border-color: $color-green;
-                            color: $color-white;
-                            width: 100%;
+                        @include flex-direction(row);
+                        .content {
+                            @include flex(1);
+                            margin-left: 0;
+                            margin-right: 0;
+                            min-width: 350px;
+                        }
+                        .view-button {
+                            @include flexbox;
+                            @include flex(1 1 300px);
+                            @include align-items(center);
+                            @include justify-content(center);
+                            max-width: 300px;
+                            margin-left: 10px;
+                            button {
+                                background-color: $color-green;
+                                border-color: $color-green;
+                                color: $color-white;
+                                width: 100%;
+                            }
                         }
                     }
                 }
@@ -438,6 +453,7 @@ $color-text: #83878C;
                 margin-top: 20px;
             }
             .row-information {
+                @include flexbox;
                 .key {
                     margin-right: 10px;
                     font-weight: 100;
@@ -593,7 +609,7 @@ $color-text: #83878C;
             }
         }
     }
-    @media (max-width: 499px) {
+    @media (max-width: 599px) {
         .main-container {
             .main-content .section {
                 .amount-statistics {
@@ -608,18 +624,23 @@ $color-text: #83878C;
                     }
                 }
                 .main-item {
-                    @include flex-direction(column);
-                    .content {
-                        min-width: 240px;
+                    .job-detail {
+                        @include flex-wrap(wrap);
                     }
-                    .view-button {
-                        @include flex(1);
-                        width: 100%;
-                        max-width: 500px;
-                        margin-top: 10px;
-                        margin-left: 0;
-                        button {
-                            max-width: 300px;
+                    .item-data {
+                        @include flex-direction(column);
+                        .content {
+                            min-width: 240px;
+                        }
+                        .view-button {
+                            @include flex(1);
+                            width: 100%;
+                            max-width: 500px;
+                            margin-top: 10px;
+                            margin-left: 0;
+                            button {
+                                max-width: 300px;
+                            }
                         }
                     }
                 }
@@ -629,6 +650,11 @@ $color-text: #83878C;
     @media (min-width: 1024px) {
         .sidebar-mobile {
             display: none;
+        }
+    }
+    @media print {
+        .modal-custom {
+            top: 0;
         }
     }
 }

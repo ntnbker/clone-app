@@ -179,7 +179,7 @@ var ModalViewInvoice = React.createClass({
                   { !!image_url && <AvatarImage
 	                  	id="logo"
 	                  	imageUri={image_url}
-	                  	defaultImage="/empty.png"
+	                  	defaultImage={defaultImages.defaultImage}
 	                  />
 	                }
                 </span>

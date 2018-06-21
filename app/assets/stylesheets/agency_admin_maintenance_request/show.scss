@@ -237,10 +237,7 @@ $color-text: #83878C;
           margin: 0 !important;
           line-height: inherit !important;
           display: block;
-          word-wrap: break-word;
-          word-break: break-all;
-          overflow: hidden;
-          text-overflow: ellipsis;
+          @include text-ellipsis;
         }
         i {
           margin-right: 5px;
@@ -418,17 +415,12 @@ $color-text: #83878C;
             padding-bottom: 0;
 
             > button {
-              word-wrap: break-word;
-              word-break: break-all;
               width: 100%;
               overflow: hidden;
               text-overflow: ellipsis;
               color: inherit;
               display: block;
-              word-wrap: break-word;
-              word-break: break-all;
-              overflow: hidden;
-              text-overflow: ellipsis;
+              @include text-ellipsis;
             }
           }
           i {
@@ -616,10 +608,7 @@ $color-text: #83878C;
       background-color: $color-green;
       border: $color-green;
       padding: 0;
-      word-wrap: break-word;
-      word-break: break-all;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      @include text-ellipsis;
 
       i {
         margin-right: 5px;
@@ -1256,7 +1245,7 @@ span.index {
         height: 19px;
         background-repeat: no-repeat;
         margin-bottom: -3px;
-        background-image: url(/assets/icon-user.png);
+        background-image: image-url("icon-user.png");
       }
       .assign {
         float: right;
@@ -1390,10 +1379,10 @@ span.index {
             background-repeat: no-repeat;
             margin-bottom: -3px;
             &.icon-reload {
-              background-image: url(/assets/icon-reload.png);
+              background-image: image-url("icon-reload.png");
             }
             &.icon-close {
-              background-image: url(/assets/icon-close.png);
+              background-image: image-url("icon-close.png");
             }
           }
           &.money {
@@ -1663,19 +1652,19 @@ span.index {
             background-repeat: no-repeat;
             margin-bottom: -3px;
             &.icon-field {
-              background-image: url(/assets/icon-field.png);
+              background-image: image-url("icon-field.png");
             }
             &.icon-user {
-              background-image: url(/assets/icon-user.png);
+              background-image: image-url("icon-user.png");
             }
             &.icon-send {
-              background-image: url(/assets/icon-send.png);
+              background-image: image-url("icon-send.png");
             }
             &.icon-setup {
-              background-image: url(/assets/icon-setup.png);
+              background-image: image-url("icon-setup.png");
             }
             &.icon-print {
-              background-image: url(/assets/icon-print.png);
+              background-image: image-url("icon-print.png");
             }
           }
         }

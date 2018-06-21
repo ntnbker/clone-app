@@ -71340,11 +71340,11 @@ var AMOUNT_REGEX = /^\d+(\.\d+)?$/;
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 AvatarImage = React.createClass({
-  displayName: 'AvatarImage',
+  displayName: "AvatarImage",
 
   getInitialState: function () {
     return {
-      imageUri: this.props.imageUri || this.props.defaultImage || '/default-avatar.png'
+      imageUri: this.props.imageUri || this.props.defaultImage || defaultImages.defaultAvatar
     };
   },
 
@@ -71355,15 +71355,15 @@ AvatarImage = React.createClass({
   },
 
   handleError: function () {
-    this.setState({ imageUri: this.props.defaultImage || '/default-avatar.png' });
+    this.setState({ imageUri: this.props.defaultImage || defaultImages.defaultAvatar });
   },
 
   render: function () {
     var imageUri = this.state.imageUri;
 
-    return React.createElement('img', _extends({
-      id: 'avatar',
-      alt: 'Avatar Image',
+    return React.createElement("img", _extends({
+      id: "avatar",
+      alt: "Avatar Image",
       onClick: this.props.onClick || function () {}
     }, this.props, {
       src: imageUri,
@@ -74601,7 +74601,7 @@ var ModalViewInvoice = React.createClass({
 								!!image_url && React.createElement(AvatarImage, {
 									id: "logo",
 									imageUri: image_url,
-									defaultImage: "/empty.png"
+									defaultImage: defaultImages.defaultImage
 								})
 							)
 						),
@@ -75350,7 +75350,7 @@ var InvoiceSubmit = React.createClass({
               'div',
               { className: 'logo' },
               React.createElement('a', { href: '/' }),
-              React.createElement('img', { src: '/assets/logo.png', 'class': 'img', alt: 'logo' })
+              React.createElement('img', { src: defaultImages.logo, 'class': 'img', alt: 'logo' })
             ),
             React.createElement(
               'div',
@@ -82362,7 +82362,8 @@ var ListMaintenanceRequest = React.createClass({
               page: this.state.page,
               setPage: this.setPage,
               total: this.state.data.length,
-              prePage: this.state.prePage
+              prePage: this.state.prePage,
+              needShadow: true
             })
           )
         )
@@ -82478,95 +82479,99 @@ var NewMaintenanceRequestItem = React.createClass({
       { className: "row main-item box-shadow" },
       React.createElement(
         "div",
-        { className: "content main-detail" },
+        { className: "job-detail" },
         React.createElement(
-          "div",
-          { className: "job-detail" },
-          React.createElement(
-            "span",
-            { className: "title" },
-            "Job Detail:"
-          ),
-          React.createElement(
-            "span",
-            { className: "description" },
-            maintenance_description.length > 40 ? maintenance_description.substring(0, 40) + "..." : maintenance_description
-          )
+          "span",
+          { className: "title" },
+          "Job Detail:"
         ),
         React.createElement(
-          "div",
-          { className: "mr-information main-information" },
-          React.createElement(
-            "div",
-            { className: "mr-information row-information" },
-            React.createElement(
-              "span",
-              { className: "key" },
-              "Status:"
-            ),
-            mrStatus && React.createElement(
-              "span",
-              { className: "data status" },
-              mrStatus
-            )
-          ),
-          React.createElement(
-            "div",
-            { className: "mr-information row-information" },
-            React.createElement(
-              "span",
-              { className: "key" },
-              "Address:"
-            ),
-            React.createElement(
-              "span",
-              { className: "data address" },
-              address
-            )
-          ),
-          React.createElement(
-            "div",
-            { className: "mr-information row-information" },
-            React.createElement(
-              "span",
-              { className: "key" },
-              "Submitted:"
-            ),
-            React.createElement(
-              "span",
-              { className: "data time" },
-              moment(created_at).format('LL')
-            )
-          ),
-          React.createElement(
-            "div",
-            { className: "mr-information row-information" },
-            React.createElement(
-              "span",
-              { className: "key" },
-              "Service Required:"
-            ),
-            React.createElement(
-              "span",
-              { className: "data service" },
-              service_type
-            )
-          )
+          "span",
+          { className: "description" },
+          maintenance_description.length > 40 ? maintenance_description.substring(0, 40) + "..." : maintenance_description
         )
       ),
       React.createElement(
         "div",
-        { className: "view-button" },
+        { className: "item-data" },
         React.createElement(
-          "button",
-          {
-            type: "button",
-            className: "btn-view",
-            onClick: function () {
-              return location.href = _this6.props.link + "/" + maintenance_request.id;
-            }
-          },
-          "View"
+          "div",
+          { className: "content main-detail" },
+          React.createElement(
+            "div",
+            { className: "mr-information main-information" },
+            React.createElement(
+              "div",
+              { className: "mr-information row-information" },
+              React.createElement(
+                "span",
+                { className: "key" },
+                "Status:"
+              ),
+              mrStatus && React.createElement(
+                "span",
+                { className: "data status" },
+                mrStatus
+              )
+            ),
+            React.createElement(
+              "div",
+              { className: "mr-information row-information" },
+              React.createElement(
+                "span",
+                { className: "key" },
+                "Address:"
+              ),
+              React.createElement(
+                "span",
+                { className: "data address" },
+                address
+              )
+            ),
+            React.createElement(
+              "div",
+              { className: "mr-information row-information" },
+              React.createElement(
+                "span",
+                { className: "key" },
+                "Submitted:"
+              ),
+              React.createElement(
+                "span",
+                { className: "data time" },
+                moment(created_at).format('LL')
+              )
+            ),
+            React.createElement(
+              "div",
+              { className: "mr-information row-information" },
+              React.createElement(
+                "span",
+                { className: "key" },
+                "Service Required:"
+              ),
+              React.createElement(
+                "span",
+                { className: "data service" },
+                service_type
+              )
+            )
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "view-button" },
+          React.createElement(
+            "button",
+            {
+              type: "button",
+              className: "btn-view",
+              onClick: function () {
+                return location.href = _this6.props.link + "/" + maintenance_request.id;
+              }
+            },
+            "View"
+          )
         )
       )
     );
@@ -82714,7 +82719,7 @@ var Pagination = React.createClass({
 
     return React.createElement(
       "div",
-      { className: "pagination box-shadow" },
+      { className: "pagination " + (this.props.needShadow && 'box-shadow') },
       React.createElement(
         "div",
         { className: "content" },
@@ -82821,7 +82826,8 @@ var SearchResultMaintenanceRequest = React.createClass({
             page: this.state.page,
             setPage: this.setPage,
             total: this.state.data.length,
-            prePage: this.state.perPage
+            prePage: this.state.perPage,
+            needShadow: true
           })
         )
       ),
@@ -83032,6 +83038,7 @@ var FixCSS = React.createClass({
 		var className = this.props.className;
 
 		$('.layout').addClass('new-ui');
+
 		$('footer').addClass(className || '');
 		self.resizeSidebar();
 
@@ -90213,7 +90220,7 @@ var About = React.createClass({
       React.createElement(
         "div",
         { className: "about-content" },
-        React.createElement(AvatarImage, { className: "about-logo", alt: "Logo", imageUri: "/assets/logo.png" }),
+        React.createElement(AvatarImage, { className: "about-logo", alt: "Logo", imageUri: defaultImages.logo }),
         React.createElement(
           "p",
           { className: "app-name" },
@@ -92692,7 +92699,7 @@ var HomeComponent = React.createClass({
       React.createElement(
         'div',
         { className: 'three columns' },
-        React.createElement('img', { src: '/icons/pen.png', alt: '' }),
+        React.createElement('img', { src: this.props.pen_img, alt: '' }),
         React.createElement(
           'h4',
           null,
@@ -92707,7 +92714,7 @@ var HomeComponent = React.createClass({
       React.createElement(
         'div',
         { className: 'three columns' },
-        React.createElement('img', { src: '/icons/letter.png', alt: '' }),
+        React.createElement('img', { src: this.props.letter_img, alt: '' }),
         React.createElement(
           'h4',
           null,
@@ -92722,7 +92729,7 @@ var HomeComponent = React.createClass({
       React.createElement(
         'div',
         { className: 'three columns' },
-        React.createElement('img', { src: '/icons/notepad-3.png', alt: '' }),
+        React.createElement('img', { src: this.props.note_3_img, alt: '' }),
         React.createElement(
           'h4',
           null,
@@ -92737,7 +92744,7 @@ var HomeComponent = React.createClass({
       React.createElement(
         'div',
         { className: 'three columns' },
-        React.createElement('img', { src: '/icons/enjoy.png', alt: '' }),
+        React.createElement('img', { src: this.props.enjoy_img, alt: '' }),
         React.createElement(
           'h4',
           null,
@@ -92759,7 +92766,7 @@ var HomeComponent = React.createClass({
       React.createElement(
         'div',
         { className: 'three columns' },
-        React.createElement('img', { src: '/icons/pen.png', alt: '' }),
+        React.createElement('img', { src: this.props.pen_img, alt: '' }),
         React.createElement(
           'h4',
           null,
@@ -92774,7 +92781,7 @@ var HomeComponent = React.createClass({
       React.createElement(
         'div',
         { className: 'three columns' },
-        React.createElement('img', { src: '/icons/time-is-money.png', alt: '' }),
+        React.createElement('img', { src: this.props.time_money_img, alt: '' }),
         React.createElement(
           'h4',
           null,
@@ -92789,7 +92796,7 @@ var HomeComponent = React.createClass({
       React.createElement(
         'div',
         { className: 'three columns' },
-        React.createElement('img', { src: '/icons/location.png', alt: '' }),
+        React.createElement('img', { src: this.props.location_img, alt: '' }),
         React.createElement(
           'h4',
           null,
@@ -92811,7 +92818,7 @@ var HomeComponent = React.createClass({
       React.createElement(
         'div',
         { className: 'three columns' },
-        React.createElement('img', { src: '/icons/pen.png', alt: '' }),
+        React.createElement('img', { src: this.props.pen_img, alt: '' }),
         React.createElement(
           'h4',
           null,
@@ -92826,7 +92833,7 @@ var HomeComponent = React.createClass({
       React.createElement(
         'div',
         { className: 'three columns' },
-        React.createElement('img', { src: '/icons/notepad-12.png', alt: '' }),
+        React.createElement('img', { src: this.props.notepad_12_img, alt: '' }),
         React.createElement(
           'h4',
           null,
@@ -92841,7 +92848,7 @@ var HomeComponent = React.createClass({
       React.createElement(
         'div',
         { className: 'three columns' },
-        React.createElement('img', { src: '/icons/receipt.png', alt: '' }),
+        React.createElement('img', { src: this.props.receipt_img, alt: '' }),
         React.createElement(
           'h4',
           null,
@@ -92856,7 +92863,7 @@ var HomeComponent = React.createClass({
       React.createElement(
         'div',
         { className: 'three columns' },
-        React.createElement('img', { src: '/icons/notes.png', alt: '' }),
+        React.createElement('img', { src: this.props.notes_img, alt: '' }),
         React.createElement(
           'h4',
           null,
@@ -92878,7 +92885,7 @@ var HomeComponent = React.createClass({
       React.createElement(
         'div',
         { className: 'three columns' },
-        React.createElement('img', { src: '/icons/pen.png', alt: '' }),
+        React.createElement('img', { src: this.props.pen_img, alt: '' }),
         React.createElement(
           'h4',
           null,
@@ -92893,7 +92900,7 @@ var HomeComponent = React.createClass({
       React.createElement(
         'div',
         { className: 'three columns' },
-        React.createElement('img', { src: '/icons/letter.png', alt: '' }),
+        React.createElement('img', { src: this.props.letter_img, alt: '' }),
         React.createElement(
           'h4',
           null,
@@ -92908,7 +92915,7 @@ var HomeComponent = React.createClass({
       React.createElement(
         'div',
         { className: 'three columns' },
-        React.createElement('img', { src: '/icons/location.png', alt: '' }),
+        React.createElement('img', { src: this.props.location_img, alt: '' }),
         React.createElement(
           'h4',
           null,
@@ -92923,7 +92930,7 @@ var HomeComponent = React.createClass({
       React.createElement(
         'div',
         { className: 'three columns' },
-        React.createElement('img', { src: '/icons/enjoy.png', alt: '' }),
+        React.createElement('img', { src: this.props.enjoy_img, alt: '' }),
         React.createElement(
           'h4',
           null,
@@ -93529,8 +93536,8 @@ var HomeComponent = React.createClass({
             { className: 'home-logo' },
             React.createElement(AvatarImage, {
               className: 'home-logo',
-              imageUri: '/assets/logo.png',
-              defaultImage: '/assets/logo.png',
+              imageUri: this.props.logo_img,
+              defaultImage: this.props.logo_img,
               alt: 'logo'
             }),
             React.createElement(
@@ -96299,7 +96306,7 @@ var ModalViewQuote = React.createClass({
                 React.createElement(AvatarImage, {
                   id: "logo",
                   imageUri: image_url,
-                  defaultValue: "/empty.png"
+                  defaultValue: defaultImages.emptyImage
                 })
               )
             ),
@@ -98194,7 +98201,7 @@ var QuoteSubmit = React.createClass({
             'div',
             { className: 'logo' },
             React.createElement('a', { href: '/' }),
-            React.createElement('img', { src: '/assets/logo.png', 'class': 'img', alt: 'logo' })
+            React.createElement('img', { src: defaultImages.logo, 'class': 'img', alt: 'logo' })
           ),
           React.createElement(
             'div',
@@ -98502,7 +98509,8 @@ var ReceiptList = React.createClass({
               page: this.state.page,
               setPage: this.setPage,
               total: this.state.count,
-              prePage: this.state.perPage
+              prePage: this.state.perPage,
+              needShadow: true
             })
           )
         )
@@ -98533,77 +98541,81 @@ var ReceiptItem = React.createClass({
       { className: "row main-item box-shadow" },
       React.createElement(
         "div",
-        { className: "content main-detail" },
+        { className: "receipt-detail" },
         React.createElement(
-          "div",
-          { className: "receipt-detail" },
-          React.createElement(
-            "span",
-            { className: "title" },
-            "Receipt Details:"
-          )
-        ),
-        React.createElement(
-          "div",
-          { className: "receipt-information main-information" },
-          React.createElement(
-            "div",
-            { className: "receipt-information row-information" },
-            React.createElement(
-              "span",
-              { className: "key" },
-              "Status:"
-            ),
-            React.createElement(
-              "span",
-              { className: "data status" },
-              paid ? 'Paid' : 'Waiting'
-            )
-          ),
-          React.createElement(
-            "div",
-            { className: "receipt-information row-information" },
-            React.createElement(
-              "span",
-              { className: "key" },
-              "Number of Invoices Processed:"
-            ),
-            React.createElement(
-              "span",
-              { className: "data address" },
-              number_invoice
-            )
-          ),
-          React.createElement(
-            "div",
-            { className: "receipt-information row-information" },
-            React.createElement(
-              "span",
-              { className: "key" },
-              "Service Fee Total:"
-            ),
-            React.createElement(
-              "span",
-              { className: "data" },
-              "$",
-              parseFloat(total || 0).toFixed(2)
-            )
-          )
+          "span",
+          { className: "title" },
+          "Receipt Details:"
         )
       ),
       React.createElement(
         "div",
-        { className: "view-button" },
+        { className: "item-data" },
         React.createElement(
-          "button",
-          {
-            type: "button",
-            className: "btn-view",
-            onClick: function () {
-              return location.href = _this.props.link + "/" + id;
-            }
-          },
-          "View"
+          "div",
+          { className: "content main-detail" },
+          React.createElement(
+            "div",
+            { className: "receipt-information main-information" },
+            React.createElement(
+              "div",
+              { className: "receipt-information row-information" },
+              React.createElement(
+                "span",
+                { className: "key" },
+                "Status:"
+              ),
+              React.createElement(
+                "span",
+                { className: "data status" },
+                paid ? 'Paid' : 'Waiting'
+              )
+            ),
+            React.createElement(
+              "div",
+              { className: "receipt-information row-information" },
+              React.createElement(
+                "span",
+                { className: "key" },
+                "Number of Invoices Processed:"
+              ),
+              React.createElement(
+                "span",
+                { className: "data address" },
+                number_invoice
+              )
+            ),
+            React.createElement(
+              "div",
+              { className: "receipt-information row-information" },
+              React.createElement(
+                "span",
+                { className: "key" },
+                "Service Fee Total:"
+              ),
+              React.createElement(
+                "span",
+                { className: "data" },
+                "$",
+                parseFloat(total || 0).toFixed(2)
+              )
+            )
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "view-button" },
+          React.createElement(
+            "button",
+            {
+              type: "button",
+              className: "btn-view",
+              onClick: function () {
+                return location.href = _this.props.link + "/" + id;
+              }
+            },
+            "View"
+          )
         )
       )
     );
@@ -98883,9 +98895,1311 @@ var RecruitItem = React.createClass({
     );
   }
 });
+
+RecruitListDashboard = React.createClass({
+  displayName: "RecruitListDashboard",
+
+  render: function () {
+    var _props = this.props;
+    var jfmo_requests = _props.jfmo_requests;
+    var link = _props.link;
+
+    return React.createElement(
+      "div",
+      { className: "main-container" },
+      React.createElement(FixCSS, { className: "no-sidebar" }),
+      React.createElement(
+        "div",
+        { className: "main-content" },
+        React.createElement(
+          "div",
+          { className: "section" },
+          jfmo_requests.map(function (jfmo) {
+            return React.createElement(NewRecruitItem, { jfmoRequest: jfmo, key: jfmo.id, link: link });
+          })
+        )
+      )
+    );
+  }
+});
+
+var NewRecruitItem = React.createClass({
+  displayName: "NewRecruitItem",
+
+  render: function () {
+    var _this = this;
+
+    var maintenance_request = this.props.jfmoRequest.maintenance_request;
+    var id = maintenance_request.id;
+    var maintenance_description = maintenance_request.maintenance_description;
+    var action_status = maintenance_request.action_status;
+    var created_at = maintenance_request.created_at;
+    var service_type = maintenance_request.service_type;
+    var property = maintenance_request.property;
+
+    var mrStatus = action_status && action_status.agent_status;
+    var address = property && property.property_address;
+    return React.createElement(
+      "div",
+      { className: "row main-item box-shadow" },
+      React.createElement(
+        "div",
+        { className: "job-detail maintenance-request-detail" },
+        React.createElement(
+          "span",
+          { className: "title" },
+          "Maintenance Description:"
+        ),
+        React.createElement(
+          "span",
+          { className: "description" },
+          maintenance_description.length > 40 ? maintenance_description.substring(0, 37) + "..." : maintenance_description
+        )
+      ),
+      React.createElement(
+        "div",
+        { className: "item-data" },
+        React.createElement(
+          "div",
+          { className: "content main-detail" },
+          React.createElement(
+            "div",
+            { className: "main-information" },
+            React.createElement(
+              "div",
+              { className: "row-information" },
+              React.createElement(
+                "span",
+                { className: "key" },
+                "Maintenance Request ID:"
+              ),
+              React.createElement(
+                "span",
+                { className: "data" },
+                id
+              )
+            ),
+            React.createElement(
+              "div",
+              { className: "row-information" },
+              React.createElement(
+                "span",
+                { className: "key" },
+                "Status:"
+              ),
+              mrStatus && React.createElement(
+                "span",
+                { className: "data status" },
+                mrStatus
+              )
+            ),
+            React.createElement(
+              "div",
+              { className: "row-information" },
+              React.createElement(
+                "span",
+                { className: "key" },
+                "Address:"
+              ),
+              React.createElement(
+                "span",
+                { className: "data address" },
+                address
+              )
+            ),
+            React.createElement(
+              "div",
+              { className: "row-information" },
+              React.createElement(
+                "span",
+                { className: "key" },
+                "Submitted:"
+              ),
+              React.createElement(
+                "span",
+                { className: "data time" },
+                moment(created_at).format('LL')
+              )
+            ),
+            React.createElement(
+              "div",
+              { className: "row-information" },
+              React.createElement(
+                "span",
+                { className: "key" },
+                "Service Required:"
+              ),
+              React.createElement(
+                "span",
+                { className: "data service" },
+                service_type
+              )
+            )
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "view-button" },
+          React.createElement(
+            "button",
+            {
+              type: "button",
+              className: "btn-view",
+              onClick: function () {
+                return location.href = _this.props.link + "/" + _this.props.jfmoRequest.id;
+              }
+            },
+            "Onboard Tradie"
+          )
+        )
+      )
+    );
+  }
+});
+/* <div className="sidebar">
+ <div className="box-shadow flexbox flex-column">
+   <GeneralAction
+     {...this.props}
+   />
+ </div>
+</div> */ /* <DropDownMobileList
+           title="Menu"
+          /> */;
+
+Recruit = React.createClass({
+  displayName: "Recruit",
+
+  getInitialState: function () {
+    return {
+      errors: {}
+    };
+  },
+
+  removeError: function (name) {
+    var errors = this.state.errors;
+
+    errors[name] = '';
+
+    return this.setState({ errors: errors });
+  },
+
+  renderError: function (key) {
+    var errors = this.state.errors;
+
+    var error = errors[key];
+
+    return React.createElement(
+      "p",
+      { id: "errorbox", className: "error" },
+      error && error[0] ? error[0] : ''
+    );
+  },
+
+  submit: function (e) {
+    var self = this;
+    e.preventDefault();
+    var FD = new FormData(document.getElementById('submit-form'));
+
+    $.ajax({
+      type: 'POST',
+      url: '/quote_request_for_recruit',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      enctype: 'multipart/form-data',
+      processData: false,
+      contentType: false,
+      data: FD,
+      success: function (res) {
+        if (res.errors) {
+          self.setState({ errors: res.errors });
+        }
+      },
+      error: function (err) {}
+    });
+    return false;
+  },
+
+  render: function () {
+    var _this = this;
+
+    var jfmo_request = this.props.jfmo_request;
+    var maintenance_request = jfmo_request.maintenance_request;
+    var id = maintenance_request.id;
+    var maintenance_description = maintenance_request.maintenance_description;
+    var action_status = maintenance_request.action_status;
+    var created_at = maintenance_request.created_at;
+    var service_type = maintenance_request.service_type;
+    var property = maintenance_request.property;
+    var quote_requests = maintenance_request.quote_requests;
+
+    var mrStatus = action_status && action_status.agent_status;
+    var address = property && property.property_address;
+    var qrCount = quote_requests.length;
+    var qCount = quote_requests.reduce(function (count, qr) {
+      return count + qr.quotes.filter(function (q) {
+        return q.delivery_status;
+      }).length;
+    }, 0);
+
+    var renderError = this.renderError;
+
+    return React.createElement(
+      "div",
+      { id: "recruit", className: "main-container" },
+      React.createElement(FixCSS, { className: "no-sidebar" }),
+      React.createElement(
+        "div",
+        { className: "main-content" },
+        React.createElement(
+          "div",
+          { className: "section" },
+          React.createElement(
+            "div",
+            { className: "box-shadow" },
+            React.createElement(
+              "div",
+              { className: "row main-item" },
+              React.createElement(
+                "div",
+                { className: "job-detail maintenance-request-detail" },
+                React.createElement(
+                  "span",
+                  { className: "title" },
+                  "Maintenance Description:"
+                ),
+                React.createElement(
+                  "span",
+                  { className: "description" },
+                  maintenance_description.length > 40 ? maintenance_description.substring(0, 37) + "..." : maintenance_description
+                )
+              ),
+              React.createElement(
+                "div",
+                { className: "content main-detail item-data" },
+                React.createElement(
+                  "div",
+                  { className: "main-information" },
+                  React.createElement(
+                    "div",
+                    { className: "row-information" },
+                    React.createElement(
+                      "span",
+                      { className: "key" },
+                      "Maintenance Request ID:"
+                    ),
+                    React.createElement(
+                      "span",
+                      { className: "data" },
+                      id
+                    )
+                  ),
+                  React.createElement(
+                    "div",
+                    { className: "row-information" },
+                    React.createElement(
+                      "span",
+                      { className: "key" },
+                      "Status:"
+                    ),
+                    mrStatus && React.createElement(
+                      "span",
+                      { className: "data status" },
+                      mrStatus
+                    )
+                  ),
+                  React.createElement(
+                    "div",
+                    { className: "row-information" },
+                    React.createElement(
+                      "span",
+                      { className: "key" },
+                      "Address:"
+                    ),
+                    React.createElement(
+                      "span",
+                      { className: "data address" },
+                      address
+                    )
+                  ),
+                  React.createElement(
+                    "div",
+                    { className: "row-information" },
+                    React.createElement(
+                      "span",
+                      { className: "key" },
+                      "Submitted:"
+                    ),
+                    React.createElement(
+                      "span",
+                      { className: "data time" },
+                      moment(created_at).format('LL')
+                    )
+                  ),
+                  React.createElement(
+                    "div",
+                    { className: "row-information" },
+                    React.createElement(
+                      "span",
+                      { className: "key" },
+                      "Service Required:"
+                    ),
+                    React.createElement(
+                      "span",
+                      { className: "data service" },
+                      service_type
+                    )
+                  ),
+                  React.createElement(
+                    "div",
+                    { className: "row-information" },
+                    React.createElement(
+                      "span",
+                      { className: "key" },
+                      "Quote Request Sent Count:"
+                    ),
+                    React.createElement(
+                      "span",
+                      { className: "data service" },
+                      qrCount
+                    )
+                  ),
+                  React.createElement(
+                    "div",
+                    { className: "row-information" },
+                    React.createElement(
+                      "span",
+                      { className: "key" },
+                      "Quote Submitted Count:"
+                    ),
+                    React.createElement(
+                      "span",
+                      { className: "data service" },
+                      qCount
+                    )
+                  )
+                )
+              )
+            ),
+            React.createElement(
+              "div",
+              { className: "title" },
+              React.createElement(
+                "p",
+                null,
+                "Quote Requests Sent To Table"
+              )
+            ),
+            React.createElement(QuoteRequestTable, { quote_requests: quote_requests }),
+            React.createElement(
+              "div",
+              { className: "title" },
+              React.createElement(
+                "p",
+                null,
+                "Send Tradie Invite / Quote Request"
+              )
+            ),
+            React.createElement(
+              "div",
+              { className: "send-tradie" },
+              React.createElement(
+                "form",
+                { className: "send-tradie-form", id: "submit-form", onSubmit: this.submit },
+                React.createElement("input", { type: "hidden", name: "trady[maintenance_request_id]", value: id }),
+                React.createElement("input", { type: "hidden", name: "trady[jfmo_request_id]", value: jfmo_request.id }),
+                React.createElement(
+                  "div",
+                  { className: "name" },
+                  React.createElement("input", {
+                    onChange: function () {
+                      return _this.removeError('name');
+                    },
+                    className: this.state.errors['name'] ? 'has-error' : '',
+                    type: "text",
+                    name: "trady[name]",
+                    placeholder: "Name"
+                  }),
+                  renderError('name')
+                ),
+                React.createElement(
+                  "div",
+                  { className: "name" },
+                  React.createElement("input", {
+                    onChange: function () {
+                      return _this.removeError('company_name');
+                    },
+                    className: this.state.errors['company_name'] ? 'has-error' : '',
+                    type: "text",
+                    name: "trady[company_name]",
+                    placeholder: "Business Name"
+                  }),
+                  renderError('company_name')
+                ),
+                React.createElement(
+                  "div",
+                  { className: "name" },
+                  React.createElement("input", {
+                    onChange: function () {
+                      return _this.removeError('email');
+                    },
+                    className: this.state.errors['email'] ? 'has-error' : '',
+                    type: "text",
+                    name: "trady[email]",
+                    placeholder: "Email"
+                  }),
+                  renderError('email')
+                ),
+                React.createElement(
+                  "div",
+                  { className: "name" },
+                  React.createElement("input", {
+                    onChange: function () {
+                      return _this.removeError('mobile');
+                    },
+                    className: this.state.errors['mobile'] ? 'has-error' : '',
+                    type: "text",
+                    name: "trady[mobile]",
+                    placeholder: "Phone"
+                  }),
+                  renderError('mobile')
+                ),
+                React.createElement(
+                  "div",
+                  { className: "submit-button" },
+                  React.createElement(
+                    "button",
+                    { type: "submit", className: "submit-button" },
+                    "Submit"
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+    );
+  }
+});
+
+var QuoteRequestTable = React.createClass({
+  displayName: "QuoteRequestTable",
+
+  render: function () {
+    var quote_requests = this.props.quote_requests;
+
+    return React.createElement(
+      "div",
+      { className: "quote-request-table" },
+      React.createElement(
+        "div",
+        { className: "table" },
+        React.createElement(
+          "div",
+          { className: "table-title" },
+          React.createElement(
+            "div",
+            { className: "name" },
+            "Name"
+          ),
+          React.createElement(
+            "div",
+            { className: "email" },
+            "Email"
+          ),
+          React.createElement(
+            "div",
+            { className: "phone" },
+            "Phone"
+          ),
+          React.createElement(
+            "div",
+            { className: "password-set" },
+            "PW Set"
+          ),
+          React.createElement(
+            "div",
+            { className: "tc-set" },
+            "T&C"
+          ),
+          React.createElement(
+            "div",
+            { className: "quote-submit-status" },
+            "Quote Submitted"
+          )
+        ),
+        quote_requests.map(function (qr, index) {
+          var _qr$trady = qr.trady;
+          var customer_profile = _qr$trady.customer_profile;
+          var user = _qr$trady.user;
+          var name = _qr$trady.name;
+          var mobile = _qr$trady.mobile;
+          var email = _qr$trady.email;
+          var quotes = qr.quotes;
+
+          var _ref = user || {};
+
+          var password_set = _ref.password_set;
+
+          var _ref2 = customer_profile || {};
+
+          var terms_and_conditions = _ref2.terms_and_conditions;
+
+          var qCount = quotes.filter(function (q) {
+            return q.delivery_status;
+          }).length;
+
+          return React.createElement(
+            "div",
+            { className: "table-item", key: index },
+            React.createElement(
+              "div",
+              { className: "name" },
+              name
+            ),
+            React.createElement(
+              "div",
+              { className: "email" },
+              email
+            ),
+            React.createElement(
+              "div",
+              { className: "phone" },
+              mobile
+            ),
+            React.createElement(
+              "div",
+              { className: "password-set" },
+              password_set ? 'true' : 'false'
+            ),
+            React.createElement(
+              "div",
+              { className: "tc-set" },
+              !!terms_and_conditions ? 'true' : 'false'
+            ),
+            React.createElement(
+              "div",
+              { className: "quote-submit-status" },
+              qCount
+            )
+          );
+        })
+      )
+    );
+  }
+});
+/* <div className="sidebar">
+ <div className="box-shadow flexbox flex-column">
+   <GeneralAction
+     {...this.props}
+   />
+ </div>
+</div> */;
 var EMAIL_REGEXP = new RegExp('^[a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,15})$', 'i');
 var PHONE_REGEXP = new RegExp('^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\./0-9]*$', 'i');
 var NUMBER_REGEXP = new RegExp('^[0-9]*$', 'i');
+var ScreenTradieList = React.createClass({
+  displayName: 'ScreenTradieList',
+
+  getInitialState: function () {
+    var tradies = this.props.tradies;
+
+    var simpleTradies = [{
+      name: 'name1',
+      email: 'email1',
+      company_name: 'company_name1',
+      mobile: 'mobile1',
+      insured: 'insured1',
+      licensed: 'licensed1',
+      id: '1'
+    }, {
+      name: 'name2',
+      email: 'email2',
+      company_name: 'company_name2',
+      mobile: 'mobile2',
+      insured: 'insured2',
+      licensed: 'licensed2',
+      id: '2'
+    }, {
+      name: 'name3',
+      email: 'email3',
+      company_name: 'company_name3',
+      mobile: 'mobile3',
+      insured: 'insured3',
+      licensed: 'licensed3',
+      id: '3'
+    }, {
+      name: 'name4',
+      email: 'email4',
+      company_name: 'company_name4',
+      mobile: 'mobile4',
+      insured: 'insured4',
+      licensed: 'licensed4',
+      id: '4'
+    }];
+    var perPage = 5;
+    var count = (tradies || []).length;
+
+    return {
+      tradies: tradies,
+      count: count,
+      perPage: perPage,
+      tradiesShow: (tradies || []).slice(0, perPage),
+      page: 1
+    };
+  },
+
+  setPage: function (page) {
+    var tradies = this.state.tradies;
+    var perPage = this.state.perPage;
+
+    this.setState({
+      page: page,
+      tradiesShow: (tradies || []).slice((page - 1) * perPage, page * perPage)
+    });
+  },
+
+  render: function () {
+    var tradiesShow = this.state.tradiesShow;
+
+    return React.createElement(
+      'div',
+      { id: 'recruit', className: 'main-container' },
+      React.createElement(FixCSS, { className: 'no-sidebar' }),
+      React.createElement(
+        'div',
+        { className: 'main-content' },
+        React.createElement(
+          'div',
+          { className: 'section' },
+          React.createElement(
+            'div',
+            { className: 'box-shadow' },
+            React.createElement(
+              'div',
+              { className: 'main-data' },
+              React.createElement(
+                'div',
+                { className: 'title' },
+                React.createElement(
+                  'p',
+                  null,
+                  'Tradie Registrants'
+                )
+              ),
+              React.createElement(ScreenTradieTable, { tradies: tradiesShow, link: this.props.link }),
+              this.state.count > this.state.perPage && React.createElement(Pagination, {
+                page: this.state.page,
+                setPage: this.setPage,
+                total: this.state.count,
+                prePage: this.state.perPage
+              })
+            )
+          )
+        )
+      )
+    );
+  }
+});
+
+var ScreenTradieTable = React.createClass({
+  displayName: 'ScreenTradieTable',
+
+  render: function () {
+    var _props = this.props;
+    var tradies = _props.tradies;
+    var link = _props.link;
+
+    return React.createElement(
+      'div',
+      { className: 'tradie-table' },
+      React.createElement(
+        'div',
+        { className: 'table' },
+        React.createElement(
+          'div',
+          { className: 'table-title' },
+          React.createElement(
+            'div',
+            { className: 'name' },
+            'Name'
+          ),
+          React.createElement(
+            'div',
+            { className: 'email' },
+            'Email'
+          ),
+          React.createElement(
+            'div',
+            { className: 'company-name' },
+            'Company Name'
+          ),
+          React.createElement(
+            'div',
+            { className: 'phone' },
+            'Phone'
+          ),
+          React.createElement(
+            'div',
+            { className: 'insured' },
+            'Insured'
+          ),
+          React.createElement(
+            'div',
+            { className: 'licensed' },
+            'Licensed'
+          ),
+          React.createElement(
+            'div',
+            { className: 'view-button' },
+            'View'
+          )
+        ),
+        tradies.map(function (tr, index) {
+          var insurance = tr.insurance;
+          var license = tr.license;
+          var id = tr.id;
+          var name = tr.name;
+          var mobile = tr.mobile;
+          var email = tr.email;
+          var company_name = tr.company_name;
+
+          var insured = insurance && insurance.insured;
+          var licensed = license && license.licensed;
+          return React.createElement(
+            'div',
+            { className: 'table-item', key: index },
+            React.createElement(
+              'div',
+              { className: 'name', title: name },
+              name
+            ),
+            React.createElement(
+              'div',
+              { className: 'email', title: email },
+              email
+            ),
+            React.createElement(
+              'div',
+              { className: 'company-name', title: company_name },
+              company_name
+            ),
+            React.createElement(
+              'div',
+              { className: 'phone', title: mobile },
+              mobile
+            ),
+            React.createElement(
+              'div',
+              { className: 'insured' },
+              insured ? 'true' : 'false'
+            ),
+            React.createElement(
+              'div',
+              { className: 'licensed' },
+              licensed ? 'true' : 'false'
+            ),
+            React.createElement(
+              'div',
+              { className: 'view-button' },
+              React.createElement(
+                'button',
+                {
+                  type: 'button',
+                  onClick: function () {
+                    return location.href = link + '/' + id;
+                  }
+                },
+                'View'
+              )
+            )
+          );
+        })
+      )
+    );
+  }
+});
+/* <div className="sidebar">
+ <div className="box-shadow flexbox flex-column">
+   <GeneralAction
+     {...this.props}
+   />
+ </div>
+</div> */;
+var _templateObject = _taggedTemplateLiteral(['/'], ['/']);
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+var ScreenTradie = React.createClass({
+  displayName: 'ScreenTradie',
+
+  getInitialState: function () {
+    var _props$trady = this.props.trady;
+    var insurance = _props$trady.insurance;
+    var license = _props$trady.license;
+
+    return {
+      skills: (this.props.trady.skills || []).map(function (_ref) {
+        var skill = _ref.skill;
+        return skill;
+      }),
+      insured: !!(insurance && insurance.insured),
+      licensed: !!(license && license.licensed),
+      errors: ''
+    };
+  },
+
+  checkSkill: function (service) {
+    var skills = this.state.skills;
+
+    var isChecked = skills.some(function (skill) {
+      return skill === service.service;
+    });
+
+    if (isChecked) {
+      this.setState({
+        skills: skills.filter(function (skill) {
+          return skill !== service.service;
+        }),
+        errors: ''
+      });
+    } else {
+      this.setState({
+        skills: skills.concat([service.service]),
+        errors: ''
+      });
+    }
+  },
+
+  isChecked: function (value) {
+    var skills = this.state.skills;
+
+    return skills.some(function (skill) {
+      return skill === value;
+    });
+  },
+
+  changeRadio: function (_ref2) {
+    var _ref2$target = _ref2.target;
+    var value = _ref2$target.value;
+    var name = _ref2$target.name;
+
+    this.setState(_defineProperty({}, name, value === 'true'));
+  },
+
+  renderError: function () {
+    var errors = this.state.errors;
+
+    return React.createElement(
+      'p',
+      { id: 'errorbox', className: 'error' },
+      errors || ''
+    );
+  },
+
+  checkPdf: function (url) {
+    return (url || '').split(_templateObject).reverse()[0].replace(/.*(\.\w+)\??.*/, '$1').includes('pdf');
+  },
+
+  submit: function () {
+    var self = this;
+    var _props = this.props;
+    var authenticity_token = _props.authenticity_token;
+    var id = _props.trady.id;
+    var _state = this.state;
+    var skills = _state.skills;
+    var insured = _state.insured;
+    var licensed = _state.licensed;
+
+    var data = {
+      id: id,
+      insured: insured,
+      licensed: licensed,
+      skill: {
+        skill: skills
+      }
+    };
+
+    $.ajax({
+      type: 'POST',
+      url: '/screen_tradies/' + id,
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+      },
+      data: data,
+      success: function (res) {
+        if (res.errors) {
+          self.setState({ errors: res.errors });
+        }
+      },
+      error: function (err) {}
+    });
+    return false;
+  },
+
+  render: function () {
+    var _this = this;
+
+    var _props2 = this.props;
+    var trady = _props2.trady;
+    var services = _props2.services;
+    var _state2 = this.state;
+    var insured = _state2.insured;
+    var licensed = _state2.licensed;
+    var insurance = trady.insurance;
+    var license = trady.license;
+
+    var insurance_url = insurance && insurance.image_url;
+    var license_url = license && license.image_url;
+
+    return React.createElement(
+      'div',
+      { id: 'recruit', className: 'main-container' },
+      React.createElement(FixCSS, { className: 'no-sidebar' }),
+      React.createElement(
+        'div',
+        { className: 'main-content' },
+        React.createElement(
+          'div',
+          { className: 'section' },
+          React.createElement(
+            'div',
+            { className: 'box-shadow' },
+            React.createElement(
+              'div',
+              { className: 'main-item screen-tradie-item' },
+              React.createElement(
+                'div',
+                { className: 'item-data' },
+                React.createElement(
+                  'div',
+                  { className: 'content main-detail' },
+                  React.createElement(
+                    'div',
+                    { className: 'main-information' },
+                    React.createElement(
+                      'div',
+                      { className: 'row-information' },
+                      React.createElement(
+                        'span',
+                        { className: 'key' },
+                        'Name:'
+                      ),
+                      React.createElement(
+                        'span',
+                        { className: 'data' },
+                        trady.name
+                      )
+                    ),
+                    React.createElement(
+                      'div',
+                      { className: 'row-information' },
+                      React.createElement(
+                        'span',
+                        { className: 'key' },
+                        'Email:'
+                      ),
+                      React.createElement(
+                        'span',
+                        { className: 'data' },
+                        trady.email
+                      )
+                    ),
+                    React.createElement(
+                      'div',
+                      { className: 'row-information' },
+                      React.createElement(
+                        'span',
+                        { className: 'key' },
+                        'Company Name:'
+                      ),
+                      React.createElement(
+                        'span',
+                        { className: 'data' },
+                        trady.company_name
+                      )
+                    ),
+                    React.createElement(
+                      'div',
+                      { className: 'row-information' },
+                      React.createElement(
+                        'span',
+                        { className: 'key' },
+                        'Phone:'
+                      ),
+                      React.createElement(
+                        'span',
+                        { className: 'data' },
+                        trady.mobile
+                      )
+                    ),
+                    React.createElement(
+                      'div',
+                      { className: 'row-information' },
+                      React.createElement(
+                        'span',
+                        { className: 'key' },
+                        'Insured:'
+                      ),
+                      React.createElement(
+                        'span',
+                        { className: 'data' },
+                        insured ? "True" : "False"
+                      )
+                    ),
+                    React.createElement(
+                      'div',
+                      { className: 'row-information' },
+                      React.createElement(
+                        'span',
+                        { className: 'key' },
+                        'Licensed:'
+                      ),
+                      React.createElement(
+                        'span',
+                        { className: 'data' },
+                        licensed ? "True" : "False"
+                      )
+                    )
+                  )
+                )
+              )
+            ),
+            React.createElement(
+              'div',
+              { className: 'view-uploader' },
+              React.createElement(
+                'div',
+                { className: 'pdf-view insurance' },
+                React.createElement(
+                  'div',
+                  { className: 'title' },
+                  'Insurance'
+                ),
+                insurance_url ? React.createElement(
+                  'div',
+                  { id: 'Iframe-Master-CC-and-Rs', className: 'set-padding set-border set-box-shadow center-block-horiz' },
+                  React.createElement(
+                    'div',
+                    {
+                      className: 'responsive-wrapper responsive-wrapper-wxh-572x612',
+                      style: { height: "400px" }
+                    },
+                    this.checkPdf(insurance_url) ? React.createElement('iframe', {
+                      width: '100%',
+                      height: '400px',
+                      src: 'https://docs.google.com/gview?url=' + insurance_url.replace(/(\..*)\?.*/g, '$1&embedded=true'),
+                      className: 'scroll-custom'
+                    }) : React.createElement(
+                      'object',
+                      {
+                        width: '100%',
+                        height: '400px',
+                        data: insurance_url
+                      },
+                      React.createElement('iframe', {
+                        width: '100%',
+                        height: '400px',
+                        src: 'https://docs.google.com/gview?url=' + insurance_url.replace(/(\..*)\?.*/g, '$1&embedded=true'),
+                        className: 'scroll-custom'
+                      })
+                    )
+                  )
+                ) : React.createElement(
+                  'div',
+                  { className: 'no-file', style: { width: "100%", height: "400px" } },
+                  React.createElement('img', { src: '/assets/no-image-available.png', alt: '' })
+                ),
+                React.createElement(
+                  'div',
+                  { className: 'radio-valid-uploader text-center' },
+                  React.createElement(
+                    'div',
+                    { className: 'valid-title' },
+                    ' Is this Insurance Valid? '
+                  ),
+                  React.createElement(
+                    'div',
+                    { className: 'radio-same-address' },
+                    !!insurance_url && React.createElement(
+                      'label',
+                      { className: 'radio-option' },
+                      'Yes',
+                      React.createElement('input', {
+                        type: 'radio',
+                        value: true,
+                        defaultChecked: !!insured,
+                        ref: function (e) {
+                          return _this.insured = e;
+                        },
+                        name: 'insured',
+                        onChange: this.changeRadio
+                      }),
+                      React.createElement('span', { className: 'radio-checkmark' })
+                    ),
+                    React.createElement(
+                      'label',
+                      { className: 'radio-option' },
+                      'No',
+                      React.createElement('input', {
+                        type: 'radio',
+                        value: false,
+                        defaultChecked: !insured,
+                        ref: function (e) {
+                          return _this.insured = e;
+                        },
+                        name: 'insured',
+                        onChange: this.changeRadio
+                      }),
+                      React.createElement('span', { className: 'radio-checkmark' })
+                    )
+                  )
+                )
+              ),
+              React.createElement(
+                'div',
+                { className: 'pdf-view license' },
+                React.createElement(
+                  'div',
+                  { className: 'title' },
+                  'License'
+                ),
+                license_url ? React.createElement(
+                  'div',
+                  { id: 'Iframe-Master-CC-and-Rs', className: 'set-padding set-border set-box-shadow center-block-horiz' },
+                  React.createElement(
+                    'div',
+                    {
+                      className: 'responsive-wrapper responsive-wrapper-wxh-572x612',
+                      style: { height: "400px" }
+                    },
+                    this.checkPdf(license_url) ? React.createElement('iframe', {
+                      width: '100%',
+                      height: '400px',
+                      src: 'https://docs.google.com/gview?url=' + license_url.replace(/(\..*)\?.*/g, '$1&embedded=true'),
+                      className: 'scroll-custom'
+                    }) : React.createElement(
+                      'object',
+                      {
+                        width: '100%',
+                        height: '400px',
+                        data: license_url
+                      },
+                      React.createElement('iframe', {
+                        width: '100%',
+                        height: '400px',
+                        src: 'https://docs.google.com/gview?url=' + license_url.replace(/(\..*)\?.*/g, '$1&embedded=true'),
+                        className: 'scroll-custom'
+                      })
+                    )
+                  )
+                ) : React.createElement(
+                  'div',
+                  { className: 'no-file', style: { width: "100%", height: "400px" } },
+                  React.createElement('img', { src: '/assets/no-image-available.png', alt: '' })
+                ),
+                React.createElement(
+                  'div',
+                  { className: 'radio-valid-uploader text-center' },
+                  React.createElement(
+                    'div',
+                    { className: 'valid-title' },
+                    ' Is this License Valid? '
+                  ),
+                  React.createElement(
+                    'div',
+                    { className: 'radio-same-address' },
+                    !!license_url && React.createElement(
+                      'label',
+                      { className: 'radio-option' },
+                      'Yes',
+                      React.createElement('input', {
+                        type: 'radio',
+                        value: true,
+                        defaultChecked: !!licensed,
+                        ref: function (e) {
+                          return _this.licensed = e;
+                        },
+                        name: 'licensed',
+                        onChange: this.changeRadio
+                      }),
+                      React.createElement('span', { className: 'radio-checkmark' })
+                    ),
+                    React.createElement(
+                      'label',
+                      { className: 'radio-option' },
+                      'No',
+                      React.createElement('input', {
+                        type: 'radio',
+                        value: false,
+                        defaultChecked: !licensed,
+                        ref: function (e) {
+                          return _this.licensed = e;
+                        },
+                        name: 'licensed',
+                        onChange: this.changeRadio
+                      }),
+                      React.createElement('span', { className: 'radio-checkmark' })
+                    )
+                  )
+                )
+              )
+            ),
+            React.createElement(
+              'div',
+              { className: 'service-list' },
+              React.createElement(
+                'label',
+                { className: 'service-placeholder text-center' },
+                'What Services Can They Do?/ Do they have a license for it?'
+              ),
+              React.createElement(
+                'div',
+                { className: 'list-services scroll-bar' },
+                services.map(function (service) {
+                  return React.createElement(
+                    'label',
+                    { className: 'service-item', key: service.id },
+                    service.service,
+                    React.createElement('input', {
+                      type: 'checkbox',
+                      name: 'skill[skill][]',
+                      defaultChecked: _this.isChecked(service.service),
+                      onChange: function () {
+                        return _this.checkSkill(service);
+                      },
+                      value: service.service
+                    }),
+                    React.createElement('span', { className: 'checkmark' })
+                  );
+                })
+              ),
+              this.renderError()
+            ),
+            React.createElement(
+              'div',
+              { className: 'submit-button' },
+              React.createElement(
+                'button',
+                { type: 'button', onClick: this.submit },
+                'Submit'
+              )
+            )
+          )
+        )
+      )
+    );
+  }
+});
+/* <div className="sidebar">
+ <div className="box-shadow flexbox flex-column">
+   <GeneralAction
+     {...this.props}
+   />
+ </div>
+</div> */;
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -99217,7 +100531,7 @@ var Footer = React.createClass({
                         React.createElement(
                             "div",
                             { className: "footer-logo" },
-                            React.createElement("img", { src: "/assets/logo.png", alt: "logo" }),
+                            React.createElement("img", { src: defaultImages.logo, alt: "logo" }),
                             "MaintenanceApp",
                             React.createElement(
                                 "p",
@@ -99363,6 +100677,7 @@ var Footer = React.createClass({
                                                                                                                                                                                                                                                                                                         </div>*/ /*<a href="/">Blog</a>*/;
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
 
+var defaultImages = {};
 var MenuAgency = function (edit_agency, edit_agency_admin) {
   return [{
     url: "/",
@@ -99499,6 +100814,17 @@ var Header = React.createClass({
   displayName: "Header",
 
   getInitialState: function () {
+    var _props = this.props;
+    var default_image_img = _props.default_image_img;
+    var logo_img = _props.logo_img;
+    var empty_image_img = _props.empty_image_img;
+    var invalid_img = _props.invalid_img;
+
+    defaultImages.defaultAvatar = default_image_img;
+    defaultImages.logo = logo_img;
+    defaultImages.emptyImage = empty_image_img;
+    defaultImages.invalidFile = invalid_img;
+
     return {
       isShow: false,
       isShowBar: false,
@@ -99568,17 +100894,17 @@ var Header = React.createClass({
     });
   },
   menuBar: function () {
-    var _props = this.props;
-    var edit_agency = _props.edit_agency;
-    var edit_agency_admin = _props.edit_agency_admin;
-    var edit_agent = _props.edit_agent;
-    var edit_trady = _props.edit_trady;
-    var edit_tenant = _props.edit_tenant;
-    var user_agency_admin = _props.user_agency_admin;
-    var user_agent = _props.user_agent;
-    var user_trady = _props.user_trady;
-    var user_tenant = _props.user_tenant;
-    var user_landlord = _props.user_landlord;
+    var _props2 = this.props;
+    var edit_agency = _props2.edit_agency;
+    var edit_agency_admin = _props2.edit_agency_admin;
+    var edit_agent = _props2.edit_agent;
+    var edit_trady = _props2.edit_trady;
+    var edit_tenant = _props2.edit_tenant;
+    var user_agency_admin = _props2.user_agency_admin;
+    var user_agent = _props2.user_agent;
+    var user_trady = _props2.user_trady;
+    var user_tenant = _props2.user_tenant;
+    var user_landlord = _props2.user_landlord;
 
     var dataMenu = [];
     if (user_agency_admin) dataMenu = [].concat(_toConsumableArray(MenuAgency(edit_agency, edit_agency_admin)));else if (user_agent) dataMenu = [].concat(_toConsumableArray(MenuAgent(edit_agent)));else if (user_trady) dataMenu = [].concat(_toConsumableArray(MenuTrady(edit_trady)));else if (user_tenant) dataMenu = [].concat(_toConsumableArray(MenuTenant(edit_tenant)));else if (user_landlord) dataMenu = [].concat(_toConsumableArray(MenuLandlord()));
@@ -99595,10 +100921,10 @@ var Header = React.createClass({
     });
   },
   search: function (hidden) {
-    var _props2 = this.props;
-    var role = _props2.role;
-    var _props2$searchText = _props2.searchText;
-    var searchText = _props2$searchText === undefined ? '' : _props2$searchText;
+    var _props3 = this.props;
+    var role = _props3.role;
+    var _props3$searchText = _props3.searchText;
+    var searchText = _props3$searchText === undefined ? '' : _props3$searchText;
 
     var hiddenSearch = hidden || ['AgencyAdmin', 'Agent'].indexOf(role) === -1;
     var style = hiddenSearch ? { visibility: 'hidden' } : {};
@@ -99713,7 +101039,7 @@ var Header = React.createClass({
           React.createElement(
             "div",
             { className: "logo" },
-            React.createElement("img", { src: "/assets/logo.png", alt: "logo", onClick: function () {
+            React.createElement("img", { src: defaultImages.logo, alt: "logo", onClick: function () {
                 return location.href = '/';
               } }),
             React.createElement(
@@ -99842,7 +101168,8 @@ var Spinner = React.createClass({
 	getInitialState: function () {
 		triggerSpinner = this.showSpinner.bind(this);
 		return {
-			isShow: false
+			isShow: false,
+			currentTop: 0
 		};
 	},
 
@@ -99875,6 +101202,34 @@ var Spinner = React.createClass({
 				}, 500);
 			}
 		});
+		if (window.matchMedia) {
+			var mediaQueryList = window.matchMedia('print');
+			mediaQueryList.addListener(function (mql) {
+				if (mql.matches) {
+					if ($('.modal-custom')) {
+						$('html, body').animate({ scrollTop: 0 }, 0);
+					}
+				} else {
+					if ($('.modal-custom')) {
+						$('html, body').animate({ scrollTop: self.state.currentTop }, 0);
+					}
+				}
+			});
+		}
+		window.onbeforeprint = function (e) {
+			if ($('.modal-custom')) {
+				self.setState({
+					currentTop: e.target.scrollY
+				});
+				$('html, body').animate({ scrollTop: 0 }, 0);
+			}
+		};
+		window.onafterprint = function (e) {
+			console.log(self.state.currentTop);
+			if ($('.modal-custom')) {
+				$('html, body').animate({ scrollTop: self.state.currentTop }, 0);
+			}
+		};
 	},
 
 	render: function () {
@@ -101898,7 +103253,7 @@ var TradyTermsAndConditions = React.createClass({
         React.createElement(
           "label",
           { className: "text" },
-          "When you have recieved payment MaintenanceApp will process a service fee totaling 15% of the total invoices you have submitted in the previouse month. Please note MaintenanceApp shares 33% of this service fee with the agency. So everybody wins :)"
+          "When you have received payment, Maintenance App will process a service fee of 10% if the invoice total is more than $500.00 or 15% if the invoice total is less than $500.00. Please note MaintenanceApp shares this service fee with the property management agency. So everybody wins :)"
         )
       )
     );
@@ -102259,11 +103614,12 @@ var TradyLicenseAndInsurance = React.createClass({
     var filename = files[0];
     var options = {
       extension: filename.name.match(/(\.\w+)?$/)[0],
-      _: Date.now()
+      _: Date.now(),
+      filename: filename.name
     };
 
     // start upload file into S3
-    $.getJSON('/images/cache/presign', options, function (result) {
+    $.getJSON('/upload_invoice_pdf/cache/presign', options, function (result) {
       var fd = new FormData();
       $.each(result.fields, function (key, value) {
         fd.append(key, value);

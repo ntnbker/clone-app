@@ -1084,7 +1084,7 @@ var ModalViewQuote = React.createClass({
                   <AvatarImage
                     id="logo"
                     imageUri={image_url}
-                    defaultValue="/empty.png"
+                    defaultValue={defaultImages.emptyImage}
                   />
                 </span>
               </div>

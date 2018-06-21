@@ -146,6 +146,7 @@ var FixCSS = React.createClass({
 		const self = this;
 		const {className} = this.props;
 		$('.layout').addClass('new-ui');
+		
 		$('footer').addClass(className || '');
 		self.resizeSidebar();
 
@@ -155,7 +156,7 @@ var FixCSS = React.createClass({
 	
 	resizeSidebar() {
 		const {haveScroll} = this.props;
-		
+
 		$('.sidebar > .box-shadow').css({height: '', 'overflow-y': ''});
 		let screenHeight = $(window).height();
 		let sidebarHeight = $('.sidebar').height();

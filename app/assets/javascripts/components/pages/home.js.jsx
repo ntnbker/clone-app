@@ -115,22 +115,22 @@ var HomeComponent = React.createClass({
     return (
       <div className="row how-it-works">
         <div className="three columns">
-          <img src="/icons/pen.png" alt=""/>
+          <img src={this.props.pen_img} alt=""/>
           <h4>Maintenance Requested</h4>
           <p>Receive Maintenance Requests in a centralized app</p>
         </div>
         <div className="three columns">
-          <img src="/icons/letter.png" alt=""/>
+          <img src={this.props.letter_img} alt=""/>
           <h4>Easily action property maintenance requests</h4>
           <p>Quickly communicate with your agent on how maintenance should be handled</p>
         </div>
         <div className="three columns">
-          <img src="/icons/notepad-3.png" alt=""/>
+          <img src={this.props.note_3_img} alt=""/>
           <h4>Receive multiple competative quotes</h4>
           <p>Quickly request quotes from multiple tradies to receive competative prices</p>
         </div>
         <div className="three columns">
-          <img src="/icons/enjoy.png" alt=""/>
+          <img src={this.props.enjoy_img} alt=""/>
           <h4>Maintenance Complete</h4>
           <p>Enjoy a stress free process to maintain your property</p>
         </div>
@@ -142,17 +142,17 @@ var HomeComponent = React.createClass({
     return (
       <div className="row how-it-works">
         <div className="three columns">
-          <img src="/icons/pen.png" alt=""/>
+          <img src={this.props.pen_img} alt=""/>
           <h4>Quickly organize maintenance requests</h4>
           <p>Instantly deal with maintenance requests submitted by tenants</p>
         </div>
         <div className="three columns">
-          <img src="/icons/time-is-money.png" alt=""/>
+          <img src={this.props.time_money_img} alt=""/>
           <h4>Time is money easily increase your productivity</h4>
           <p>With a just few clicks you can make sure the job is completed</p>
         </div>
         <div className="three columns">
-          <img src="/icons/location.png" alt=""/>
+          <img src={this.props.location_img} alt=""/>
           <h4>Track maintenance status</h4>
           <p>Automated reminders unsure jobs are progressing</p>
         </div>
@@ -170,22 +170,22 @@ var HomeComponent = React.createClass({
     return (
       <div className="row how-it-works">
         <div className="three columns">
-          <img src="/icons/pen.png" alt=""/>
+          <img src={this.props.pen_img} alt=""/>
           <h4>Receive High Quality Job Leads</h4>
           <p>Receive maintenance work from property and strata managers</p>
         </div>
         <div className="three columns">
-          <img src="/icons/notepad-12.png" alt=""/>
+          <img src={this.props.notepad_12_img} alt=""/>
           <h4>Easily track job information and schedule jobs</h4>
           <p>Easily organize job communications and appointments</p>
         </div>
         <div className="three columns">
-          <img src="/icons/receipt.png" alt=""/>
+          <img src={this.props.receipt_img} alt=""/>
           <h4>Easily create invoices or upload your own</h4>
           <p>Easily submit invoices. With Automated invoice reminders. We help make sure you get paid</p>
         </div>
         <div className="three columns">
-          <img src="/icons/notes.png" alt=""/>
+          <img src={this.props.notes_img} alt=""/>
           <h4>Increase your revenue</h4>
           <p>Join our network to grow your business</p>
         </div>
@@ -197,22 +197,22 @@ var HomeComponent = React.createClass({
     return (
       <div className="row how-it-works">
         <div className="three columns">
-          <img src="/icons/pen.png" alt=""/>
+          <img src={this.props.pen_img} alt=""/>
           <h4>Maintenance requested</h4>
           <p>Fill in the Maintenance form and submit the request</p>
         </div>
         <div className="three columns">
-          <img src="/icons/letter.png" alt=""/>
+          <img src={this.props.letter_img} alt=""/>
           <h4>Maintenance actioned</h4>
           <p>Sit back, and let us sort out the maintenance for you!</p>
         </div>
         <div className="three columns">
-          <img src="/icons/location.png" alt=""/>
+          <img src={this.props.location_img} alt=""/>
           <h4>Track Maintenance Status</h4>
           <p>Get updates on your maintenance request is up or check online</p>
         </div>
         <div className="three columns">
-          <img src="/icons/enjoy.png" alt=""/>
+          <img src={this.props.enjoy_img} alt=""/>
           <h4>Maintenance complete</h4>
           <p>Enjoy a stress free process to maintain your home</p>
         </div>
@@ -617,8 +617,8 @@ var HomeComponent = React.createClass({
             <div className="home-logo">
               <AvatarImage
                 className="home-logo"
-                imageUri="/assets/logo.png"
-                defaultImage="/assets/logo.png"
+                imageUri={this.props.logo_img}
+                defaultImage={this.props.logo_img}
                 alt="logo"
                />
               <h3>MaintenanceApp</h3>
