@@ -844,6 +844,7 @@ var ListMaintenanceRequest = React.createClass({
   render: function() {
     const self = this;
     const {
+      current_role,
       current_user_agent,
       current_user_trady,
       current_user_tenant,
@@ -854,37 +855,6 @@ var ListMaintenanceRequest = React.createClass({
     return (
       <div className="maintenance-list new-maintenance-list main-container">
         <FixCSS haveScroll={true} />
-        {/* <div className="dropdown-MR">
-          {
-            <DropforSortDate
-              selectFilter={this.selectFilter}
-              filterDate={this.state.filterDate}
-              valueSelect={this.state.sortByDate}
-            />
-          }
-          {
-            (!!current_user_agent || !!current_user_agency_admin) &&
-              <div className="dropdown-custom archived">
-                <span className="count">
-                  {this.props.deferred_count}
-                </span>
-                <a onClick={() => this.getAction('Defer')}>
-                  Deferred
-                </a>
-              </div>
-          }
-          {
-            (!!current_user_agent || !!current_user_agency_admin) &&
-              <div className="dropdown-custom archived">
-                <span className="count">
-                  {this.props.jobs_completed}
-                </span>
-                <a onClick={() => this.getAction('Jobs Completed')}>
-                  Archived
-                </a>
-              </div>
-          }
-        </div> */}
         <div className="maintenance-content main-content">
           <div className="sidebar">
             <div className="box-shadow flexbox flex-column">
@@ -959,6 +929,7 @@ var ListMaintenanceRequest = React.createClass({
                       maintenance_request={maintenance_request} 
                       link={self.props.link}
                       filter_status={self.state.valueAction}
+                      current_role={current_role}
                     />
                   );
                 })
@@ -1037,9 +1008,11 @@ var MaintenanceRequestItem = React.createClass({
 
 var NewMaintenanceRequestItem = React.createClass({
   render: function() {
-    const {maintenance_request, link, filter_status} = this.props;
+    const {maintenance_request, link, filter_status, current_role} = this.props;
     const {id, maintenance_description, action_status, created_at, service_type, property} = maintenance_request;
-    const mrStatus = action_status && action_status.agent_status || filter_status;
+    const mrStatus = action_status 
+                  && action_status[current_role.role === 'Trady' ? 'trady_status' : 'agent_status'] 
+                  || filter_status;
     const address = property && property.property_address;
     return (
       <div className="row main-item box-shadow">
@@ -1265,6 +1238,7 @@ var SearchResultMaintenanceRequest = React.createClass({
 
   render: function() {
     const isPagination = this.state.data.length > this.state.perPage;
+    const {current_role} = this.props;
 
     return (
       <div className="maintenance-list new-maintenance-list main-container">
@@ -1287,6 +1261,7 @@ var SearchResultMaintenanceRequest = React.createClass({
                     maintenance_request={maintenance_request} 
                     link={this.props.link}
                     filter_status="New Maintenance Request"
+                    current_role={current_role}
                   />
                 );
               })
