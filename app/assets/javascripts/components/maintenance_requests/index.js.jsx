@@ -1010,9 +1010,7 @@ var NewMaintenanceRequestItem = React.createClass({
   render: function() {
     const {maintenance_request, link, filter_status, current_role} = this.props;
     const {id, maintenance_description, action_status, created_at, service_type, property} = maintenance_request;
-    const mrStatus = action_status 
-                  && action_status[current_role.role === 'Trady' ? 'trady_status' : 'agent_status'] 
-                  || filter_status;
+    const mrStatus = action_status && action_status.agent_status || filter_status;
     const address = property && property.property_address;
     return (
       <div className="row main-item box-shadow">
@@ -1026,22 +1024,24 @@ var NewMaintenanceRequestItem = React.createClass({
         <div className="item-data">
           <div className="content main-detail">
             <div className="mr-information main-information">
+            { current_role.role !== 'Trady' && 
               <div className="mr-information row-information">
-                  <span className="key">Status:</span>
-                  {mrStatus && <span className="data status">{mrStatus}</span>}
-                </div>
-                <div className="mr-information row-information">
-                  <span className="key">Address:</span>
-                  <span className="data address">{address}</span>
-                </div>
-                <div className="mr-information row-information">
-                  <span className="key">Submitted:</span>
-                  <span className="data time">{moment(created_at).format('LL')}</span>
-                </div>
-                <div className="mr-information row-information">
-                  <span className="key">Service Required:</span>
-                  <span className="data service">{service_type}</span>
-                </div>
+                <span className="key">Status:</span>
+                {mrStatus && <span className="data status">{mrStatus}</span>}
+              </div>
+            }
+              <div className="mr-information row-information">
+                <span className="key">Address:</span>
+                <span className="data address">{address}</span>
+              </div>
+              <div className="mr-information row-information">
+                <span className="key">Submitted:</span>
+                <span className="data time">{moment(created_at).format('LL')}</span>
+              </div>
+              <div className="mr-information row-information">
+                <span className="key">Service Required:</span>
+                <span className="data service">{service_type}</span>
+              </div>
             </div>
           </div>
           <div className="view-button">
