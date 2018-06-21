@@ -1024,7 +1024,7 @@ var NewMaintenanceRequestItem = React.createClass({
         <div className="item-data">
           <div className="content main-detail">
             <div className="mr-information main-information">
-            { current_role.role !== 'Trady' && 
+            { current_role.role !== 'Trady' && current_role.role !== 'Tenant' && 
               <div className="mr-information row-information">
                 <span className="key">Status:</span>
                 {mrStatus && <span className="data status">{mrStatus}</span>}
