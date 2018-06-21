@@ -91,9 +91,9 @@ class MaintenanceRequest < ApplicationRecord
     # current_user_role = current_user.role.roleable_type
     
     if current_user.logged_in_as("AgencyAdmin")
-      maintenance_request_array = MaintenanceRequest.where({ agency_admin_id: current_user.get_role("AgencyAdmin").roleable_id}).joins(:action_status).where(:action_statuses => { :agent_status => params}).includes(:images, :property, :action_status).distinct.order('created_at DESC')
+      maintenance_request_array = MaintenanceRequest.where({ agency_admin_id: current_user.get_role("AgencyAdmin").roleable_id}).joins(:action_status).where(:action_statuses => { :agent_status => params}).includes(:images, :property, :action_status).distinct.order(created_at: :desc)
     elsif current_user.logged_in_as("Agent")
-      maintenance_request_array = MaintenanceRequest.where({ agent_id: current_user.get_role("Agent").roleable_id}).joins(:action_status).where(:action_statuses => { :agent_status => params}).includes(:images, :property, :action_status).distinct.order('created_at DESC')
+      maintenance_request_array = MaintenanceRequest.where({ agent_id: current_user.get_role("Agent").roleable_id}).joins(:action_status).where(:action_statuses => { :agent_status => params}).includes(:images, :property, :action_status).distinct.order(created_at: :desc)
     # elsif current_user_role == "Trady"
     #   maintenance_request_array = MaintenanceRequest.where({ trady_id: current_user.role.roleable_id})
     end 
