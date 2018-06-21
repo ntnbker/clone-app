@@ -18,11 +18,11 @@ class AgentMaintenanceRequestsController < ApplicationController
       params[:maintenance_request_filter] = 'Initiate Maintenance Request'
     end 
 
-    if params[:sort_by_date] == "Oldest to Newest"
-      @maintenance_requests = MaintenanceRequest.find_maintenance_requests(current_user, params[:maintenance_request_filter]).order('created_at ASC').paginate(:page => params[:page], :per_page => 10)
-    else
-      @maintenance_requests = MaintenanceRequest.find_maintenance_requests(current_user, params[:maintenance_request_filter]).order('created_at DESC').paginate(:page => params[:page], :per_page => 10)
-    end
+    # if params[:sort_by_date] == "Oldest to Newest"
+    #   @maintenance_requests = MaintenanceRequest.find_maintenance_requests(current_user, params[:maintenance_request_filter]).order('created_at ASC').paginate(:page => params[:page], :per_page => 10)
+    # else
+      @maintenance_requests = MaintenanceRequest.find_maintenance_requests(current_user, params[:maintenance_request_filter]).paginate(:page => params[:page], :per_page => 10)
+    #end
     
 
     @page = params[:page]
