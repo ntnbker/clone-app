@@ -33,9 +33,8 @@ class ApplicationController < ActionController::Base
     else
       logout
       flash[:danger] = "Sorry your session has expired please log in."
-      respond_to do |format|
-        format.html { redirect_to root_path, notice: 'Sorry your session has expired please log in.' }
-        format.json { redirect_to root_path, notice: 'Sorry your session has expired please log in.' }
+      redirect_to root_path(flash_error: 'Sorry your session has expired please log in.' )
+       
       end 
     end 
 
@@ -178,12 +177,8 @@ class ApplicationController < ActionController::Base
   private
     def not_authenticated
       flash[:danger] = "Please log in to gain access."
-      
-
-      respond_to do |format|
-        format.html { redirect_to root_path, notice: 'Please log in to gain access.' }
-        format.json { redirect_to root_path, notice: 'Please log in to gain access.' }
-      end 
+      redirect_to root_path(flash_error:'Please log in to gain access.') 
+        
     end
 
 
