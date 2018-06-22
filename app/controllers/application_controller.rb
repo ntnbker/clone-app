@@ -33,7 +33,10 @@ class ApplicationController < ActionController::Base
     else
       logout
       flash[:danger] = "Sorry your session has expired please log in."
-      redirect_to root_path
+      respond_to do |format|
+        format.html { redirect_to root_path, notice: 'Sorry your session has expired please log in.' }
+        format.json { redirect_to root_path, notice: 'Sorry your session has expired please log in.' }
+      end 
     end 
 
   end
