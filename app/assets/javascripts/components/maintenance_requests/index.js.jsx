@@ -720,7 +720,8 @@ var ListMaintenanceRequest = React.createClass({
       data: params,
       success: function(res){
         if (typeof res === 'string') {
-          return location.href = '/';
+          return;
+          return location.reload();
         }
         const dataShow = res.entries;
         self.setState({
@@ -732,7 +733,8 @@ var ListMaintenanceRequest = React.createClass({
       },
       error: function(err) {
         if (err && err.status == '500' && (err.responseText || '').includes('password_set')) {
-          location.href = '/';
+          return;
+          return location.reload();
         }
         self.setState({
           data: [],
