@@ -5,7 +5,7 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
   before_action :email_redirect, only: [:show,:index]
   
   before_action :require_login, only:[:show,:index]
-
+  before_action :require_role, only:[:show,:index]
   before_action(only:[:show,:index]) {allow("AgencyAdmin")}
   before_action(only:[:show]) {belongs_to_agency_admin}
 
