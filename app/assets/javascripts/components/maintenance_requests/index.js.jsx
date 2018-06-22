@@ -718,9 +718,8 @@ var ListMaintenanceRequest = React.createClass({
       type: 'GET',
       url: link,
       data: params,
-      success: function(res){
+      success: function(res, status, xhr){
         if (typeof res === 'string') {
-          return;
           return location.reload();
         }
         const dataShow = res.entries;
@@ -733,7 +732,6 @@ var ListMaintenanceRequest = React.createClass({
       },
       error: function(err) {
         if (err && err.status == '500' && (err.responseText || '').includes('password_set')) {
-          return;
           return location.reload();
         }
         self.setState({
