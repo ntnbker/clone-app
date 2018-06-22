@@ -719,6 +719,7 @@ var ListMaintenanceRequest = React.createClass({
       url: link,
       data: params,
       success: function(res){
+        debugger
         if (typeof res === 'string') {
           return location.href = '/';
         }
