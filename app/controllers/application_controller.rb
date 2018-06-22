@@ -174,8 +174,13 @@ class ApplicationController < ActionController::Base
   
   private
     def not_authenticated
-      flash[:danger] = "Please login first"
-      redirect_to menu_login_path
+      flash[:danger] = "Please log in to gain access."
+      
+
+      respond_to do |format|
+        format.html { redirect_to root_path, notice: 'Please log in to gain access.' }
+        format.json { redirect_to root_path, notice: 'Please log in to gain access.' }
+      end 
     end
 
 
