@@ -31,12 +31,9 @@ class ApplicationController < ActionController::Base
     if current_user.has_current_role?
       #do nothing
     else
-      
       logout
       flash[:danger] = "Sorry your session has expired please log in."
-      redirect_to root_path(flash_error: 'Sorry your session has expired please log in.' )
-       
-      
+      redirect_to root_path
     end 
 
   end
@@ -83,7 +80,6 @@ class ApplicationController < ActionController::Base
 
   def email_redirect
 
-    
     if params[:user_id]
       user = User.find_by(id:params[:user_id])
       token = user.set_password_token
@@ -95,35 +91,17 @@ class ApplicationController < ActionController::Base
       token = user.set_password_token
     end 
 
-      if user 
-        if user.password_set
-          # if current_user
-          #   #do nothing 
-          # else
-          #   flash[:message] = "Please log in to gain access."
-          #   redirect_to root_path(user_type:params[:user_type], maintenance_request_id:params[:id], anchor:params[:anchor], message:params[:message], quote_message_id:params[:quote_message_id], appointment_id:params[:appointment_id], stop_reminder:params[:stop_reminder], quote_request_id:params[:quote_request_id],role:params[:role] )
-          # end 
-
-        else
-          flash[:message] = "Notice: You must first setup a password before you can access any maintenance request. Thank you for your time."
-          redirect_to set_password_path(token:token)
-        end
+    if user 
+      if user.password_set
+        #do nothing
       else
-
-         flash[:danger] = "Please log in to gain access."
-        # redirect_to root_path(user_type:params[:user_type], maintenance_request_id:params[:id], anchor:params[:anchor], message:params[:message], quote_message_id:params[:quote_message_id], appointment_id:params[:appointment_id], stop_reminder:params[:stop_reminder], quote_request_id:params[:quote_request_id],role:params[:role] )
-        
-        respond_to do |format|
-          format.json { redirect_to root_path, :url => root_path }
-          format.html { redirect_to redirect_to root_path(user_type:params[:user_type], maintenance_request_id:params[:id], anchor:params[:anchor], message:params[:message], quote_message_id:params[:quote_message_id], appointment_id:params[:appointment_id], stop_reminder:params[:stop_reminder], quote_request_id:params[:quote_request_id],role:params[:role] )}
-        end 
-
-        # format.html { redirect_to @item, notice: 'Item was successfully created.' }
-        # format.json { redirect_to @item, notice: 'Item was successfully created.' }
-      end 
-     
-
-
+        flash[:message] = "Notice: You must first setup a password before you can access any maintenance request. Thank you for your time."
+        redirect_to set_password_path(token:token)
+      end
+    else
+      flash[:danger] = "Please log in to gain access."
+      redirect_to root_path(user_type:params[:user_type], maintenance_request_id:params[:id], anchor:params[:anchor], message:params[:message], quote_message_id:params[:quote_message_id], appointment_id:params[:appointment_id], stop_reminder:params[:stop_reminder], quote_request_id:params[:quote_request_id],role:params[:role] )
+    end 
   end
 
 
@@ -186,7 +164,7 @@ class ApplicationController < ActionController::Base
   private
     def not_authenticated
       flash[:danger] = "Please log in to gain access."
-      redirect_to root_path(flash_error:'Please log in to gain access.') 
+      redirect_to root_path
         
     end
 
