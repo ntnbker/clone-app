@@ -728,6 +728,9 @@ var ListMaintenanceRequest = React.createClass({
         });
       },
       error: function(err) {
+        if (err && err.status == '500' && (err.responseText || '').includes('password_set')) {
+          location.href = '/';
+        }
         self.setState({
           data: [],
           dataShow: [],
