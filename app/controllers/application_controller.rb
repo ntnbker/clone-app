@@ -87,29 +87,30 @@ class ApplicationController < ActionController::Base
     elsif params[:email]
       user = User.find_by(email:params[:email])
       token = user.set_password_token
-    else
-      if current_user
-        user = current_user
-        token = user.set_password_token
-      else  
-        flash[:message] = "Please login to view the maintenance request."
-        redirect_to root_path(user_type:params[:user_type], maintenance_request_id:params[:id], anchor:params[:anchor], message:params[:message], quote_message_id:params[:quote_message_id], appointment_id:params[:appointment_id], stop_reminder:params[:stop_reminder], quote_request_id:params[:quote_request_id],role:params[:role] )
-      end 
+    elsif current_user
+      user = current_user
+      token = user.set_password_token
     end 
 
-    
-    if user.password_set
-      if current_user
-        #do nothing 
+      if user 
+        if user.password_set
+          # if current_user
+          #   #do nothing 
+          # else
+          #   flash[:message] = "Please log in to gain access."
+          #   redirect_to root_path(user_type:params[:user_type], maintenance_request_id:params[:id], anchor:params[:anchor], message:params[:message], quote_message_id:params[:quote_message_id], appointment_id:params[:appointment_id], stop_reminder:params[:stop_reminder], quote_request_id:params[:quote_request_id],role:params[:role] )
+          # end 
+
+        else
+          flash[:message] = "Notice: You must first setup a password before you can access any maintenance request. Thank you for your time."
+          redirect_to set_password_path(token:token)
+        end
       else
-        flash[:message] = "To view the maintenance request please login. Once logged in you will be directed towards the maintenance request of interest."
+        flash[:message] = "Please log in to gain access."
         redirect_to root_path(user_type:params[:user_type], maintenance_request_id:params[:id], anchor:params[:anchor], message:params[:message], quote_message_id:params[:quote_message_id], appointment_id:params[:appointment_id], stop_reminder:params[:stop_reminder], quote_request_id:params[:quote_request_id],role:params[:role] )
+       
       end 
-
-    else
-      flash[:message] = "Notice: You must first setup a password before you can access any maintenance request. Thank you for your time."
-      redirect_to set_password_path(token:token)
-    end 
+     
 
 
   end
