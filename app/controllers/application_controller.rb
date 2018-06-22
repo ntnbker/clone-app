@@ -35,7 +35,7 @@ class ApplicationController < ActionController::Base
       flash[:danger] = "Sorry your session has expired please log in."
       redirect_to root_path(flash_error: 'Sorry your session has expired please log in.' )
        
-      end 
+      
     end 
 
   end
