@@ -110,9 +110,16 @@ class ApplicationController < ActionController::Base
         end
       else
 
-        flash[:error] = "Please log in to gain access."
-        redirect_to root_path(user_type:params[:user_type], maintenance_request_id:params[:id], anchor:params[:anchor], message:params[:message], quote_message_id:params[:quote_message_id], appointment_id:params[:appointment_id], stop_reminder:params[:stop_reminder], quote_request_id:params[:quote_request_id],role:params[:role] )
-       
+         flash[:danger] = "Please log in to gain access."
+        # redirect_to root_path(user_type:params[:user_type], maintenance_request_id:params[:id], anchor:params[:anchor], message:params[:message], quote_message_id:params[:quote_message_id], appointment_id:params[:appointment_id], stop_reminder:params[:stop_reminder], quote_request_id:params[:quote_request_id],role:params[:role] )
+        
+        respond_to do |format|
+          format.json { redirect_to root_path, :url => root_path }
+          format.html { redirect_to redirect_to root_path(user_type:params[:user_type], maintenance_request_id:params[:id], anchor:params[:anchor], message:params[:message], quote_message_id:params[:quote_message_id], appointment_id:params[:appointment_id], stop_reminder:params[:stop_reminder], quote_request_id:params[:quote_request_id],role:params[:role] )}
+        end 
+
+        # format.html { redirect_to @item, notice: 'Item was successfully created.' }
+        # format.json { redirect_to @item, notice: 'Item was successfully created.' }
       end 
      
 
