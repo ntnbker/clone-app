@@ -31,6 +31,7 @@ class ApplicationController < ActionController::Base
     if current_user.has_current_role?
       #do nothing
     else
+      
       logout
       flash[:danger] = "Sorry your session has expired please log in."
       redirect_to root_path(flash_error: 'Sorry your session has expired please log in.' )
@@ -108,7 +109,8 @@ class ApplicationController < ActionController::Base
           redirect_to set_password_path(token:token)
         end
       else
-        flash[:message] = "Please log in to gain access."
+
+        flash[:error] = "Please log in to gain access."
         redirect_to root_path(user_type:params[:user_type], maintenance_request_id:params[:id], anchor:params[:anchor], message:params[:message], quote_message_id:params[:quote_message_id], appointment_id:params[:appointment_id], stop_reminder:params[:stop_reminder], quote_request_id:params[:quote_request_id],role:params[:role] )
        
       end 
