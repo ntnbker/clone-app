@@ -719,6 +719,9 @@ var ListMaintenanceRequest = React.createClass({
       url: link,
       data: params,
       success: function(res){
+        if (typeof res === 'string' && res.includes('Please log in to gain access')) {
+          return location.href = '/';
+        }
         const dataShow = res.entries;
         self.setState({
           data: new Array(res.total_entries).fill(1),
