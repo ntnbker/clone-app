@@ -1,4 +1,7 @@
 class JfmoTradiesController < ApplicationController
+  before_action :require_login
+  before_action :require_role
+
   def find_tradies
     
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])

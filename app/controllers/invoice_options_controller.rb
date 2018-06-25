@@ -1,6 +1,7 @@
 class InvoiceOptionsController < ApplicationController
   # before_action(only: [:show]) { email_auto_login(params[:user_id]) }
   before_action :require_login, only:[:show]
+  before_action :require_role
   before_action(only:[:show]) {allow("Trady")}
 
 

@@ -1,5 +1,6 @@
 class ConversationsController < ApplicationController
   before_action :require_login
+  before_action :require_role
   before_action(only: [:show]) { allowed_to_see_conversation(params[:id]) }
   
   def index

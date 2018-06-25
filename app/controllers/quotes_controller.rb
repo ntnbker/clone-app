@@ -1,6 +1,7 @@
 class QuotesController < ApplicationController
   before_action(only: [:show_quote]) { email_auto_login(params[:user_id]) }
   before_action :require_login
+  before_action :require_role
   before_action(only:[:new,:create,:edit,:update,:show,:show_quote]) {allow("Trady")}
   
   #caches_action :new, :edit, :show

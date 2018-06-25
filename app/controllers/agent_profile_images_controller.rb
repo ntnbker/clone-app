@@ -1,6 +1,7 @@
 class AgentProfileImagesController < ApplicationController
-  before_action :require_login, only:[:create]
-  before_action(only:[:show,:index]) {allow("Agent")}
+  before_action :require_login
+  before_action :require_role
+  #before_action(only:[:show,:index]) {allow("Agent")}
   
   def create
     @image =  AgentProfileImage.new(image_params)

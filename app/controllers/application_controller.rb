@@ -28,12 +28,14 @@ class ApplicationController < ActionController::Base
 
   def require_role
     #if the current_user does not have a role log them out and let them know that their session expired and to log in again.
-    if current_user.has_current_role?
-      #do nothing
-    else
-      logout
-      flash[:danger] = "Sorry your session has expired please log in."
-      redirect_to root_path
+    if current_user
+      if current_user.has_current_role?
+        #do nothing
+      else
+        logout
+        flash[:danger] = "Sorry your session has expired please log in."
+        redirect_to root_path
+      end 
     end 
 
   end
