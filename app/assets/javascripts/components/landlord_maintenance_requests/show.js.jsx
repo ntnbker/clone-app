@@ -264,9 +264,11 @@ var LandlordMaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
-				self.setState({
-					quote_requests: res
-				});
+				if (Array.isArray(res)) {
+					self.setState({
+						quote_requests: res
+					});
+				}
 			},
 			error: function(err) {
 

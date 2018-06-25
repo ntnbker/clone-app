@@ -1802,9 +1802,11 @@ var MaintenanceRequest = React.createClass({
 			data: params,
 			success: function(res){
 				self.isClose();
-				self.setState({
-					quote_requests: res
-				});
+				if (Array.isArray(res)) {
+					self.setState({
+						quote_requests: res
+					});
+				}
 				if(params.status == 'Approved') {
 					self.setState({notification: {
 						title: "Accept Quote",
