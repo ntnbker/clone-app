@@ -373,7 +373,7 @@ class MaintenanceRequestsController < ApplicationController
     
     if params[:maintenance_request_status] == "Jobs Completed"
       maintenance_request.action_status.update_columns(agent_status:params[:maintenance_request_status],action_category:params[:action_category], trady_status:"Job Complete")
-      QuoteRequest.expire(maintenance_request.id)
+      QuoteRequest.expire(params[:maintenance_request_id])
     else
       maintenance_request.action_status.update_columns(agent_status:params[:maintenance_request_status],action_category:params[:action_category])
     end 
