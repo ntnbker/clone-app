@@ -411,6 +411,9 @@ $color-text: #83878C;
   }
 	.show-quote {
     text-transform: initial;
+    .service-address {
+      margin-top: 10px;
+    }
     .info-quote {
       clear: both;
       overflow: hidden;
