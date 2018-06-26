@@ -1,5 +1,6 @@
 class LicensesController < ApplicationController
   before_action :require_login, only:[:new_license_onboarding, :edit_license_onboarding]
+  before_action :require_role
   before_action(only:[:new_license_onboarding]) {allow("Trady")}
   def new
     @trady_id = params[:trady_id]

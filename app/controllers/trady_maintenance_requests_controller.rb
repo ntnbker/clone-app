@@ -2,6 +2,7 @@ class TradyMaintenanceRequestsController < ApplicationController
   #before_action(only: [:show]) { email_auto_login(params[:user_id]) }
   before_action :email_redirect, only: [:show,:index]
   before_action :require_login, only:[:show,:index]
+  before_action :require_role
   before_action :jfmo_terms_and_conditions, only:[:show,:index]
   before_action(only:[:show,:index]) {allow("Trady")}
   before_action(only:[:show]) {belongs_to_trady}

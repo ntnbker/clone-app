@@ -2,7 +2,7 @@ class LandlordMaintenanceRequestsController < ApplicationController
   #before_action(only: [:show]) { email_auto_login(params[:user_id]) }
   before_action :email_redirect, only: [:show,:index]
   before_action :require_login, only:[:show,:index]
-  
+  before_action :require_role
   before_action(only:[:show,:index]) {allow("Landlord")}
   before_action(only:[:show]) {belongs_to_landlord}
 

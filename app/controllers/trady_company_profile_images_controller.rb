@@ -1,5 +1,6 @@
 class TradyCompanyProfileImagesController < ApplicationController
   before_action :require_login, only:[:create,:update]
+  before_action :require_role
   before_action(only:[:create,:update]) {allow("Trady")}
 
   def create

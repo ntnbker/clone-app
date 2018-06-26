@@ -1,5 +1,7 @@
 class ReminderKillersController < ApplicationController
-
+  before_action :require_login
+  before_action :require_role
+  
   def stop_quote_request_reminder
     
     

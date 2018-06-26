@@ -1,4 +1,7 @@
 class SearchMaintenanceRequestsController < ApplicationController
+  before_action :require_login
+  before_action :require_role
+  
   def search_maintenance_request
     user = current_user
     @link = ''

@@ -1,5 +1,6 @@
 class ReassignMaintenanceRequestsController < ApplicationController 
-  
+  before_action :require_login
+  before_action :require_role
   def reassign
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     user = User.find_by(email:params[:email])
