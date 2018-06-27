@@ -1,5 +1,5 @@
 class TradiesController < ApplicationController 
-  before_action :require_login, only:[:create]
+  before_action :require_login, only:[:create, :edit, :update_skills]
   before_action :require_role
   before_action :jfmo_terms_and_conditions, only:[:edit]
   # before_action(only:[:show,:index]) {allow("AgencyAdmin")}
