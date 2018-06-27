@@ -527,6 +527,9 @@ form#new_quote {
 		.date-quote {
 			@include flex(1);
 		}
+		.right-span {
+			margin-left: 5px;
+		}
 	}
 	.quote-items {
 		table {

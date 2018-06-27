@@ -990,6 +990,9 @@ $color-text: #83878C;
       word-break: break-all;
       padding: 3px;
       text-transform: capitalize;
+      &.cost {
+        word-break: break-word;
+      }
     }
     .flex-4 {
       @include flex(4);
