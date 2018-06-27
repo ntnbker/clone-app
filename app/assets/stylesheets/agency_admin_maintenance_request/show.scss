@@ -79,6 +79,10 @@ $color-text: #83878C;
       &.quote-request-title {
         position: relative;
         padding-left: 35px;
+
+        &.is-assigned {
+          padding-left: 0px;
+        }
       }
       .edit-detail {
         margin-left: 10px;
@@ -2727,6 +2731,9 @@ span.index {
             font-size: 15px;
             top: 2px;
             line-height: 20px;
+          }
+          &.is-assigned {
+            padding-left: 0px;
           }
         }
       }

@@ -559,10 +559,10 @@ var QuoteRequests = React.createClass({
 
     const role = self.role || (self.current_role && self.current_role.role);
     const quote_requests = role === 'Landlord'
-                        ? this.filterQuoteRequestForLandlord(self.quote_requests)
-                        : this.filterQuoteRequest(self.quote_requests);
+                        ? this.filterQuoteRequestForLandlord(self)
+                        : this.filterQuoteRequest(self);
     return {
-      quote_requests: quote_requests.sort((qr1, qr2) => !!qr2.quotes.length - !!qr1.quotes.length),
+      quote_requests,
       pictures: [],
       role,
     };
@@ -575,19 +575,19 @@ var QuoteRequests = React.createClass({
   componentWillReceiveProps: function(nextProps) {
     const {role} = this.state;
     const quote_requests = role === 'Landlord'
-                        ? this.filterQuoteRequestForLandlord(nextProps.quote_requests)
-                        : this.filterQuoteRequest(nextProps.quote_requests);
+                        ? this.filterQuoteRequestForLandlord(nextProps)
+                        : this.filterQuoteRequest(nextProps);
 
     // this.getPictureImage(quote_requests);
     this.setState({
-      quote_requests: quote_requests.sort((qr1, qr2) => !!qr2.quotes.length - !!qr1.quotes.length),
+      quote_requests,
     });
   },
 
-  filterQuoteRequest(quote_requests) {
+  filterQuoteRequest({quote_requests, assignedTrady}) {
     const filteredQuoteRequest = quote_requests.filter(({trady}) => {
       return trady && (!trady.jfmo_participant || !!trady.customer_profile)
-    })
+    }).sort((qr1, qr2) => assignedTrady && qr2.trady.id === assignedTrady.id ? 1 : 0)
 
     return filteredQuoteRequest;
   },
@@ -632,22 +632,24 @@ var QuoteRequests = React.createClass({
     const getImage = this.getPictureImage;
 
     const isCallTrady = role === 'AgencyAdmin' || role === 'Agent';
+    let index = 0;
 
     // Check if quote request was created by a real trady
 
     return (
       <div className="list-quote">
       {
-        quote_requests.map(function(quote_request, index) {
+        quote_requests.map(function(quote_request) {
           const trady = quote_request.trady || {};
           const assignedTradyValid = !self.assignedTrady
                                   || self.assignedTrady.id === trady.id;
 
-					const isAssigned = self.assignedTrady && self.assignedTrady.id === trady.id;
+          const isAssigned = self.assignedTrady && self.assignedTrady.id === trady.id;
+          if (!isAssigned) {
+            index++;
+          }
           const {maintenance_request_id, trady_id} = quote_request;
           const quotes 				= quote_request.quotes || [];
-          const quoteAlready  = quotes.filter(quote => !quote.quote_items
-                                                     || quote.quote_items.length === 0);
 
           const isLandlord = role === "Landlord";
 
@@ -673,7 +675,12 @@ var QuoteRequests = React.createClass({
           return (
 
             <div className="quotes m-t-lg box-shadow" id="quote_requests" key={index}>
-              <h5 className="mr-title quote-request-title"><span className="index">{index + 1}</span>Quote Requests</h5>
+              <h5 
+                className={"mr-title quote-request-title " + (isAssigned && 'is-assigned')}
+              >
+                {!isAssigned && <span className="index">{index}</span>}
+                {isAssigned ? 'Work Order' : 'Quote Requests'}
+              </h5>
               <div className="item-quote row item-quote-request">
                 <div className="user seven columns trady-info-group">
                   <div className="trady-info">
