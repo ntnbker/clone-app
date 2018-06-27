@@ -2,6 +2,7 @@ class AgentMaintenanceRequestsController < ApplicationController
   #before_action(only: [:show,:index]) { email_auto_login(params[:user_id]) }
   before_action :email_redirect, only: [:show,:index]
   before_action :require_login, only:[:show,:index]
+  before_action :require_role
   before_action(only:[:show,:index]) {allow("Agent")}
   before_action(only:[:show]) {belong_to_agent}
 
