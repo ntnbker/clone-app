@@ -4,10 +4,6 @@ var AssignTrady = React.createClass({
     const trady            = this.props.trady || {};
     trady['trady_company'] = trady['trady_company'] || {};
 
-    const { trady_company: {trady_company_profile_image}, trady_profile_image } = trady;
-
-    const image_url = trady_company_profile_image && trady_company_profile_image.image_url || trady_profile_image && trady_profile_image.image_url;
-
     const showStopReminder = this.props.showAppointmentAlreadyMade
                           && !trady.jfmo_participant;
 
@@ -16,7 +12,7 @@ var AssignTrady = React.createClass({
 				<div className="item-quote-request">
 					<div className="item-quote row trady-info-group work-order">
 						<div className="user seven columns trady-info work-order-title">
-              {current_role === 'Trady' ? "Work Order" : "Work Order"}
+              {/* {current_role === 'Trady' ? "Work Order" : "Work Order"} */}
 						</div>
 						<div className="contact-button">
               <div className="view-work-order">

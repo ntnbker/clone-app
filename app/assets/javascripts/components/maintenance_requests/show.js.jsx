@@ -2452,7 +2452,6 @@ var MaintenanceRequest = React.createClass({
 			success: function(res){
 				logs.push(res.log);
 				self.setState({
-					logs: logs,
 					trady: null,
 					notification: {
 						title: "Cancel Work Order",
