@@ -1,7 +1,8 @@
 const Support = React.createClass({
   getInitialState() {
     return {
-      errors: {},
+      errors: {
+      },
       message: ''
     };
   },
@@ -34,7 +35,7 @@ const Support = React.createClass({
   },
 
   renderError: function(error) {
-      return <div id="errorbox" className="error">{error || ''}</div>;
+      return <div id="errorbox" className="error">{error[0] || ''}</div>;
   },
 
   submit(e) {
@@ -52,7 +53,9 @@ const Support = React.createClass({
 			beforeSend: function (xhr) {
 				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
 			},
-			data,
+			data: {
+        contact: data
+      },
 			success: function (res) {
         if (res) {
           self.setState({ 
@@ -117,6 +120,7 @@ const Support = React.createClass({
                     type="text" 
                     placeholder="Name" 
                     id="name"
+                    className={errors['name'] ? 'has-error' : ''}
                     ref={e => this.name = e} 
                     onChange={this.removeError}
                   />
@@ -127,6 +131,7 @@ const Support = React.createClass({
                     type="text" 
                     placeholder="Your e-mail" 
                     id="email"
+                    className={errors['email'] ? 'has-error' : ''}
                     ref={e => this.email = e} 
                     onChange={this.removeError}
                   />
@@ -137,6 +142,7 @@ const Support = React.createClass({
                     type="text" 
                     placeholder="Message" 
                     id="message"
+                    className={errors['message'] ? 'has-error' : ''}
                     ref={e => this.message = e} 
                     onChange={this.removeError}
                   />

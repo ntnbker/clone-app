@@ -98,13 +98,17 @@ $color-text: #83878C;
       input, textarea {
         width: 100%;
         resize: none;
-        border: none;
+        border: 1px solid #F9F9F9;
         color: $color-text;
         background-color: #F9F9F9;
 
         @include input-placeholder {
           color: #BEBDBE;
         }
+      }
+      .error {
+        margin-top: 0;
+        margin-bottom: 15px;
       }
       input {
         height: 50px;
