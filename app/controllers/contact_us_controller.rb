@@ -1,7 +1,7 @@
 class ContactUsController < ApplicationController
   def create
-    contact = ContactUs.new(contact_us_params)
-
+    contact = ContactUs.new
+    binding.pry
     if contact.valid?
       #send email 
       #redirect to contact page
