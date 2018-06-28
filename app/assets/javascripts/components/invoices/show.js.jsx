@@ -272,12 +272,12 @@ var ModalViewInvoice = React.createClass({
 											</p>
 										</div>
 									</div>
+									<p className="font-bold service-address">
+										Service Address: {this.capitalizeText(self.property.property_address)}
+									</p>
 									<div className="detail-quote position-rl">
 										{!!invoice.invoice_items && <DetailInvoice isShowVoidModal={isShowVoidModal} role={self.role} invoice={invoice} />}
 									</div>
-									<p className="font-bold">
-										Service Address: {this.capitalizeText(self.property.property_address)}
-									</p>
 								</div>
 							</div>
 						</div>

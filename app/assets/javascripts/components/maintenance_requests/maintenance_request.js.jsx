@@ -951,8 +951,10 @@ var MaintenaceRequestDetail = React.createClass({
 
 	render() {
 		const {
-			show_assign, status, maintenance_request, hide_note, strike_approval
+			show_assign, status, maintenance_request, hide_note, strike_approval, current_role
 		} = this.props;
+
+		const needAddPhotoButton = !current_role || !['Trady', 'Landlord'].includes(current_role.role);
 
 		return (
 			<div className="mr-detail box-shadow main-detail">
@@ -990,7 +992,7 @@ var MaintenaceRequestDetail = React.createClass({
 						<Carousel gallery={this.props.gallery} />
 					</div>
 				}
-				{!this.props.isTrady && 
+				{needAddPhotoButton &&
 					<div className="add-photo contact-button">
 						<div className="add-photo-button">
 							<button

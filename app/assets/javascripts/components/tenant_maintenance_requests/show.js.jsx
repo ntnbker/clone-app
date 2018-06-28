@@ -805,6 +805,7 @@ var TenantMaintenanceRequest = React.createClass({
 						<ItemMaintenanceRequest
 							gallery={this.state.gallery}
 							property={this.props.property}
+							current_role={this.props.current_user_role}
 							viewItem={(key, item) => this.viewItem(key, item)}
 							onModalWith={this.onModalWith}
 							maintenance_request={this.state.maintenance_request}

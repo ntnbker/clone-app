@@ -921,7 +921,7 @@ var DetailQuote = React.createClass({
               }
               let amount = item.amount;
               if(item.pricing_type === 'Range') {
-                amount = `$${item.min_price.toFixed(2)}-$${item.max_price.toFixed(2)}`;
+                amount = `$${item.min_price.toFixed(2)} - $${item.max_price.toFixed(2)}`;
               }
               else {
                 amount = `$${amount.toFixed(2)}`;
@@ -1156,7 +1156,7 @@ var ModalViewQuote = React.createClass({
                     </div>
                     <div className="info-agency">
                       <p>
-                        <span className="font-bold">Quote Reference: </span>
+                        <span className="font-bold">Quote Ref: </span>
                         <span> {quote.trady_quote_reference != "" ? quote.trady_quote_reference : property.property_address}</span>
                       </p>
                       <p>
