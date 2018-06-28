@@ -44,7 +44,7 @@ class TradyMaintenanceRequest
       maintenance_requests = MaintenanceRequest.where(trady_id:trady_id).joins(:action_status).where(action_statuses:{maintenance_request_status:"Completed"}).includes(:property).distinct
     elsif parameter == "Declined Quotes"
       quote_mr_ids = Quote.where(trady_id:trady_id,status:"Declined").pluck(:maintenance_request_id)
-      maintenance_requests = MaintenanceRequest.where(id:quote_mr_ids)
+      maintenance_requests = MaintenanceRequest.where(id:quote_mr_ids).includes(:property).distinct
     end 
     return maintenance_requests  
   end

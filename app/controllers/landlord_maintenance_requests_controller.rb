@@ -2,7 +2,7 @@ class LandlordMaintenanceRequestsController < ApplicationController
   #before_action(only: [:show]) { email_auto_login(params[:user_id]) }
   before_action :email_redirect, only: [:show,:index]
   before_action :require_login, only:[:show,:index]
-  
+  before_action :require_role
   before_action(only:[:show,:index]) {allow("Landlord")}
   before_action(only:[:show]) {belongs_to_landlord}
 
@@ -42,7 +42,7 @@ class LandlordMaintenanceRequestsController < ApplicationController
           :current_page => @maintenance_requests.current_page,
           :per_page => @maintenance_requests.per_page,
           :total_entries => @maintenance_requests.total_entries,
-          :entries => @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)}
+          :entries => @maintenance_requests.as_json(:include=>{:property=>{}, :action_status=>{}},methods: :get_image_urls)}
         }
       
       format.html

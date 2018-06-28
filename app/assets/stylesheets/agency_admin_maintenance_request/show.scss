@@ -79,6 +79,10 @@ $color-text: #83878C;
       &.quote-request-title {
         position: relative;
         padding-left: 35px;
+
+        &.is-assigned {
+          padding-left: 0px;
+        }
       }
       .edit-detail {
         margin-left: 10px;
@@ -2088,7 +2092,7 @@ span.index {
       margin-bottom: 0px;
       li {
         width: 100%;
-        a {
+        // a {
           width: 100%;
           display: inline-block;
           text-align: center;
@@ -2100,7 +2104,7 @@ span.index {
             color: #7DC691;
             font-weight: bold;
           }
-        }
+        // }
       }
     }
     p {
@@ -2312,7 +2316,7 @@ span.index {
       }
       .quote-amount {
         width: 30%;
-        word-break: break-all;
+        word-break: break-word;
       }
     }
     .invoices .content p {
@@ -2727,6 +2731,9 @@ span.index {
             font-size: 15px;
             top: 2px;
             line-height: 20px;
+          }
+          &.is-assigned {
+            padding-left: 0px;
           }
         }
       }

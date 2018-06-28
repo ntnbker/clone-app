@@ -1,5 +1,6 @@
 class InsurancesController < ApplicationController
   before_action :require_login, only:[:new_insurance_onboarding, :edit_insurance_onboarding]
+  before_action :require_role
   before_action(only:[:new_insurance_onboarding]) {allow("Trady")}
   def new
     @trady_id = params[:trady_id]

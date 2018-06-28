@@ -2,6 +2,7 @@ class TenantMaintenanceRequestsController < ApplicationController
   #before_action(only:[:show]) { email_auto_login(params[:user_id]) }
   before_action :email_redirect, only: [:show,:index]
   before_action :require_login, only:[:show,:index]
+  before_action :require_role
   before_action(only:[:show,:index]) {allow("Tenant")}
   before_action(only:[:show]) {belongs_to_tenant}
   
@@ -22,7 +23,7 @@ class TenantMaintenanceRequestsController < ApplicationController
     if params[:sort_by_date] == "Oldest to Newest"
       @maintenance_requests = current_user.tenant.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 10)
     else
-      @maintenance_requests = current_user.tenant.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 10)
+      @maintenance_requests = current_user.tenant.maintenance_requests.includes(:property).order(created_at: :desc).paginate(:page => params[:page], :per_page => 10)
     end
 
     # @maintenance_requests_json = @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)

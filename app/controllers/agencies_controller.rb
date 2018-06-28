@@ -3,7 +3,7 @@ class AgenciesController < ApplicationController
    # before_action(only: [:show]) { email_auto_login(params[:user_id]) }
   
   before_action :require_login, only:[:edit,:update]
-
+  before_action :require_role
   before_action(only:[:edit,:update]) {allow("AgencyAdmin")}
   before_action(only:[:edit]) {belongs_to_agency_admin}
 

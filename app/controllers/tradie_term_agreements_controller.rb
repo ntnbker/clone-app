@@ -1,5 +1,6 @@
 class TradieTermAgreementsController < ApplicationController
  before_action :require_login, only:[:non_jfmo_terms_and_conditions_onboarding, :create_non_jfmo_terms_and_conditions_onboarding]
+ before_action :require_role
   def new
     @maintenance_request_id = params[:maintenance_request_id]
     @trady_company_id = params[:trady_company_id]

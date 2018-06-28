@@ -1,5 +1,7 @@
 class ImagesController < ApplicationController
-
+  before_action :require_login, only:[:show,:index]
+  before_action :require_role
+  
   def update
 
     maintenance_request = MaintenanceRequest.find_by(id:params[:picture][:maintenance_request_id])

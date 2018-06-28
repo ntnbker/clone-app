@@ -19,7 +19,7 @@ class Landlord < ApplicationRecord
 
   def all_maintenance_requests
     maintenance_requests = []
-    self.properties.includes(:maintenance_requests).each do |property|
+    self.properties.includes(maintenance_requests:[:action_status]).each do |property|
       property.maintenance_requests.each do |mr|
         maintenance_requests.push(mr)
       end 

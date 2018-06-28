@@ -1697,6 +1697,7 @@ var TradyMaintenanceRequest = React.createClass({
 							tenants={needShowInfo ? this.props.tenants : []}
 							viewItem={(key, item) => this.viewItem(key, item)}
 							onModalWith={this.onModalWith}
+							current_role={this.props.current_role}
 							maintenance_request={this.state.maintenance_request}
 							hide_note={!trady || trady.user_id !== this.props.current_user.id}
 							strike_approval={hasApproved}hasApproved

@@ -1,9 +1,8 @@
 class QuoteImagesController < ApplicationController 
+  before_action :require_login
+  before_action :require_role
 
   def create
-
-
-    
     @quote_image = QuoteImage.new(quote_image_params)
     @maintenance_request = MaintenanceRequest.find_by(id:params[:picture][:maintenance_request_id])
     

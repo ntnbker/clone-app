@@ -1,4 +1,6 @@
 class WorkOrdersController < ApplicationController
+  before_action :require_login
+  before_action :require_role
   def cancel_work_order
     
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])

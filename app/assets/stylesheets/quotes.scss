@@ -416,6 +416,9 @@ form#new_quote {
 					}
 				}
 			}
+      b.company-name {
+        font-size: 15px;
+      }
 		}
 		.close {
 			border: 1px solid #ccc !important;
@@ -430,6 +433,9 @@ form#new_quote {
 	}
 	.quote-height {
 		min-height: 800px;
+	}
+	.service-address {
+		margin-top: 10px;
 	}
 	.info-quote {
 		font-size: 13px;
@@ -523,6 +529,9 @@ form#new_quote {
 		}
 		.date-quote {
 			@include flex(1);
+		}
+		.right-span {
+			margin-left: 5px;
 		}
 	}
 	.quote-items {

@@ -559,12 +559,10 @@ var QuoteRequests = React.createClass({
 
     const role = self.role || (self.current_role && self.current_role.role);
     const quote_requests = role === 'Landlord'
-                        ? this.filterQuoteRequestForLandlord(self.quote_requests)
-                        : role === 'Agent' 
-                          ? this.filterQuoteRequestForAgent(self.quote_requests)
-                          : this.filterQuoteRequest(self.quote_requests);
+                        ? this.filterQuoteRequestForLandlord(self)
+                        : this.filterQuoteRequest(self);
     return {
-      quote_requests: quote_requests.sort((qr1, qr2) => !!qr2.quotes.length - !!qr1.quotes.length),
+      quote_requests,
       pictures: [],
       role,
     };
@@ -577,30 +575,21 @@ var QuoteRequests = React.createClass({
   componentWillReceiveProps: function(nextProps) {
     const {role} = this.state;
     const quote_requests = role === 'Landlord'
-                        ? this.filterQuoteRequestForLandlord(nextProps.quote_requests)
-                        : this.filterQuoteRequest(nextProps.quote_requests);
+                        ? this.filterQuoteRequestForLandlord(nextProps)
+                        : this.filterQuoteRequest(nextProps);
 
     // this.getPictureImage(quote_requests);
     this.setState({
-      quote_requests: quote_requests.sort((qr1, qr2) => !!qr2.quotes.length - !!qr1.quotes.length),
+      quote_requests,
     });
   },
 
-  filterQuoteRequest(quote_requests) {
+  filterQuoteRequest({quote_requests, assignedTrady}) {
     const filteredQuoteRequest = quote_requests.filter(({trady}) => {
       return trady && (!trady.jfmo_participant || !!trady.customer_profile)
-    })
+    }).sort((qr1, qr2) => assignedTrady && qr2.trady.id === assignedTrady.id ? 1 : 0)
 
     return filteredQuoteRequest;
-  },
-
-  filterQuoteRequestForAgent(quote_requests) {
-    const filtered = this.filterQuoteRequest(quote_requests);
-
-    // Filter quote_request have empty quotes
-    return filtered.filter((qr) => {
-      return qr.quotes.length || qr.conversation;
-    })
   },
 
   filterQuoteRequestForLandlord(quote_requests) {
@@ -643,22 +632,24 @@ var QuoteRequests = React.createClass({
     const getImage = this.getPictureImage;
 
     const isCallTrady = role === 'AgencyAdmin' || role === 'Agent';
+    let index = 0;
 
     // Check if quote request was created by a real trady
 
     return (
       <div className="list-quote">
       {
-        quote_requests.map(function(quote_request, index) {
+        quote_requests.map(function(quote_request) {
           const trady = quote_request.trady || {};
           const assignedTradyValid = !self.assignedTrady
                                   || self.assignedTrady.id === trady.id;
 
-					const isAssigned = self.assignedTrady && self.assignedTrady.id === trady.id;
+          const isAssigned = self.assignedTrady && self.assignedTrady.id === trady.id;
+          if (!isAssigned) {
+            index++;
+          }
           const {maintenance_request_id, trady_id} = quote_request;
           const quotes 				= quote_request.quotes || [];
-          const quoteAlready  = quotes.filter(quote => !quote.quote_items
-                                                     || quote.quote_items.length === 0);
 
           const isLandlord = role === "Landlord";
 
@@ -684,7 +675,12 @@ var QuoteRequests = React.createClass({
           return (
 
             <div className="quotes m-t-lg box-shadow" id="quote_requests" key={index}>
-              <h5 className="mr-title quote-request-title"><span className="index">{index + 1}</span>Quote Requests</h5>
+              <h5 
+                className={"mr-title quote-request-title " + (isAssigned && 'is-assigned')}
+              >
+                {!isAssigned && <span className="index">{index}</span>}
+                {isAssigned ? 'Work Order' : 'Quote Requests'}
+              </h5>
               <div className="item-quote row item-quote-request">
                 <div className="user seven columns trady-info-group">
                   <div className="trady-info">
@@ -921,7 +917,7 @@ var DetailQuote = React.createClass({
               }
               let amount = item.amount;
               if(item.pricing_type === 'Range') {
-                amount = `$${item.min_price.toFixed(2)}-$${item.max_price.toFixed(2)}`;
+                amount = `$${item.min_price.toFixed(2)} - $${item.max_price.toFixed(2)}`;
               }
               else {
                 amount = `$${amount.toFixed(2)}`;
@@ -1035,11 +1031,11 @@ var ModalViewQuote = React.createClass({
     return text.match(/.{1,3}/g).join(' ');
   },
 
-  formatMobile(text) {
+  formatPhone(text) {
     return text.replace(/(.{2})(.{4})(.{4})(.*)/, '$1 $2 $3 $4').trim();
   },
 
-  formatPhone(text) {
+  formatMobile(text) {
     return text.replace(/(.{4})(.{3})(.{3})(.*)/, '$1 $2 $3 $4').trim();
   },
 
@@ -1091,7 +1087,7 @@ var ModalViewQuote = React.createClass({
               <div className="info-trady">
                 <p>
                   <span>
-                    {this.capitalizeText(quote.trady.company_name)}
+                    <b className="company-name">{this.capitalizeText(quote.trady.company_name)}</b>
                   </span>
                 </p>
                 { quote.trady.trady_company.abn &&
@@ -1110,21 +1106,21 @@ var ModalViewQuote = React.createClass({
                   quote.trady.trady_company.mobile_number &&
                   <p>
                     <span>
-                      mobile: {this.formatMobile(quote.trady.trady_company.mobile_number)}
+                      Mobile: {this.formatMobile(quote.trady.trady_company.mobile_number)}
                     </span>
                   </p>
                 }
                 { quote.trady.trady_company.landline &&
                   <p>
                     <span>
-                      landline: {this.formatPhone(quote.trady.trady_company.landline)}
+                      Landline: {this.formatPhone(quote.trady.trady_company.landline)}
                     </span>
                   </p>
                 }
                 { quote.trady.trady_company.email &&
                   <p>
                     <span>
-                      email: {quote.trady.trady_company.email}
+                      Email: {quote.trady.trady_company.email}
                     </span>
                   </p>
                 }
@@ -1156,7 +1152,7 @@ var ModalViewQuote = React.createClass({
                     </div>
                     <div className="info-agency">
                       <p>
-                        <span className="font-bold">Quote Reference: </span>
+                        <span className="font-bold">Quote Ref: </span>
                         <span> {quote.trady_quote_reference != "" ? quote.trady_quote_reference : property.property_address}</span>
                       </p>
                       <p>

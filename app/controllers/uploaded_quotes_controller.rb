@@ -1,4 +1,6 @@
 class UploadedQuotesController < ApplicationController 
+  before_action :require_login
+  before_action :require_role
   def new
     @file = UploadedQuote.new
     @maintenance_request_id = params[:maintenance_request_id]
