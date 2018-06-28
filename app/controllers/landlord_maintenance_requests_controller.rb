@@ -42,7 +42,7 @@ class LandlordMaintenanceRequestsController < ApplicationController
           :current_page => @maintenance_requests.current_page,
           :per_page => @maintenance_requests.per_page,
           :total_entries => @maintenance_requests.total_entries,
-          :entries => @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)}
+          :entries => @maintenance_requests.as_json(:include=>{:property=>{}, :action_status=>{}},methods: :get_image_urls)}
         }
       
       format.html

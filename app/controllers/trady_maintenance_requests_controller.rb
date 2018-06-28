@@ -27,7 +27,7 @@ class TradyMaintenanceRequestsController < ApplicationController
     if params[:sort_by_date] == "Oldest to Newest"
       @maintenance_requests = TradyMaintenanceRequest.filtered_trady_maintenance_requests(trady_id, params[:maintenance_request_filter]).order('created_at ASC').paginate(:page => params[:page], :per_page => 10)
     else
-      @maintenance_requests = TradyMaintenanceRequest.filtered_trady_maintenance_requests(trady_id, params[:maintenance_request_filter]).order('created_at DESC').paginate(:page => params[:page], :per_page => 10)
+      @maintenance_requests = TradyMaintenanceRequest.filtered_trady_maintenance_requests(trady_id, params[:maintenance_request_filter]).order(created_at: :desc).paginate(:page => params[:page], :per_page => 10)
     end
 
     @quote_request = TradyMaintenanceRequest.filtered_trady_maintenance_requests_count(trady_id, "Quote Requests")

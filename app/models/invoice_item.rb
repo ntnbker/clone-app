@@ -15,11 +15,10 @@ class InvoiceItem < ApplicationRecord
   validate :positive_number_amount
 
   def positive_number_hours
-    if self.hours >= 1
-      
+    if self.hours == nil || self.hours <= 0
+      errors.add(:hours, "Must be a number greater or equal to 1")
     else
-      errors.add(:hours, "Must be a number greater or equal to 1") if
-        self.hours <= 0 
+
     end 
   end
 
@@ -35,3 +34,11 @@ class InvoiceItem < ApplicationRecord
   
 
 end 
+
+
+
+
+
+
+
+  

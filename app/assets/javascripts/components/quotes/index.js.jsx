@@ -560,9 +560,7 @@ var QuoteRequests = React.createClass({
     const role = self.role || (self.current_role && self.current_role.role);
     const quote_requests = role === 'Landlord'
                         ? this.filterQuoteRequestForLandlord(self.quote_requests)
-                        : role === 'Agent' 
-                          ? this.filterQuoteRequestForAgent(self.quote_requests)
-                          : this.filterQuoteRequest(self.quote_requests);
+                        : this.filterQuoteRequest(self.quote_requests);
     return {
       quote_requests: quote_requests.sort((qr1, qr2) => !!qr2.quotes.length - !!qr1.quotes.length),
       pictures: [],
@@ -592,15 +590,6 @@ var QuoteRequests = React.createClass({
     })
 
     return filteredQuoteRequest;
-  },
-
-  filterQuoteRequestForAgent(quote_requests) {
-    const filtered = this.filterQuoteRequest(quote_requests);
-
-    // Filter quote_request have empty quotes
-    return filtered.filter((qr) => {
-      return qr.quotes.length || qr.conversation;
-    })
   },
 
   filterQuoteRequestForLandlord(quote_requests) {
@@ -1035,11 +1024,11 @@ var ModalViewQuote = React.createClass({
     return text.match(/.{1,3}/g).join(' ');
   },
 
-  formatMobile(text) {
+  formatPhone(text) {
     return text.replace(/(.{2})(.{4})(.{4})(.*)/, '$1 $2 $3 $4').trim();
   },
 
-  formatPhone(text) {
+  formatMobile(text) {
     return text.replace(/(.{4})(.{3})(.{3})(.*)/, '$1 $2 $3 $4').trim();
   },
 
@@ -1091,7 +1080,7 @@ var ModalViewQuote = React.createClass({
               <div className="info-trady">
                 <p>
                   <span>
-                    {this.capitalizeText(quote.trady.company_name)}
+                    <b className="company-name">{this.capitalizeText(quote.trady.company_name)}</b>
                   </span>
                 </p>
                 { quote.trady.trady_company.abn &&
@@ -1110,21 +1099,21 @@ var ModalViewQuote = React.createClass({
                   quote.trady.trady_company.mobile_number &&
                   <p>
                     <span>
-                      mobile: {this.formatMobile(quote.trady.trady_company.mobile_number)}
+                      Mobile: {this.formatMobile(quote.trady.trady_company.mobile_number)}
                     </span>
                   </p>
                 }
                 { quote.trady.trady_company.landline &&
                   <p>
                     <span>
-                      landline: {this.formatPhone(quote.trady.trady_company.landline)}
+                      Landline: {this.formatPhone(quote.trady.trady_company.landline)}
                     </span>
                   </p>
                 }
                 { quote.trady.trady_company.email &&
                   <p>
                     <span>
-                      email: {quote.trady.trady_company.email}
+                      Email: {quote.trady.trady_company.email}
                     </span>
                   </p>
                 }
