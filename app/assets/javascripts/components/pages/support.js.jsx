@@ -52,9 +52,6 @@ const Support = React.createClass({
 			beforeSend: function (xhr) {
 				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
 			},
-			enctype: 'multipart/form-data',
-			processData: false,
-			contentType: false,
 			data,
 			success: function (res) {
         if (res) {
