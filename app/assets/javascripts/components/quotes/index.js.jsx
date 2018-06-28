@@ -917,7 +917,7 @@ var DetailQuote = React.createClass({
               }
               let amount = item.amount;
               if(item.pricing_type === 'Range') {
-                amount = `$${item.min_price.toFixed(2)}-$${item.max_price.toFixed(2)}`;
+                amount = `$${item.min_price.toFixed(2)} - $${item.max_price.toFixed(2)}`;
               }
               else {
                 amount = `$${amount.toFixed(2)}`;
@@ -1031,11 +1031,11 @@ var ModalViewQuote = React.createClass({
     return text.match(/.{1,3}/g).join(' ');
   },
 
-  formatMobile(text) {
+  formatPhone(text) {
     return text.replace(/(.{2})(.{4})(.{4})(.*)/, '$1 $2 $3 $4').trim();
   },
 
-  formatPhone(text) {
+  formatMobile(text) {
     return text.replace(/(.{4})(.{3})(.{3})(.*)/, '$1 $2 $3 $4').trim();
   },
 
@@ -1087,7 +1087,7 @@ var ModalViewQuote = React.createClass({
               <div className="info-trady">
                 <p>
                   <span>
-                    {this.capitalizeText(quote.trady.company_name)}
+                    <b className="company-name">{this.capitalizeText(quote.trady.company_name)}</b>
                   </span>
                 </p>
                 { quote.trady.trady_company.abn &&
@@ -1106,21 +1106,21 @@ var ModalViewQuote = React.createClass({
                   quote.trady.trady_company.mobile_number &&
                   <p>
                     <span>
-                      mobile: {this.formatMobile(quote.trady.trady_company.mobile_number)}
+                      Mobile: {this.formatMobile(quote.trady.trady_company.mobile_number)}
                     </span>
                   </p>
                 }
                 { quote.trady.trady_company.landline &&
                   <p>
                     <span>
-                      landline: {this.formatPhone(quote.trady.trady_company.landline)}
+                      Landline: {this.formatPhone(quote.trady.trady_company.landline)}
                     </span>
                   </p>
                 }
                 { quote.trady.trady_company.email &&
                   <p>
                     <span>
-                      email: {quote.trady.trady_company.email}
+                      Email: {quote.trady.trady_company.email}
                     </span>
                   </p>
                 }
@@ -1152,7 +1152,7 @@ var ModalViewQuote = React.createClass({
                     </div>
                     <div className="info-agency">
                       <p>
-                        <span className="font-bold">Quote Reference: </span>
+                        <span className="font-bold">Quote Ref: </span>
                         <span> {quote.trady_quote_reference != "" ? quote.trady_quote_reference : property.property_address}</span>
                       </p>
                       <p>

@@ -72,7 +72,7 @@ var DetailInvoice = React.createClass({
 					<tr className="position-rl">
 						<td colSpan="3" className="border-none"></td>
 						<td className="text-right font-bold border-none">
-							Amount Due: (AUD)
+							Amount Due:
 						</td>
 						<td className="font-bold border-none">
 							$ {subTotal.toFixed(2)}
@@ -83,7 +83,7 @@ var DetailInvoice = React.createClass({
 						<tr>
 							<td colSpan="3" className="border-none"></td>
 							<td className="text-right font-bold border-none">
-								Service Fee: (AUD)
+								Service Fee:
 							</td>
 							<td className="font-bold border-none">
 								$ {invoice.service_fee}
@@ -128,11 +128,11 @@ var ModalViewInvoice = React.createClass({
 		return text.match(/.{1,3}/g).join(' ');
 	},
 
-	formatMobile(text) {
+	formatPhone(text) {
 		return text.replace(/(.{2})(.{4})(.{4})(.*)/, '$1 $2 $3 $4').trim();
 	},
 
-	formatPhone(text) {
+	formatMobile(text) {
 		return text.replace(/(.{4})(.{3})(.{3})(.*)/, '$1 $2 $3 $4').trim();
 	},
 
@@ -187,7 +187,7 @@ var ModalViewInvoice = React.createClass({
 							<div className="info-trady">
 								<p>
 									<span>
-										{this.capitalizeText(invoice.trady.company_name)}
+										<b className="company-name">{this.capitalizeText(invoice.trady.company_name)}</b>
 									</span>
 								</p>
 								<p>
@@ -208,7 +208,7 @@ var ModalViewInvoice = React.createClass({
 									<span>
 										{
 											invoice.trady.trady_company.mobile_number
-											? `mobile: ${this.formatMobile(invoice.trady.trady_company.mobile_number)}`
+											? `Mobile: ${this.formatMobile(invoice.trady.trady_company.mobile_number)}`
 											: ''
 										}
 									</span>
@@ -217,7 +217,7 @@ var ModalViewInvoice = React.createClass({
 									<span>
 										{
 											invoice.trady.trady_company.landline
-											? `landline: ${this.formatPhone(invoice.trady.trady_company.landline)}`
+											? `Landline: ${this.formatPhone(invoice.trady.trady_company.landline)}`
 											: ''
 										}
 									</span>
@@ -226,7 +226,7 @@ var ModalViewInvoice = React.createClass({
 									<span>
 										{
 											invoice.trady.trady_company.email
-											? `email: ${invoice.trady.trady_company.email}`
+											? `Email: ${invoice.trady.trady_company.email}`
 											: ''
 										}
 									</span>
@@ -259,7 +259,7 @@ var ModalViewInvoice = React.createClass({
 										</div>
 										<div className="info-agency">
 											<p>
-												<span className="font-bold">Trady Invoice Reference: </span>
+												<span className="font-bold">Invoice Ref: </span>
 												<span> {invoice.trady_invoice_reference || 'N/A'}</span>
 											</p>
 											<p>
@@ -272,12 +272,12 @@ var ModalViewInvoice = React.createClass({
 											</p>
 										</div>
 									</div>
+									<p className="font-bold service-address">
+										Service Address: {this.capitalizeText(self.property.property_address)}
+									</p>
 									<div className="detail-quote position-rl">
 										{!!invoice.invoice_items && <DetailInvoice isShowVoidModal={isShowVoidModal} role={self.role} invoice={invoice} />}
 									</div>
-									<p className="font-bold">
-										Service Address: {this.capitalizeText(self.property.property_address)}
-									</p>
 								</div>
 							</div>
 						</div>
@@ -322,7 +322,7 @@ var ModalViewInvoice = React.createClass({
 									</p>
 									{ !!invoice.invoice_items &&
 										<p>
-											<span className="font-bold">Trady Invoice Reference: </span>
+											<span className="font-bold">Invoice Ref: </span>
 											<span> {invoice.trady_invoice_reference || 'N/A'}</span>
 										</p>
 									}

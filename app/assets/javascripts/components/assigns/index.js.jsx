@@ -136,7 +136,7 @@ var ModalViewTrady = React.createClass({
                   <div className="info-trady">
                     <p>
                       <span>
-                        {this.capitalizeText(trady.company_name || '')}
+                        <b className="company-name">{this.capitalizeText(trady.company_name || '')}</b>
                       </span>
                     </p>
                     { trady.trady_company.abn &&
