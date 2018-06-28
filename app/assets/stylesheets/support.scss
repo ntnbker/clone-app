@@ -12,7 +12,7 @@ $color-blue-light: #7646FF;
 $color-text: #83878C;
 
 #support-page {
-  color: $color-gray;
+  color: #615E5C;
   .main-content {
     @include flexbox;
     height: calc(100vh - 110px);
@@ -69,6 +69,9 @@ $color-text: #83878C;
       padding: 10px;
       background-color: white;
 
+      .alert {
+        margin: 10px;
+      }
       form#contact {
         @include flex(1 1 100%);
         @include flexbox;
@@ -97,10 +100,10 @@ $color-text: #83878C;
         resize: none;
         border: none;
         color: $color-text;
-        background-color: #f5f5f5;
+        background-color: #F9F9F9;
 
         @include input-placeholder {
-          color: #a1a1a1;
+          color: #BEBDBE;
         }
       }
       input {
@@ -131,13 +134,13 @@ $color-text: #83878C;
     margin-bottom: 115px;
     .main-content {
       height: unset;
-      @include flex-direction(column-reverse);
+      @include flex-direction(column);
 
       .contact-information {
         max-width: 500px;
         margin: auto;
         padding: 15px;
-        width: 100%;
+        width: calc(100% - 30px);
       }
     }
   }

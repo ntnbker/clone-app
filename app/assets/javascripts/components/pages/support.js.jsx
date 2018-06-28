@@ -1,7 +1,8 @@
 const Support = React.createClass({
   getInitialState() {
     return {
-      errors: {}
+      errors: {},
+      message: ''
     };
   },
 
@@ -11,6 +12,16 @@ const Support = React.createClass({
 
   componentWillUnmount() {
     $('.layout').css({'background-color': ''});
+  },
+
+  renderMessage() {
+    const {message} = this.state;
+
+    if (!message) return '';
+
+    return (
+      <div className="alert alert-message">{message}</div>
+    )
   },
 
   removeError: function({ tarsget: { id } }) {
@@ -37,14 +48,14 @@ const Support = React.createClass({
 
 		$.ajax({
 			type: 'POST',
-			url: '/suport',
+			url: '/contact_us',
 			beforeSend: function (xhr) {
 				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
 			},
 			enctype: 'multipart/form-data',
 			processData: false,
 			contentType: false,
-			data: FD,
+			data,
 			success: function (res) {
         if (res) {
           self.setState({ 
@@ -68,7 +79,7 @@ const Support = React.createClass({
         <div className="main-content support-main-content">
           <div className="contact-information">
             <div className="title">CONTACT US</div>
-            <div className="description">ansod naosind aonsd inao ndiansd oansod naio</div>
+            <div className="description">Thank you for your interest in maintenance app. We would love to hear from you if you have any questions or comments.</div>
             <div className="contact-detail">
               <div className="item">
                 <div className="icon">
@@ -81,23 +92,14 @@ const Support = React.createClass({
               </div>
               <div className="item">
                 <div className="icon">
-                  <i className="fa fa-envelope-o" aria-hidden="true" />
-                </div>
-                <div className="content">
-                  <div className="content-title">MAIL</div>
-                  <div className="content-description">youremail@mail.com</div>
-                </div>
-              </div>
-              <div className="item">
-                <div className="icon">
                   <i className="fa fa-phone" aria-hidden="true" />
                 </div>
                 <div className="content">
                   <div className="content-title">PHONE</div>
-                  <div className="content-description">345678901</div>
+                  <div className="content-description">02 9389 7381</div>
                 </div>
               </div>
-              <div className="item">
+              {/* <div className="item">
                 <div className="icon">
                   <i className="fa fa-map-marker" aria-hidden="true" />
                 </div>
@@ -105,13 +107,13 @@ const Support = React.createClass({
                   <div className="content-title">MAPS</div>
                   <div className="content-description">Avenue Street 90 New York</div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
           <div className="contact-form">
             <form id="contact" onSubmit={this.submit}>
               <div className="form-title">Contact Us</div>
-              <div className="form-subtitle">Add Subtitle</div>
+              <div className="form-subtitle">Please send us an email using the form below</div>
               <div className="main-input">
                 <div className="input-item name">
                   <input
@@ -126,7 +128,7 @@ const Support = React.createClass({
                 <div className="input-item email">
                   <input
                     type="text" 
-                    placeholder="Email" 
+                    placeholder="Your e-mail" 
                     id="email"
                     ref={e => this.email = e} 
                     onChange={this.removeError}
@@ -143,6 +145,7 @@ const Support = React.createClass({
                   />
                   {this.renderError(errors['message'])}
                 </div>
+                {this.renderMessage()}
               </div>
               <div className="submit-button">
                 <button type="submit">Submit</button>
