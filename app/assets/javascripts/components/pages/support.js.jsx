@@ -35,7 +35,7 @@ const Support = React.createClass({
   },
 
   renderError: function(error) {
-      return <div id="errorbox" className="error">{error[0] || ''}</div>;
+      return <div id="errorbox" className="error">{error ? error[0] : ''}</div>;
   },
 
   submit(e) {
