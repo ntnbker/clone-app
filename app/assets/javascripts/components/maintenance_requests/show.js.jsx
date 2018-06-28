@@ -3022,6 +3022,7 @@ var MaintenanceRequest = React.createClass({
 							existQuoteRequest={!!this.state.quote_requests.length}
 							existTradyAssigned={!!this.state.trady}
 							onModalWith={this.onModalWith}
+							current_role={this.props.current_user_role}
 							viewItem={this.viewItem}
 							close={this.isClose}
 						/>
