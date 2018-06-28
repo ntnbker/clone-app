@@ -23,8 +23,6 @@ class UserSessionsController < ApplicationController
     
     @role = params[:role_picked]
     @user = login(params[:email].gsub(/\s+/, "").downcase, params[:password].gsub(/\s+/, ""))
-    # @role = "AgencyAdmin"
-    # @user = login("martin@email.com", "12345")
     @query = Query.find_by(id:params[:query_id])
     email_user_type = params[:user_type]
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
