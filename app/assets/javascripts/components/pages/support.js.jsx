@@ -24,7 +24,7 @@ const Support = React.createClass({
     )
   },
 
-  removeError: function({ tarsget: { id } }) {
+  removeError: function({ target: { id } }) {
     this.setState({
       errors: {
         ...this.state.errors,
