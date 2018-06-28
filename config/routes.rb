@@ -15,7 +15,7 @@ Rails.application.routes.draw do
     get "general_terms_and_conditions"=> "pages#general_terms"
     get "privacy_policy"=> "pages#privacy_policy"
     get "about" => "pages#about"
-    get "support" => "pages#support"
+    get "support" => "pages#support",:as=> "contact_us"
     get "tradie_terms_and_conditions" =>"pages#tradie_terms_and_conditions"
     get "agent_terms_and_conditions" => "pages#agent_terms_and_conditions"
   ###################################################
