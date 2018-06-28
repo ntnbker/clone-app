@@ -337,7 +337,10 @@ Rails.application.routes.draw do
   ##########RECEIPTS RESOURCES/ROUTES#####
   ###########################################################
   resources :receipts, only:[:index,:show]
-
+  ###########################################################
+  ##########CONTACT US RESOURCES/ROUTES#####
+  ###########################################################
+  post "contact_us" => "contact_us#create"
  end
 
 

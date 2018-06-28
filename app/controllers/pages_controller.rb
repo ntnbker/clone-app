@@ -90,6 +90,10 @@ class PagesController < ApplicationController
   def support
     
   end
+
+  def contact_us
+    
+  end
   
   def tradie_terms_and_conditions
     
