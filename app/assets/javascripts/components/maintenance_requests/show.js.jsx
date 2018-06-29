@@ -1955,7 +1955,7 @@ var MaintenanceRequest = React.createClass({
 				if (res.errors) {
 					return callback(res.errors);
 				}
-				property.address = res.address;
+				property.property_address = res.address;
 
 				self.setState({
 					property,
