@@ -1,0 +1,151 @@
+$color-white: #FFFFFF;
+$color-grey: #f4f8fb;
+$color-grey-1: #aab8c3;
+$color-grey-dark: #849aaa;
+$color-grey-dark-1: #cedae3;
+$color-green: #7dc691;
+$color-gray: #3e4b54;
+$color-gray-dark: #baccd8;
+$color-red: #e34f4f;
+$color-black: #000000;
+$color-blue-light: #7646FF;
+$color-text: #83878C;
+
+#support-page {
+  color: #615E5C;
+  .main-content {
+    @include flexbox;
+    height: calc(100vh - 110px);
+
+    > div {
+      @include flex(1);
+    }
+    .contact-information {
+      @include flexbox;
+      @include flex-direction(column);
+      @include justify-content(center);
+
+      color: white;
+      margin-left: 5%;
+      .title {
+        font-size: 35px;
+        font-weight: 600;
+      }
+      .description {
+        font-size: 15px;
+        font-weight: 300;
+      }
+      .contact-detail {
+        margin-top: 20px;
+        .item {
+          @include flexbox;
+          margin-top: 10px;
+          .icon {
+            width: 60px;
+            text-align: center;
+            font-size: 27px;
+          }
+          .content {
+            @include flex(1);
+            margin-top: 5px;
+
+            .content-title {
+              font-size: 18px;
+              font-weight: 600;
+            }
+            .content-description {
+              font-size: 18px;
+              font-weight: 200;
+              font-style: italic;
+            }
+          }
+        }
+      }
+    }
+    .contact-form {
+      @include flexbox;
+      @include flex-direction(column);
+      margin: 5px;
+      padding: 10px;
+      background-color: white;
+
+      .alert {
+        margin: 10px;
+      }
+      form#contact {
+        @include flex(1 1 100%);
+        @include flexbox;
+        @include flex-direction(column);
+        @include justify-content(center);
+      }
+      .form-title {
+        font-size: 33px;
+        font-weight: 600;
+        text-align: center;
+      }
+      .form-subtitle {
+        font-size: 20px;
+        font-weight: 400;
+        text-align: center;
+      }
+      .main-input {
+        margin-top: 20px;
+        .input-item {
+          margin: 10px;
+          font-size: 20px;
+        }
+      }
+      input, textarea {
+        width: 100%;
+        resize: none;
+        border: 1px solid #F9F9F9;
+        color: $color-text;
+        background-color: #F9F9F9;
+
+        @include input-placeholder {
+          color: #BEBDBE;
+        }
+      }
+      .error {
+        margin-top: 0;
+        margin-bottom: 15px;
+      }
+      input {
+        height: 50px;
+      }
+      textarea {
+        height: 150px;
+      }
+      .submit-button {
+        button {
+          margin: 10px;
+          padding: 10px;
+          width: calc(100% - 20px);
+          background-color: $color-green;
+          color: white;
+          height: unset;
+          border: none;
+          font-size: 20px;
+
+          &:hover, &:focus, &:active {
+            background-color: #429a5a;
+          }
+        }
+      }
+    }
+  }
+  @media (max-width: 800px) {
+    margin-bottom: 115px;
+    .main-content {
+      height: unset;
+      @include flex-direction(column);
+
+      .contact-information {
+        max-width: 500px;
+        margin: auto;
+        padding: 15px;
+        width: calc(100% - 30px);
+      }
+    }
+  }
+}

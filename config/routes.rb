@@ -15,7 +15,7 @@ Rails.application.routes.draw do
     get "general_terms_and_conditions"=> "pages#general_terms"
     get "privacy_policy"=> "pages#privacy_policy"
     get "about" => "pages#about"
-    get "support" => "pages#support"
+    get "support" => "pages#support",:as=> "contact_us"
     get "tradie_terms_and_conditions" =>"pages#tradie_terms_and_conditions"
     get "agent_terms_and_conditions" => "pages#agent_terms_and_conditions"
   ###################################################
@@ -333,11 +333,18 @@ Rails.application.routes.draw do
   resources :receipts, only:[:index,:show]
 
   ###########################################################
+  ##########CONTACT US RESOURCES/ROUTES#####
+  ###########################################################
+  post "contact_us" => "contact_us#create"
+
+
+  ###########################################################
   ##########RECEIPTS RESOURCES/ROUTES#####
   ###########################################################
   resources :screen_tradies, only:[:index, :show]
   post "screen_tradies/:id" => "screen_tradies#screen"
   
+
 
  end
 

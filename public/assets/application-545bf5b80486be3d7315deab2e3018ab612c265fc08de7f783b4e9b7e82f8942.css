@@ -18936,6 +18936,233 @@ span.index.index-invoice {
   }
 }
 
+/* line 14, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/support.scss */
+#support-page {
+  color: #615E5C;
+}
+/* line 16, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/support.scss */
+#support-page .main-content {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  height: calc(100vh - 110px);
+}
+/* line 20, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/support.scss */
+#support-page .main-content > div {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+}
+/* line 23, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/support.scss */
+#support-page .main-content .contact-information {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  -moz-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  -ms-justify-content: center;
+  justify-content: center;
+  color: white;
+  margin-left: 5%;
+}
+/* line 30, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/support.scss */
+#support-page .main-content .contact-information .title {
+  font-size: 35px;
+  font-weight: 600;
+}
+/* line 34, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/support.scss */
+#support-page .main-content .contact-information .description {
+  font-size: 15px;
+  font-weight: 300;
+}
+/* line 38, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/support.scss */
+#support-page .main-content .contact-information .contact-detail {
+  margin-top: 20px;
+}
+/* line 40, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/support.scss */
+#support-page .main-content .contact-information .contact-detail .item {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  margin-top: 10px;
+}
+/* line 43, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/support.scss */
+#support-page .main-content .contact-information .contact-detail .item .icon {
+  width: 60px;
+  text-align: center;
+  font-size: 27px;
+}
+/* line 48, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/support.scss */
+#support-page .main-content .contact-information .contact-detail .item .content {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  margin-top: 5px;
+}
+/* line 52, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/support.scss */
+#support-page .main-content .contact-information .contact-detail .item .content .content-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+/* line 56, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/support.scss */
+#support-page .main-content .contact-information .contact-detail .item .content .content-description {
+  font-size: 18px;
+  font-weight: 200;
+  font-style: italic;
+}
+/* line 65, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/support.scss */
+#support-page .main-content .contact-form {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  -moz-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  margin: 5px;
+  padding: 10px;
+  background-color: white;
+}
+/* line 72, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/support.scss */
+#support-page .main-content .contact-form .alert {
+  margin: 10px;
+}
+/* line 75, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/support.scss */
+#support-page .main-content .contact-form form#contact {
+  -webkit-box-flex: 1 1 100%;
+  -moz-box-flex: 1 1 100%;
+  -webkit-flex: 1 1 100%;
+  -ms-flex: 1 1 100%;
+  flex: 1 1 100%;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  -moz-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  -ms-justify-content: center;
+  justify-content: center;
+}
+/* line 81, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/support.scss */
+#support-page .main-content .contact-form .form-title {
+  font-size: 33px;
+  font-weight: 600;
+  text-align: center;
+}
+/* line 86, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/support.scss */
+#support-page .main-content .contact-form .form-subtitle {
+  font-size: 20px;
+  font-weight: 400;
+  text-align: center;
+}
+/* line 91, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/support.scss */
+#support-page .main-content .contact-form .main-input {
+  margin-top: 20px;
+}
+/* line 93, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/support.scss */
+#support-page .main-content .contact-form .main-input .input-item {
+  margin: 10px;
+  font-size: 20px;
+}
+/* line 98, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/support.scss */
+#support-page .main-content .contact-form input, #support-page .main-content .contact-form textarea {
+  width: 100%;
+  resize: none;
+  border: 1px solid #F9F9F9;
+  color: #83878C;
+  background-color: #F9F9F9;
+}
+/* line 250, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/_mixins.scss */
+#support-page .main-content .contact-form input.placeholder, #support-page .main-content .contact-form textarea.placeholder {
+  color: #BEBDBE;
+}
+/* line 251, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/_mixins.scss */
+#support-page .main-content .contact-form input:-moz-placeholder, #support-page .main-content .contact-form textarea:-moz-placeholder {
+  color: #BEBDBE;
+}
+/* line 252, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/_mixins.scss */
+#support-page .main-content .contact-form input::-moz-placeholder, #support-page .main-content .contact-form textarea::-moz-placeholder {
+  color: #BEBDBE;
+}
+/* line 253, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/_mixins.scss */
+#support-page .main-content .contact-form input:-ms-input-placeholder, #support-page .main-content .contact-form textarea:-ms-input-placeholder {
+  color: #BEBDBE;
+}
+/* line 254, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/_mixins.scss */
+#support-page .main-content .contact-form input::-webkit-input-placeholder, #support-page .main-content .contact-form textarea::-webkit-input-placeholder {
+  color: #BEBDBE;
+}
+/* line 109, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/support.scss */
+#support-page .main-content .contact-form .error {
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+/* line 113, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/support.scss */
+#support-page .main-content .contact-form input {
+  height: 50px;
+}
+/* line 116, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/support.scss */
+#support-page .main-content .contact-form textarea {
+  height: 150px;
+}
+/* line 120, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/support.scss */
+#support-page .main-content .contact-form .submit-button button {
+  margin: 10px;
+  padding: 10px;
+  width: calc(100% - 20px);
+  background-color: #7dc691;
+  color: white;
+  height: unset;
+  border: none;
+  font-size: 20px;
+}
+/* line 130, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/support.scss */
+#support-page .main-content .contact-form .submit-button button:hover, #support-page .main-content .contact-form .submit-button button:focus, #support-page .main-content .contact-form .submit-button button:active {
+  background-color: #429a5a;
+}
+@media (max-width: 800px) {
+  /* line 14, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/support.scss */
+  #support-page {
+    margin-bottom: 115px;
+  }
+  /* line 139, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/support.scss */
+  #support-page .main-content {
+    height: unset;
+    -webkit-flex-direction: column;
+    -moz-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+  }
+  /* line 143, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/support.scss */
+  #support-page .main-content .contact-information {
+    max-width: 500px;
+    margin: auto;
+    padding: 15px;
+    width: calc(100% - 30px);
+  }
+}
+
 /* line 6, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/charges.scss */
 #payment-form .StripeElement {
   height: initial;

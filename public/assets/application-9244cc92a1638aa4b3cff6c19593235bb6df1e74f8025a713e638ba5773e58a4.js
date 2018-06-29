@@ -90317,17 +90317,15 @@ var AgentTerms = React.createClass({
           ),
           " All use of this Platform is subject to the General Terms of Use (“",
           React.createElement(
-            "b",
-            null,
-            "General Terms"
-          ),
-          "”) ",
-          React.createElement(
             "a",
-            { "no-href": true },
-            "[CREATE LINK]"
+            { href: "/general_terms_and_conditions" },
+            React.createElement(
+              "b",
+              null,
+              "General Terms"
+            )
           ),
-          ". In addition, if you have registered to Platform as an ",
+          "”). In addition, if you have registered to Platform as an ",
           React.createElement(
             "b",
             null,
@@ -91224,11 +91222,11 @@ var GeneralTerms = React.createClass({
             null,
             "General Terms"
           ),
-          "”).  The General Terms constitute a binding legal agreement between you and us, and your continued use of the website constitutes your acceptance of these General Terms and also our Privacy Policy ",
+          "”).  The General Terms constitute a binding legal agreement between you and us, and your continued use of the website constitutes your acceptance of these General Terms and also our ",
           React.createElement(
             "a",
-            { "no-href": true },
-            "[CREATE LINK]"
+            { href: "/privacy_policy" },
+            "Privacy Policy"
           ),
           " and any other policy displayed on the Platform, which constitutes a part of the General Terms. If you do not agree to the General Terms and our Privacy Policy, you must not use the Platform."
         ),
@@ -91250,11 +91248,17 @@ var GeneralTerms = React.createClass({
             { className: "numbering" },
             "1.1.4"
           ),
-          " These General Terms will prevail over any other terms or agreement between you and us, except the Tradie Terms or Agent Terms ",
+          " These General Terms will prevail over any other terms or agreement between you and us, except the ",
           React.createElement(
             "a",
-            { "no-href": true },
-            "[CREATE LINKS]"
+            { href: "/tradie_terms_and_conditions" },
+            "Tradie Terms"
+          ),
+          " or ",
+          React.createElement(
+            "a",
+            { href: "/agent_terms_and_conditions" },
+            "Agent Terms"
           ),
           " (if Applicable)."
         ),
@@ -93891,7 +93895,13 @@ var PrivacyPolicy = React.createClass({
         React.createElement(
           "p",
           { className: "content level-1" },
-          "If you think we have breached the Privacy Act, or you wish to make a complaint about the way we have handled your personal information, you can contact us [include hyperlink]. Please include your name, email address and/or telephone number and clearly describe your complaint. We will acknowledge your complaint and respond to you regarding your complaint within a reasonable period of time. If you think that we have failed to resolve the complaint satisfactorily, we will provide you with information about the further steps you can take."
+          "If you think we have breached the Privacy Act, or you wish to make a complaint about the way we have handled your personal information, you can ",
+          React.createElement(
+            "a",
+            { href: "/support" },
+            "contact us"
+          ),
+          ". Please include your name, email address and/or telephone number and clearly describe your complaint. We will acknowledge your complaint and respond to you regarding your complaint within a reasonable period of time. If you think that we have failed to resolve the complaint satisfactorily, we will provide you with information about the further steps you can take."
         ),
         React.createElement(
           "h5",
@@ -93907,6 +93917,252 @@ var PrivacyPolicy = React.createClass({
     );
   }
 });
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var Support = React.createClass({
+  displayName: 'Support',
+
+  getInitialState: function () {
+    return {
+      errors: {},
+      message: ''
+    };
+  },
+
+  componentWillMount: function () {
+    $('.layout').css({ 'background-color': '#7dc691' });
+  },
+
+  componentWillUnmount: function () {
+    $('.layout').css({ 'background-color': '' });
+  },
+
+  renderMessage: function () {
+    var message = this.state.message;
+
+    if (!message) return '';
+
+    return React.createElement(
+      'div',
+      { className: 'alert alert-message' },
+      message
+    );
+  },
+
+  removeError: function (_ref) {
+    var id = _ref.target.id;
+
+    this.setState({
+      errors: _extends({}, this.state.errors, _defineProperty({}, id, ''))
+    });
+  },
+
+  renderError: function (error) {
+    return React.createElement(
+      'div',
+      { id: 'errorbox', className: 'error' },
+      error ? error[0] : ''
+    );
+  },
+
+  submit: function (e) {
+    e.preventDefault();
+    var data = {
+      name: this.name.value,
+      email: this.email.value,
+      message: this.message.value
+    };
+    var self = this;
+
+    $.ajax({
+      type: 'POST',
+      url: '/contact_us',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      data: {
+        contact: data
+      },
+      success: function (res) {
+        if (res) {
+          self.setState({
+            errors: res.errors || {},
+            message: res.message
+          });
+        }
+      },
+      error: function (err) {}
+    });
+    return false;
+  },
+
+  render: function () {
+    var _this = this;
+
+    var errors = this.state.errors;
+
+    return React.createElement(
+      'div',
+      { id: 'support-page', className: 'main-container' },
+      React.createElement(
+        'div',
+        { className: 'main-content support-main-content' },
+        React.createElement(
+          'div',
+          { className: 'contact-information' },
+          React.createElement(
+            'div',
+            { className: 'title' },
+            'CONTACT US'
+          ),
+          React.createElement(
+            'div',
+            { className: 'description' },
+            'Thank you for your interest in maintenance app. We would love to hear from you if you have any questions or comments.'
+          ),
+          React.createElement(
+            'div',
+            { className: 'contact-detail' },
+            React.createElement(
+              'div',
+              { className: 'item' },
+              React.createElement(
+                'div',
+                { className: 'icon' },
+                React.createElement('i', { className: 'fa fa-clock-o', 'aria-hidden': 'true' })
+              ),
+              React.createElement(
+                'div',
+                { className: 'content' },
+                React.createElement(
+                  'div',
+                  { className: 'content-title' },
+                  'OPENING HOURS'
+                ),
+                React.createElement(
+                  'div',
+                  { className: 'content-description' },
+                  '9:00 / 18:00'
+                )
+              )
+            ),
+            React.createElement(
+              'div',
+              { className: 'item' },
+              React.createElement(
+                'div',
+                { className: 'icon' },
+                React.createElement('i', { className: 'fa fa-phone', 'aria-hidden': 'true' })
+              ),
+              React.createElement(
+                'div',
+                { className: 'content' },
+                React.createElement(
+                  'div',
+                  { className: 'content-title' },
+                  'PHONE'
+                ),
+                React.createElement(
+                  'div',
+                  { className: 'content-description' },
+                  '02 9389 7381'
+                )
+              )
+            )
+          )
+        ),
+        React.createElement(
+          'div',
+          { className: 'contact-form' },
+          React.createElement(
+            'form',
+            { id: 'contact', onSubmit: this.submit },
+            React.createElement(
+              'div',
+              { className: 'form-title' },
+              'Contact Us'
+            ),
+            React.createElement(
+              'div',
+              { className: 'form-subtitle' },
+              'Please send us an email using the form below'
+            ),
+            React.createElement(
+              'div',
+              { className: 'main-input' },
+              React.createElement(
+                'div',
+                { className: 'input-item name' },
+                React.createElement('input', {
+                  type: 'text',
+                  placeholder: 'Name',
+                  id: 'name',
+                  className: errors['name'] ? 'has-error' : '',
+                  ref: function (e) {
+                    return _this.name = e;
+                  },
+                  onChange: this.removeError
+                }),
+                this.renderError(errors['name'])
+              ),
+              React.createElement(
+                'div',
+                { className: 'input-item email' },
+                React.createElement('input', {
+                  type: 'text',
+                  placeholder: 'Your e-mail',
+                  id: 'email',
+                  className: errors['email'] ? 'has-error' : '',
+                  ref: function (e) {
+                    return _this.email = e;
+                  },
+                  onChange: this.removeError
+                }),
+                this.renderError(errors['email'])
+              ),
+              React.createElement(
+                'div',
+                { className: 'input-item name' },
+                React.createElement('textarea', {
+                  type: 'text',
+                  placeholder: 'Message',
+                  id: 'message',
+                  className: errors['message'] ? 'has-error' : '',
+                  ref: function (e) {
+                    return _this.message = e;
+                  },
+                  onChange: this.removeError
+                }),
+                this.renderError(errors['message'])
+              ),
+              this.renderMessage()
+            ),
+            React.createElement(
+              'div',
+              { className: 'submit-button' },
+              React.createElement(
+                'button',
+                { type: 'submit' },
+                'Submit'
+              )
+            )
+          )
+        )
+      )
+    );
+  }
+});
+/* <FixCSS className="no-sidebar" /> */ /* <div className="item">
+                                         <div className="icon">
+                                           <i className="fa fa-map-marker" aria-hidden="true" />
+                                         </div>
+                                         <div className="content">
+                                           <div className="content-title">MAPS</div>
+                                           <div className="content-description">Avenue Street 90 New York</div>
+                                         </div>
+                                        </div> */;
 var TradieTermsAndConditions = React.createClass({
   displayName: "TradieTermsAndConditions",
 
@@ -93950,13 +94206,17 @@ var TradieTermsAndConditions = React.createClass({
             { className: "numbering" },
             "2."
           ),
-          " All use of this Platform is subject to the General Terms of Use (“General Terms”) ",
+          " All use of this Platform is subject to the General Terms of Use (“",
           React.createElement(
             "a",
-            { "no-href": true },
-            "[CREATE LINK]"
+            { href: "/general_terms_and_conditions" },
+            React.createElement(
+              "b",
+              null,
+              "General Terms"
+            )
           ),
-          ". In addition, if you have registered to Platform as a Tradies, you also agree to be bound by these Tradies Terms (“Tradies Terms”). Your continued use of the Platform constitutes acceptance of these Tradies Terms and is strictly conditional on full compliance with these Tradies Terms."
+          "”). In addition, if you have registered to Platform as a Tradies, you also agree to be bound by these Tradies Terms (“Tradies Terms”). Your continued use of the Platform constitutes acceptance of these Tradies Terms and is strictly conditional on full compliance with these Tradies Terms."
         ),
         React.createElement(
           "p",
@@ -100656,7 +100916,7 @@ var Footer = React.createClass({
         return React.createElement(
             "div",
             { className: "dontprint", id: "footer" },
-            this.props.expanded ? this.footerForExpanded() : this.footer()
+            this.footer()
         );
     }
 });
@@ -102695,7 +102955,13 @@ var TermsAndConditions = React.createClass({
         React.createElement(
           "p",
           { className: "level-1" },
-          "2. All use of this Platform is subject to the General Terms of Use (“General Terms”) [CREATE LINK]. In addition, if you have registered to Platform as a Tradies, you also agree to be bound by these Tradies Terms (“Tradies Terms”). Your continued use of the Platform constitutes acceptance of these Tradies Terms and is strictly conditional on full compliance with these Tradies Terms."
+          "2. All use of this Platform is subject to the General Terms of Use (“",
+          React.createElement(
+            "a",
+            { href: "/general_terms_and_conditions" },
+            "General Terms"
+          ),
+          "”). In addition, if you have registered to Platform as a Tradies, you also agree to be bound by these Tradies Terms (“Tradies Terms”). Your continued use of the Platform constitutes acceptance of these Tradies Terms and is strictly conditional on full compliance with these Tradies Terms."
         ),
         React.createElement(
           "p",

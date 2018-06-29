@@ -11,6 +11,15 @@ class MaintenanceAppMailer < ActionMailer::Base
     mail(to:"martin@maintenanceapp.com.au", subject:"JFMO request from agency, sent on #{Date.today}")
   end
 
+  def contact_us(name, email, message)
+    @name = name
+    @email = email
+    @message = message
+
+    
+    mail(to:"martin@maintenanceapp.com.au", subject:"Inquiry")
+  end
+
 
   
 end 
