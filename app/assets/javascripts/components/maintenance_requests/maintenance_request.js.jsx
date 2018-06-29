@@ -1065,7 +1065,7 @@ var MaintenanceRequestInformation = React.createClass({
 
 var TenantContactButton = React.createClass({
 	render() {
-		const {tenants = [], maintenance_request, landlord, isShowLandlord, show_assign, isTrady} = this.props;
+		const {tenants = [], maintenance_request, landlord, isShowLandlord, show_assign, isTrady, edit_availability} = this.props;
 		return (
 			<div className="box-shadow">
 				{isShowLandlord && 
@@ -1151,7 +1151,7 @@ var TenantContactButton = React.createClass({
 					</h5>
 					<div className="vailability">
 						<p className="header small-weight">Tenant Availability and Access Instructions: 
-							{show_assign && 
+							{edit_availability && 
 								<span 
 									className="edit-detail" 
 									onClick={() => this.props.onModalWith('editAvailability')}

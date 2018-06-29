@@ -3312,6 +3312,7 @@ var MaintenanceRequest = React.createClass({
 							isShowLandlord={true}
 							show_assign={this.props.current_user_show_quote_message}
 							strike_approval={hasApproved}
+							edit_availability={true}
 						/>
 						{	(invoices && invoices.length > 0) &&
 								<Invoices
