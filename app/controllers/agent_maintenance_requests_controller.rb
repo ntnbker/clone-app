@@ -2,6 +2,7 @@ class AgentMaintenanceRequestsController < ApplicationController
   #before_action(only: [:show,:index]) { email_auto_login(params[:user_id]) }
   before_action :email_redirect, only: [:show,:index]
   before_action :require_login, only:[:show,:index]
+  before_action :require_role
   before_action(only:[:show,:index]) {allow("Agent")}
   before_action(only:[:show]) {belong_to_agent}
 
@@ -18,11 +19,11 @@ class AgentMaintenanceRequestsController < ApplicationController
       params[:maintenance_request_filter] = 'Initiate Maintenance Request'
     end 
 
-    if params[:sort_by_date] == "Oldest to Newest"
-      @maintenance_requests = MaintenanceRequest.find_maintenance_requests(current_user, params[:maintenance_request_filter]).order('created_at ASC').paginate(:page => params[:page], :per_page => 10)
-    else
-      @maintenance_requests = MaintenanceRequest.find_maintenance_requests(current_user, params[:maintenance_request_filter]).order('created_at DESC').paginate(:page => params[:page], :per_page => 10)
-    end
+    # if params[:sort_by_date] == "Oldest to Newest"
+    #   @maintenance_requests = MaintenanceRequest.find_maintenance_requests(current_user, params[:maintenance_request_filter]).order('created_at ASC').paginate(:page => params[:page], :per_page => 10)
+    # else
+      @maintenance_requests = MaintenanceRequest.find_maintenance_requests(current_user, params[:maintenance_request_filter]).paginate(:page => params[:page], :per_page => 10)
+    #end
     
 
     @page = params[:page]
@@ -65,7 +66,7 @@ class AgentMaintenanceRequestsController < ApplicationController
           :current_page => @maintenance_requests.current_page,
           :per_page => @maintenance_requests.per_page,
           :total_entries => @maintenance_requests.total_entries,
-          :entries => @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)}
+          :entries => @maintenance_requests.as_json(:include=>{:property=>{}, :action_status=>{}},methods: :get_image_urls)}
         }
       
       format.html
@@ -79,7 +80,15 @@ class AgentMaintenanceRequestsController < ApplicationController
     @instruction = @current_user.instruction
     @maintenance_request = MaintenanceRequest.find_by(id:params[:id])
     @tenants = @maintenance_request.tenants
-    @quote_requests = @maintenance_request.quote_requests.includes(trady:[:customer_profile,:trady_profile_image, :trady_company=> :trady_company_profile_image], quotes:[:quote_items, :quote_image],:conversation=> :messages).as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:customer_profile=>{},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}},:conversation=>{:include=>{:messages=>{:include=>{:user=>{:include=>{:trady=>{}, :agent=>{},:agency_admin=>{} }}}}}} ,:quotes=>{:include=> {:quote_image=>{:methods=>[:image_url]},:quote_items=>{}} }})
+    # @quote_requests = @maintenance_request.quote_requests.includes(trady:[:customer_profile,:trady_profile_image, :trady_company=> :trady_company_profile_image], quotes:[:quote_items, :quote_image],:conversation=> :messages).as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:customer_profile=>{},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}},:conversation=>{:include=>{:messages=>{:include=>{:user=>{:include=>{:trady=>{}, :agent=>{},:agency_admin=>{} }}}}}} ,:quotes=>{:include=> {:quote_image=>{:methods=>[:image_url]},:quote_items=>{}} }})
+    if @maintenance_request.trady
+      @assigned_trady = @maintenance_request.trady
+      @assigned_trady_id = @assigned_trady.id
+    else
+      @assigned_trady = nil
+      @assigned_trady_id = nil 
+    end 
+    @quote_requests = QuoteRequest.where(maintenance_request_id:@maintenance_request.id).where_exists(:quotes).or(QuoteRequest.where(maintenance_request_id:@maintenance_request.id).where_exists(:conversation)).or(QuoteRequest.where(maintenance_request_id:@maintenance_request.id,trady_id:@assigned_trady_id)).distinct.includes(trady:[:customer_profile, :trady_profile_image, :trady_company=> :trady_company_profile_image], quotes:[:quote_items, :quote_image],:conversation=>:messages).as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:customer_profile=>{},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}},:conversation=>{:include=>{:messages=>{:include=>{:user=>{:include=>{:trady=>{}, :agent=>{},:agency_admin=>{} }}}}}} ,:quotes=>{:include=> {:quote_image=>{:methods=>[:image_url]},:quote_items=>{}} }})
       
     #@quotes = @maintenance_request.quotes.where(:delivery_status=>true).as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}, :quote_items => {}, :conversation=>{:include=>:messages}})
     @agency = @current_user.agent.agency
@@ -100,7 +109,7 @@ class AgentMaintenanceRequestsController < ApplicationController
     @landlord_appointments = @maintenance_request.appointments.where(appointment_type:"Landlord Appointment").order('created_at DESC').as_json(:include=>{:comments=>{}})
     @status = @maintenance_request.action_status
     @tradie = Trady.new
-    @assigned_trady = @maintenance_request.trady
+    #@assigned_trady = @maintenance_request.trady
     @hired_trady = @assigned_trady.as_json({:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}})
     if @assigned_trady
       @invoice_pdf_urls = @maintenance_request.get_pdf_url(@maintenance_request.id, @assigned_trady.id)

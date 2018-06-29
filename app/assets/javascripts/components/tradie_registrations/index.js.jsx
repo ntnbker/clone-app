@@ -167,10 +167,11 @@ var TradyLicenseAndInsurance = React.createClass({
 		const options = {
 			extension: filename.name.match(/(\.\w+)?$/)[0],
 			_: Date.now(),
+			filename: filename.name,
 		}
 
 		// start upload file into S3
-		$.getJSON('/images/cache/presign', options, function (result) {
+		$.getJSON('/upload_invoice_pdf/cache/presign', options, function (result) {
 			var fd = new FormData();
 			$.each(result.fields, function (key, value) {
 				fd.append(key, value);

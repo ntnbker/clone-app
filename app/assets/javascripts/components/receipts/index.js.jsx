@@ -87,6 +87,7 @@ var ReceiptList = React.createClass({
                   setPage={this.setPage}
                   total={this.state.count}
                   prePage={this.state.perPage}
+                  needShadow={true}
                 />
               }
             </div>
@@ -107,33 +108,35 @@ var ReceiptItem = React.createClass({
 
     return (
       <div className="row main-item box-shadow">
-        <div className="content main-detail">
-          <div className="receipt-detail">
-            <span className="title">Receipt Details:</span>
-          </div>
-          <div className="receipt-information main-information">
-            <div className="receipt-information row-information">
-                <span className="key">Status:</span>
-                <span className="data status">{paid ? 'Paid' : 'Waiting'}</span>
-              </div>
-              <div className="receipt-information row-information">
-                <span className="key">Number of Invoices Processed:</span>
-                <span className="data address">{number_invoice}</span>
-              </div>
-              <div className="receipt-information row-information">
-                <span className="key">Service Fee Total:</span>
-                <span className="data">${parseFloat(total || 0).toFixed(2)}</span>
-              </div>
-          </div>
+        <div className="receipt-detail">
+          <span className="title">Receipt Details:</span>
         </div>
-        <div className="view-button">
-          <button 
-            type="button"
-            className="btn-view" 
-            onClick={() => location.href = this.props.link + "/" + id}
-          >
-            View
-          </button>
+        <div className="item-data">
+          <div className="content main-detail">
+            <div className="receipt-information main-information">
+              <div className="receipt-information row-information">
+                  <span className="key">Status:</span>
+                  <span className="data status">{paid ? 'Paid' : 'Waiting'}</span>
+                </div>
+                <div className="receipt-information row-information">
+                  <span className="key">Number of Invoices Processed:</span>
+                  <span className="data address">{number_invoice}</span>
+                </div>
+                <div className="receipt-information row-information">
+                  <span className="key">Service Fee Total:</span>
+                  <span className="data">${parseFloat(total || 0).toFixed(2)}</span>
+                </div>
+            </div>
+          </div>
+          <div className="view-button">
+            <button 
+              type="button"
+              className="btn-view" 
+              onClick={() => location.href = this.props.link + "/" + id}
+            >
+              View
+            </button>
+          </div>
         </div>
       </div>
     );

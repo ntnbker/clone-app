@@ -1,5 +1,6 @@
 class ServicesController < ApplicationController 
   before_action :require_login, only:[:new]
+  before_action :require_role
   
   def new
     @service = Service.new 

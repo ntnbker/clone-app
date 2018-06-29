@@ -5,19 +5,11 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
   before_action :email_redirect, only: [:show,:index]
   
   before_action :require_login, only:[:show,:index]
-
+  before_action :require_role, only:[:show,:index]
   before_action(only:[:show,:index]) {allow("AgencyAdmin")}
   before_action(only:[:show]) {belongs_to_agency_admin}
 
-  # caches_action :index
-  # # , unless: -> { request.format.json? }
-  # caches_action :show
-
-  # # caches_action :index, :cache_path => proc {|c|
-  # # { :tag => Post.maximum('updated_at') }
-  # # }
-
-  # cache_sweeper :action_status_sweeper
+  
 
   def index
     
@@ -30,11 +22,11 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     end 
 
     
-    if params[:sort_by_date] == "Oldest to Newest"
-      @maintenance_requests = MaintenanceRequest.find_maintenance_requests(current_user, params[:maintenance_request_filter]).order('created_at ASC').paginate(:page => params[:page], :per_page => 10)
-    else
-      @maintenance_requests = MaintenanceRequest.find_maintenance_requests(current_user, params[:maintenance_request_filter]).order('created_at DESC').paginate(:page => params[:page], :per_page => 10)
-    end
+    # if params[:sort_by_date] == "Oldest to Newest"
+    #   @maintenance_requests = MaintenanceRequest.find_maintenance_requests(current_user, params[:maintenance_request_filter]).order('created_at ASC').paginate(:page => params[:page], :per_page => 10)
+    # else
+      @maintenance_requests = MaintenanceRequest.find_maintenance_requests(current_user, params[:maintenance_request_filter]).paginate(:page => params[:page], :per_page => 10)
+    # end
 
     
     
@@ -62,20 +54,6 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     @cancelled_work_order_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Cancelled Work Order")    
     @send_work_order_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Send Work Order")    
     
-    
-    # @maintenance_requests_json = @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)
-
-    #@maintenance_requests_json = @maintenance_requests.paginate(:page => params[:page], :per_page => 10)
-
-    # .as_json(:include=>{:property=>{}},methods: :get_image_urls)
-    # @posts =  Post.all.paginate(:page => params[:page], :per_page => 4)
-    # render :json => @posts.to_json(:methods => [:image_url])
-
-
-    # respond_to do |format|
-    #   # format.json {render json:@maintenance_requests_json.as_json(:include=>{:property=>{}},methods: :get_image_urls)}
-      
-    # end 
 
     respond_to do |format|
       format.json {
@@ -83,7 +61,7 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
           :current_page => @maintenance_requests.current_page,
           :per_page => @maintenance_requests.per_page,
           :total_entries => @maintenance_requests.total_entries,
-          :entries => @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)}
+          :entries => @maintenance_requests.as_json(:include=>{:property=>{}, :action_status=>{}},methods: :get_image_urls)}
         }
       
       format.html
@@ -100,7 +78,18 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     #@quotes = @maintenance_request.quotes.where(:delivery_status=>true).as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}, :quote_items => {}, :conversation=>{:include=>:messages}})
     
     @agency = @current_user.agency_admin.agency
-    @quote_requests = @maintenance_request.quote_requests.includes(trady:[:customer_profile, :trady_profile_image, :trady_company=> :trady_company_profile_image], quotes:[:quote_items, :quote_image],:conversation=>:messages).as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:customer_profile=>{},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}},:conversation=>{:include=>{:messages=>{:include=>{:user=>{:include=>{:trady=>{}, :agent=>{},:agency_admin=>{} }}}}}} ,:quotes=>{:include=> {:quote_image=>{:methods=>[:image_url]},:quote_items=>{}} }})
+    # @quote_requests = @maintenance_request.quote_requests.includes(trady:[:customer_profile, :trady_profile_image, :trady_company=> :trady_company_profile_image], quotes:[:quote_items, :quote_image],:conversation=>:messages).as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:customer_profile=>{},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}},:conversation=>{:include=>{:messages=>{:include=>{:user=>{:include=>{:trady=>{}, :agent=>{},:agency_admin=>{} }}}}}} ,:quotes=>{:include=> {:quote_image=>{:methods=>[:image_url]},:quote_items=>{}} }})
+    if @maintenance_request.trady
+      @assigned_trady = @maintenance_request.trady
+      @assigned_trady_id = @assigned_trady.id
+    else
+      @assigned_trady = nil
+      @assigned_trady_id = nil 
+    end 
+
+    @quote_requests = QuoteRequest.where(maintenance_request_id:@maintenance_request.id).where_exists(:quotes).or(QuoteRequest.where(maintenance_request_id:@maintenance_request.id).where_exists(:conversation)).or(QuoteRequest.where(maintenance_request_id:@maintenance_request.id,trady_id:@assigned_trady_id)).distinct.includes(trady:[:customer_profile, :trady_profile_image, :trady_company=> :trady_company_profile_image], quotes:[:quote_items, :quote_image],:conversation=>:messages).as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:customer_profile=>{},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}},:conversation=>{:include=>{:messages=>{:include=>{:user=>{:include=>{:trady=>{}, :agent=>{},:agency_admin=>{} }}}}}} ,:quotes=>{:include=> {:quote_image=>{:methods=>[:image_url]},:quote_items=>{}} }})
+
+
     @quote_request_trady_list = QuoteRequest.tradies_with_quote_requests(@maintenance_request.id)
     @services = Service.all
     @email_quote_id = params[:email_quote_id]
@@ -114,7 +103,8 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     # @message = Message.new
     
     # @tradie = Trady.new
-    @assigned_trady = @maintenance_request.trady
+
+    #@assigned_trady = @maintenance_request.trady
     @hired_trady = @assigned_trady.as_json({:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}})
     if @assigned_trady
       @invoice_pdf_urls = @maintenance_request.get_pdf_url(@maintenance_request.id, @assigned_trady.id).as_json
@@ -209,83 +199,7 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
   
   end
 
-  # def email_redirect
-    
-  #   if params[:user_id]
-  #     user = User.find_by(id:params[:user_id])
-
-  #   elsif params[:email]
-  #     user = User.find_by(email:params[:email])
-  #   else
-  #     user = current_user
-  #   end 
-
-
-  #   if user.password_set
-  #     if current_user
-  #       #do nothing 
-  #     else
-  #       flash[:message] = "To view the maintenance request please login. Once logged in you will be directed towards the maintenance request of interest."
-  #       redirect_to menu_login_path(user_type:params[:user_type], maintenance_request_id:params[:id], anchor:params[:anchor], message:params[:message], quote_message_id:params[:quote_message_id])
-  #     end 
-
-  #   else
-  #     flash[:message] = "Notice: You must first setup a password before you can access any maintenance request. Thank you for your time."
-  #     redirect_to new_password_reset_path
-  #   end 
-
-
-  # end
-
-  # def require_agency_admin
-  #   if current_user.has_role("AgencyAdmin") && current_user.logged_in_as("AgencyAdmin")
-  #     #do nothing 
-
-  #   else
-  #     flash[:notice] = "You are not authorized to see that page"
-  #     redirect_to root_path
-  #   end 
   
-  # end
-
-  # def email_auto_login(id)
-  #   email_params= params[:user_id]
-    
-  #   if email_params
-  #     user = User.find_by(id:id)
-  #     if user  
-  #       if current_user
-  #         if current_user.logged_in_as("Tenant") || current_user.logged_in_as("Landlord") || current_user.logged_in_as("Trady") || current_user.logged_in_as("Agent")
-  #           answer = true
-  #         else
-  #           answer = false
-  #         end 
-          
-  #         if current_user  && answer && user.has_role("AgencyAdmin")
-  #           logout
-  #           auto_login(user)
-  #           user.current_role.update_attribute(:role, "AgencyAdmin")
-  #         elsif current_user == nil
-  #           auto_login(user)
-  #           user.current_role.update_attribute(:role, "AgencyAdmin")
-  #         elsif current_user && current_user.logged_in_as("AgencyAdmin")
-  #             #do nothing
-  #         end 
-  #       else 
-          
-  #           auto_login(user)
-  #           user.current_role.update_attribute(:role, "AgencyAdmin")
-           
-  #       end 
-  #     else 
-  #       flash[:notice] = "You are not allowed to see that. Log in as an authorized user."
-  #       redirect_to root_path
-  #     end
-  #   else
-  #     #do nothing
-  #   end 
-
-  # end
 
   
 

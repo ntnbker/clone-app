@@ -1,6 +1,7 @@
 class UploadedInvoicesController < ApplicationController
-  before_action :require_login, only:[:show,:index]
+  before_action :require_login
 
+  before_action :require_role
   before_action(only:[:new,:create,:edit,:update,:show,:send_invoice]) {allow("Trady")}
   def new
     @file = UploadedInvoice.new

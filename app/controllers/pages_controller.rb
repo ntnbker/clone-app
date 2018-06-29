@@ -1,4 +1,5 @@
 class PagesController < ApplicationController
+  before_action :require_role, only:[:home]
   
   # caches_action :home
   

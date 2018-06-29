@@ -1,7 +1,8 @@
 class AgencyAdminsController < ApplicationController
   
   
-  before_action :require_login, only: [:new,:create]
+  before_action :require_login
+  before_action :require_role
   before_action(only:[:new,:create, :edit, :update]) {allow("AgencyAdmin")}
   
   

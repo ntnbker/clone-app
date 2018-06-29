@@ -32,7 +32,7 @@ module Ahoy
     elsif mailer == 'TradyMailer#request_quote_email'
       self.maintenance_request.action_status.update_attribute(:agent_status, "Awaiting Quote")
     elsif mailer == 'AgentMailer#send_agent_quote'
-      self.maintenance_request.action_status.update_attribute(:agent_status, "Quote Received Awaiting Approval")
+      self.maintenance_request.action_status.update_attribute(:agent_status, "Quote Received")
     elsif mailer == 'LandlordMailer#send_landlord_quote'
       self.maintenance_request.action_status.update_attribute(:agent_status, "Quote Received Awaiting Approval")
     elsif mailer == 'TradyMailer#approved_quote_email'

@@ -1,7 +1,8 @@
 class LandlordActionsController < ApplicationController 
-  before_action :require_login, only:[:fix_myself]
+  before_action :require_login
+  before_action :require_role
 
-  before_action(only:[:fix_myself]) {allow("Landlord")}
+  before_action(only:[:fix_myself, :issue_resolved]) {allow("Landlord")}
 
   def fix_myself
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])

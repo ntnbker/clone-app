@@ -1,4 +1,6 @@
 class TradyProfileImagesController < ApplicationController
+  before_action :require_login
+  before_action :require_role
   def create
     
     

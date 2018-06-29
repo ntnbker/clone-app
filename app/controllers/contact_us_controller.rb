@@ -7,7 +7,8 @@ class ContactUsController < ApplicationController
       email = params[:contact][:email]
       message = params[:contact][:message]
       ContactUsEmailWorker.perform_async(name, email, message) 
-      #redirect to contact page
+      flash[:message] = "Thank you for reaching out to us. We will respond as soon as possible."
+      redirect_to contact_us_path
     else
       respond_to do |format|
         format.json {render :json=>{errors:contact.errors.to_hash(true).as_json}}
