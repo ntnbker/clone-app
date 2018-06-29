@@ -2,8 +2,8 @@ var ContentAction = React.createClass({
 	render: function() {
 		return (
 			<ul>
-				{(this.props.listActions || []).map(({isShow, icon, text, onClick}) => !!isShow &&
-					<li>
+				{(this.props.listActions || []).map(({isShow, icon, text, onClick}, idx) => !!isShow &&
+					<li key={idx}>
 						<a
 							onClick={onClick}
 						>

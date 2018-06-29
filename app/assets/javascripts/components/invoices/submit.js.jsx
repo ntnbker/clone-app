@@ -121,8 +121,8 @@ var ModalAddPayment = React.createClass({
             </div>
             <div className="modal-body">
               <div className="description-data">
-                {(paymentNotes || defaultPaymentNotes).map((note) => (
-                  <p className="row">{note}</p>
+                {(paymentNotes || defaultPaymentNotes).map((note, idx) => (
+                  <p className="row" key={idx}>{note}</p>
                 ))}
               </div>
               <div className="your-name">
@@ -384,8 +384,8 @@ var InvoiceSubmit = React.createClass({
             </div>
           </div>
           <hr/>
-          {invoices.map((invoice) => (
-            <div className="invoices-data">
+          {invoices.map((invoice, idx) => (
+            <div className="invoices-data" key={idx}>
               <div className="date-quote">
                 <p>
                   <span className="font-bold ">
@@ -430,8 +430,8 @@ var InvoiceSubmit = React.createClass({
                 </div>
               </div>
               <div className="quote-item-data">
-                {invoice.invoice_items.map((invoiceItem) => (
-                  <div className="invoice-item">
+                {invoice.invoice_items.map((invoiceItem, idx) => (
+                  <div className="invoice-item" key={idx}>
                     <div>
                       {invoiceItem.item_description}
                     </div>

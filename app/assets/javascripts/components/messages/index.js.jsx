@@ -62,7 +62,7 @@ var ContentMessage = React.createClass({
 																&& item.user_id == current_user.id
 																&& 'current-message';
 							return (
-								<div>
+								<div key={key}>
 									<li
 										key={generateKey()}
 										className={'item-name ' + currentClass}

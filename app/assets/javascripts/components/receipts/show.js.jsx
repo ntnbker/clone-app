@@ -49,6 +49,7 @@ var Receipt = React.createClass({
                         totalKey="amount"
                         index={index} 
                         invoice={invoice} 
+                        key={index}
                         link={self.props.link}
                       />
                     );
@@ -61,6 +62,7 @@ var Receipt = React.createClass({
                         startIndex={invoices.length}
                         totalKey="total_invoice_amount"
                         index={index} 
+                        key={index}
                         invoice={invoice} 
                         link={self.props.link}
                       />

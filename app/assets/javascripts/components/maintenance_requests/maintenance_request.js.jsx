@@ -1161,8 +1161,8 @@ var TenantContactButton = React.createClass({
 							}</p>
 						<p className="job-description">{maintenance_request.availability_and_access}</p>
 					</div>
-					{tenants.map(tenant => (
-						<div className="tenant-detail">
+					{tenants.map((tenant, idx) => (
+						<div className="tenant-detail" key={idx}>
 							<div className="phone-desktop">
 								<div className="phone">
 									<span className="key">Phone Number - {trimMaxLength(tenant.name, 20)}: </span>
