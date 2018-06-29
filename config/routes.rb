@@ -347,7 +347,7 @@ Rails.application.routes.draw do
   ##########TENANT AVAILABILITY AND ACCESS RESOURCES/ROUTES#####
   ###########################################################
   
-  post "update_availability_access" => "tenant_availabities#update"
+  post "update_availability_access" => "tenant_availabilities#update"
   
 
 
