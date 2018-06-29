@@ -107,7 +107,7 @@ class ApplicationController < ActionController::Base
       #they are not logged in but there is a user
       if user 
         if user.password_set
-          flash[:danger] = "Please log in to gain access"
+          flash[:danger] = "Please log in to gain access."
           redirect_to root_path(user_type:params[:user_type], maintenance_request_id:params[:id], anchor:params[:anchor], message:params[:message], quote_message_id:params[:quote_message_id], appointment_id:params[:appointment_id], stop_reminder:params[:stop_reminder], quote_request_id:params[:quote_request_id],role:params[:role] )
         else
           flash[:message] = "Notice: You must first setup a password before you can access any maintenance request. Thank you for your time."
