@@ -224,7 +224,7 @@ var ModalEditAvailability = React.createClass({
 
 		this.props.editAvailability(params, function(err) {
 			if (err) {
-				self.setState({ errorMessage: err });
+				self.setState({ errorMessage: err['availability_access'] });
 			}
 		});
 	},
