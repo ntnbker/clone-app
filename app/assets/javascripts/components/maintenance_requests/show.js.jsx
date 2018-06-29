@@ -1961,7 +1961,7 @@ var MaintenanceRequest = React.createClass({
 					notification: {
 						bgClass: "bg-success",
 						title: "Edit Availability",
-						content: 'Edited',
+						content: 'Thank you, the availability and access has been updated',
 					}
 				});
 				self.onModalWith('notification');
