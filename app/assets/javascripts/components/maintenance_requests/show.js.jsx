@@ -1802,9 +1802,11 @@ var MaintenanceRequest = React.createClass({
 			data: params,
 			success: function(res){
 				self.isClose();
-				self.setState({
-					quote_requests: res
-				});
+				if (Array.isArray(res)) {
+					self.setState({
+						quote_requests: res
+					});
+				}
 				if(params.status == 'Approved') {
 					self.setState({notification: {
 						title: "Accept Quote",
@@ -2452,7 +2454,6 @@ var MaintenanceRequest = React.createClass({
 			success: function(res){
 				logs.push(res.log);
 				self.setState({
-					logs: logs,
 					trady: null,
 					notification: {
 						title: "Cancel Work Order",
@@ -3020,6 +3021,7 @@ var MaintenanceRequest = React.createClass({
 							existQuoteRequest={!!this.state.quote_requests.length}
 							existTradyAssigned={!!this.state.trady}
 							onModalWith={this.onModalWith}
+							current_role={this.props.current_user_role}
 							viewItem={this.viewItem}
 							close={this.isClose}
 						/>
@@ -3254,6 +3256,7 @@ var MaintenanceRequest = React.createClass({
 							assignToUser={(email) => this.assignToUser(email)}
 							maintenance_request={this.state.maintenance_request}
 							landlord={this.state.landlord}
+							current_role={this.props.current_user_role}
 							isShowLandlord={true}
 							show_assign={this.props.current_user_show_quote_message}
 							strike_approval={hasApproved}

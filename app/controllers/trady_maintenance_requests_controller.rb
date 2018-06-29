@@ -2,6 +2,7 @@ class TradyMaintenanceRequestsController < ApplicationController
   #before_action(only: [:show]) { email_auto_login(params[:user_id]) }
   before_action :email_redirect, only: [:show,:index]
   before_action :require_login, only:[:show,:index]
+  before_action :require_role
   before_action :jfmo_terms_and_conditions, only:[:show,:index]
   before_action(only:[:show,:index]) {allow("Trady")}
   before_action(only:[:show]) {belongs_to_trady}
@@ -27,7 +28,7 @@ class TradyMaintenanceRequestsController < ApplicationController
     if params[:sort_by_date] == "Oldest to Newest"
       @maintenance_requests = TradyMaintenanceRequest.filtered_trady_maintenance_requests(trady_id, params[:maintenance_request_filter]).order('created_at ASC').paginate(:page => params[:page], :per_page => 10)
     else
-      @maintenance_requests = TradyMaintenanceRequest.filtered_trady_maintenance_requests(trady_id, params[:maintenance_request_filter]).order('created_at DESC').paginate(:page => params[:page], :per_page => 10)
+      @maintenance_requests = TradyMaintenanceRequest.filtered_trady_maintenance_requests(trady_id, params[:maintenance_request_filter]).order(created_at: :desc).paginate(:page => params[:page], :per_page => 10)
     end
 
     @quote_request = TradyMaintenanceRequest.filtered_trady_maintenance_requests_count(trady_id, "Quote Requests")

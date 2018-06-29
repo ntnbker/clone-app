@@ -1,5 +1,6 @@
 class TradiesController < ApplicationController 
-  before_action :require_login, only:[:create]
+  before_action :require_login, only:[:create, :edit, :update_skills]
+  before_action :require_role
   before_action :jfmo_terms_and_conditions, only:[:edit]
   # before_action(only:[:show,:index]) {allow("AgencyAdmin")}
   
@@ -306,17 +307,17 @@ class TradiesController < ApplicationController
   private
 
 
-  def jfmo_terms_and_conditions
-    if current_user && current_user.logged_in_as("Trady") && current_user.trady.jfmo_participant == true && current_user.trady.customer_profile.nil?
-      flash[:danger] = "Please accept the terms and conditions to continue."
-      redirect_to  join_just_find_me_one_path(trady_id:current_user.trady.id)
-    else 
+  # def jfmo_terms_and_conditions
+  #   if current_user && current_user.logged_in_as("Trady") && current_user.trady.jfmo_participant == true && current_user.trady.customer_profile.nil?
+  #     flash[:danger] = "Please accept the terms and conditions to continue."
+  #     redirect_to  join_just_find_me_one_path(trady_id:current_user.trady.id)
+  #   else 
 
-      #do nothing 
+  #     #do nothing 
 
-    end 
+  #   end 
 
-  end
+  # end
 
 
   def trady_params

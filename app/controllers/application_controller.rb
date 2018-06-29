@@ -23,10 +23,21 @@ class ApplicationController < ActionController::Base
 
 
   def customer_input_session
-    
-   @customer_input ||= Query.find(session[:customer_input]) unless session[:customer_input] == nil
+    @customer_input ||= Query.find(session[:customer_input]) unless session[:customer_input] == nil
+  end
 
-  
+  def require_role
+    #if the current_user does not have a role log them out and let them know that their session expired and to log in again.
+    if current_user
+      if current_user.has_current_role?
+        #do nothing
+      else
+        logout
+        flash[:danger] = "Sorry your session has expired please log in."
+        redirect_to root_path
+      end 
+    end 
+
   end
 
 
@@ -71,38 +82,28 @@ class ApplicationController < ActionController::Base
 
   def email_redirect
 
-    
     if params[:user_id]
       user = User.find_by(id:params[:user_id])
       token = user.set_password_token
     elsif params[:email]
       user = User.find_by(email:params[:email])
       token = user.set_password_token
-    else
-      if current_user
-        user = current_user
-        token = user.set_password_token
-      else  
-        flash[:message] = "Please login to view the maintenance request."
-        redirect_to root_path(user_type:params[:user_type], maintenance_request_id:params[:id], anchor:params[:anchor], message:params[:message], quote_message_id:params[:quote_message_id], appointment_id:params[:appointment_id], stop_reminder:params[:stop_reminder], quote_request_id:params[:quote_request_id],role:params[:role] )
-      end 
+    elsif current_user
+      user = current_user
+      token = user.set_password_token
     end 
 
-    
-    if user.password_set
-      if current_user
-        #do nothing 
+    if user 
+      if user.password_set
+        #do nothing
       else
-        flash[:message] = "To view the maintenance request please login. Once logged in you will be directed towards the maintenance request of interest."
-        redirect_to root_path(user_type:params[:user_type], maintenance_request_id:params[:id], anchor:params[:anchor], message:params[:message], quote_message_id:params[:quote_message_id], appointment_id:params[:appointment_id], stop_reminder:params[:stop_reminder], quote_request_id:params[:quote_request_id],role:params[:role] )
-      end 
-
+        flash[:message] = "Notice: You must first setup a password before you can access any maintenance request. Thank you for your time."
+        redirect_to set_password_path(token:token)
+      end
     else
-      flash[:message] = "Notice: You must first setup a password before you can access any maintenance request. Thank you for your time."
-      redirect_to set_password_path(token:token)
+      flash[:danger] = "Please log in to gain access."
+      redirect_to root_path(user_type:params[:user_type], maintenance_request_id:params[:id], anchor:params[:anchor], message:params[:message], quote_message_id:params[:quote_message_id], appointment_id:params[:appointment_id], stop_reminder:params[:stop_reminder], quote_request_id:params[:quote_request_id],role:params[:role] )
     end 
-
-
   end
 
 
@@ -164,8 +165,9 @@ class ApplicationController < ActionController::Base
   
   private
     def not_authenticated
-      flash[:danger] = "Please login first"
-      redirect_to menu_login_path
+      flash[:danger] = "Please log in to gain access."
+      redirect_to root_path
+        
     end
 
 

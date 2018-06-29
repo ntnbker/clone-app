@@ -146,6 +146,7 @@ var FixCSS = React.createClass({
 		const self = this;
 		const {className} = this.props;
 		$('.layout').addClass('new-ui');
+		
 		$('footer').addClass(className || '');
 		self.resizeSidebar();
 
@@ -318,6 +319,8 @@ var UpdateStatusModal = React.createClass({
 
 	render() {
 		const {standBy, actionRequired, awaitingAction} = this.state;
+		const {current_role} = this.props;
+		const isNotAgent = !current_role || current_role.role !== 'Agent';
 
 		return <div className="modal-custom fade update-status-modal">
 			<div className="modal-dialog">
@@ -339,14 +342,18 @@ var UpdateStatusModal = React.createClass({
 							<p>Stand By</p>
 							<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={standBy}/>
 						</div>
-						<div className="dropdown-assign">
-							<p className="awaiting">Action Required</p>
-							<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={actionRequired}/>
-						</div>
-						<div className="dropdown-assign">
-							<p className="awaiting">Awaiting Action</p>
-							<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={awaitingAction}/>
-						</div>
+						{isNotAgent && 
+							<div className="dropdown-assign">
+								<p className="awaiting">Action Required</p>
+								<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={actionRequired}/>
+							</div>
+						}
+						{isNotAgent && 
+							<div className="dropdown-assign">
+								<p className="awaiting">Awaiting Action</p>
+								<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={awaitingAction}/>
+							</div>
+						}
 					</div>
 				</div>
 			</div>
@@ -428,7 +435,7 @@ var DropDownStatus = React.createClass({
 				{
 					this.props.data.map((item, key) => {
 						return (
-							<li key={key} onClick={(status) => this.viewItem(item)}>
+							<li key={key} onClick={() => this.viewItem(item)}>
 								{item.title}
 							</li>
 						);
@@ -950,8 +957,10 @@ var MaintenaceRequestDetail = React.createClass({
 
 	render() {
 		const {
-			show_assign, status, maintenance_request, hide_note, strike_approval
+			show_assign, status, maintenance_request, hide_note, strike_approval, current_role
 		} = this.props;
+
+		const needAddPhotoButton = !current_role || !['Trady', 'Landlord'].includes(current_role.role);
 
 		return (
 			<div className="mr-detail box-shadow main-detail">
@@ -989,7 +998,7 @@ var MaintenaceRequestDetail = React.createClass({
 						<Carousel gallery={this.props.gallery} />
 					</div>
 				}
-				{!this.props.isTrady && 
+				{needAddPhotoButton &&
 					<div className="add-photo contact-button">
 						<div className="add-photo-button">
 							<button

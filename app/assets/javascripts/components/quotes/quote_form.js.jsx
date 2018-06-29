@@ -206,9 +206,12 @@ var QuoteSubmit = React.createClass({
               <p className="text-capitalize">
                 {landlord ? landlord.name : null}
               </p>
-              <p>
-                {agency ? "C/-" + agency.company_name : null}
-              </p>
+              {!!agency &&
+                <p>
+                  <span className="font-bold">C/- </span>
+                  <span className="right-span">{agency.company_name}</span>
+                </p>
+              }
               <p>
                 {agency ? agency.address : null}
               </p>
@@ -217,9 +220,9 @@ var QuoteSubmit = React.createClass({
             <div className="date-quote">
               <p>
                 <span className="font-bold">
-                  Quote Reference:
+                  Quote Ref:
                 </span>
-                <span>
+                <span className="right-span">
                   {quote.trady_quote_reference !== ""
                     ? quote.trady_quote_reference
                     : property.property_address
@@ -230,7 +233,7 @@ var QuoteSubmit = React.createClass({
                 <span className="font-bold">
                   Quote Date:
                 </span>
-                <span>
+                <span className="right-span">
                   {moment(quote.created_at).format('lll')}
                 </span>
               </p>
@@ -260,17 +263,17 @@ var QuoteSubmit = React.createClass({
                   <div>
                     {quoteItem.pricing_type}
                   </div>
-                  <div>
+                  <div className="text-right cost">
                     {quoteItem.pricing_type == 'Hourly'
-                      ? quoteItem.amount
+                      ? `$${quoteItem.amount}`
                       : ''
                     }
                   </div>
-                  <div className="text-right">
+                  <div className="text-right cost">
                     {quoteItem.pricing_type == 'Fixed Cost'
-                      ? `$ ${quoteItem.amount.toFixed(2)}`
+                      ? `$${quoteItem.amount.toFixed(2)}`
                       : quoteItem.pricing_type == 'Range'
-                        ? `$ ${quoteItem.min_price.toFixed(2)} - $ ${quoteItem.max_price.toFixed(2)}`
+                        ? `$${quoteItem.min_price.toFixed(2)} - $${quoteItem.max_price.toFixed(2)}`
                         : ''
                     }
                   </div>

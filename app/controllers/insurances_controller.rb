@@ -1,5 +1,6 @@
 class InsurancesController < ApplicationController
   before_action :require_login, only:[:new_insurance_onboarding, :edit_insurance_onboarding]
+  before_action :require_role
   before_action(only:[:new_insurance_onboarding]) {allow("Trady")}
   def new
     @trady_id = params[:trady_id]
@@ -55,7 +56,7 @@ class InsurancesController < ApplicationController
 
     if @insurance.save
       trady = Trady.find_by(id:@trady_id)
-      #trady.update_attribute(:registration_status,"Pending")
+      trady.update_attribute(:registration_status,"Pending")
       insurance_image = @image.as_json(methods: :image_url)
       #flash[:success] = "Thank you for adding your insurance to your registration."
       redirect_to trady_maintenance_requests_path

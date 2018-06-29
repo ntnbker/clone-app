@@ -29,6 +29,14 @@
   display: inline-flex;
 }
 
+@mixin text-ellipsis {
+  word-wrap: break-word;
+  word-break: break-all;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 %inline-flex { @include inline-flex; }
 
 // The 'flex' shorthand

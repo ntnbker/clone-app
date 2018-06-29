@@ -136,6 +136,15 @@ class User < ApplicationRecord
     # self.update_column(:email, self.email)
   end
 
+  def has_current_role?
+
+    if self.current_role.role == nil
+      return false
+    else
+      return true
+    end 
+  end
+
   
 
 

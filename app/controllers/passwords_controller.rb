@@ -1,5 +1,6 @@
 class PasswordsController < ApplicationController
   before_action :require_login, only:[:change_password]
+  before_action :require_role
   def edit
     
     @user = User.find_by(set_password_token:params[:password_token])

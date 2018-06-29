@@ -1,6 +1,7 @@
 class LandlordAppointmentsController < ApplicationController
   before_action(only: [:new, :edit,:show]) { email_auto_login(params[:user_id]) }
   before_action :require_login, only:[:new,:create,:show,:edit, :accept_appointment]
+  before_action :require_role
   def new
     @appointment = Appointment.new
     @appointment.comments.build

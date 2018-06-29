@@ -242,6 +242,26 @@ class TradyMailer < ActionMailer::Base
     @trady = receipt.trady
     mail(to:@trady.email, subject:"Service Fee Invoice/Receipt , sent on #{Date.today}")
   end
+
+  def trady_registration_approved(trady)
+    @trady = trady
+    mail(to:@trady.email, subject:"Registration Approved, sent on #{Date.today}")
+  end
+
+  def trady_missing_insurance(trady)
+    @trady = trady
+    mail(to:@trady.email, subject:"Registration declined missing valid insurance, sent on #{Date.today}")
+  end
+
+  def trady_missing_license(trady)
+    @trady = trady
+    mail(to:@trady.email, subject:"Registration declined missing valid license, sent on #{Date.today}")
+  end
+
+  def trady_missing_documents(trady)
+    @trady = trady
+    mail(to:@trady.email, subject:"Registration declined missing documents, sent on #{Date.today}")
+  end
   
 end 
 

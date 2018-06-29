@@ -1,0 +1,316 @@
+$color-white: #FFFFFF;
+$color-grey: #f4f8fb;
+$color-grey-1: #aab8c3;
+$color-grey-dark: #849aaa;
+$color-grey-dark-1: #cedae3;
+$color-green: #7dc691;
+$color-gray: #3e4b54;
+$color-gray-dark: #baccd8;
+$color-red: #e34f4f;
+$color-black: #000000;
+$color-blue-light: #7646FF;
+$color-text: #83878C;
+
+#recruit {
+  .main-content .section {
+    margin: 0 10px;
+    width: calc(100% - 20px);
+    .screen-tradie-item {
+      margin-bottom: 20px;
+      border-bottom: 1px solid #e2e2e2; 
+    }
+    .title {
+      text-align: center;
+      p {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+    }
+    .main-data {
+      padding: 5px 1px;
+      border: 1.5px solid #71C4FA;
+    }
+    .tradie-table {
+      margin-bottom: 20px;
+      .table {
+        font-size: 12.5px;
+
+        > div {
+          @include flexbox;
+
+          > div {
+            @include text-ellipsis;
+            @include flex(4);
+            margin: 8px 3px;
+          }
+          .email {
+            @include flex(8);
+          }
+          .insured, .licensed {
+            @include flex(3);
+          }
+          .company-name {
+            @include flex(6);
+          }
+          .view-button {
+            text-align: center;
+          }
+        }
+        .table-title {
+          font-weight: 200;
+          border-bottom: 1px solid #e2e2e2;
+          background-color: white;
+        }
+        .table-item {
+          font-weight: 500;
+          .view-button {
+            button {
+              background-color: $color-green;
+              border: none;
+              color: white;
+              padding: 0 15px;
+            }
+          }
+        }
+        .table-item:nth-child(odd) {
+          background-color: #f1f1f1;
+        }
+      }
+    }
+    .box-shadow .pagination {
+      bottom: unset;
+      position: unset;
+      left: unset;
+      transform: unset;
+    }
+    .view-uploader {
+      @include flexbox;
+      @include justify-content(space-around);
+      .title {
+        font-weight: 600;
+        text-align: center;
+        margin: 10px auto;
+      }
+      .pdf-view {
+        @include flex(1);
+        max-width: 30vw;
+
+        .no-file {
+          img {
+            margin-top: 50px;
+            margin-left: calc(15vw - 150px);
+          }
+        }
+      }
+      .radio-same-address {
+        margin: 10px auto 20px;
+        width: 100%;
+        color: $color-text;
+    
+        .radio-option {
+          position: relative;
+          display: inline-block;
+          padding-left: 35px;
+          margin: 0 10px;
+          cursor: pointer;
+    
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+          // Hide the radio default
+          input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+          }
+          .radio-checkmark {
+            position: absolute;
+            top: -3px;
+            left: 0;
+            height: 25px;
+            width: 25px;
+            background-color: transparent;
+            border-radius: 50%;
+            border: 2px solid $color-text;
+          }
+          &:hover input ~ .radio-checkmark {
+            background-color: $color-green-submit;
+          }
+    
+          /* When the radio button is checked, add a blue background */
+          input:checked ~ .radio-checkmark {
+          }
+          /* Create the indicator (the dot/circle - hidden when not checked) */
+          .radio-checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+          }
+    
+          /* Show the indicator (dot/circle) when checked */
+          input:checked ~ .radio-checkmark:after {
+            display: block;
+          }
+    
+          /* Style the indicator (dot/circle) */
+          .radio-checkmark:after {
+            top: 13%;
+            left: 13%;
+            width: 74%;
+            height: 74%;
+            border-radius: 50%;
+            background: $color-green-submit;
+          }
+        }
+      }
+      .valid-title {
+        font-weight: 600;
+      }
+    }
+    .submit-button {
+      text-align: center;
+      margin-top: 20px;
+
+      button {
+        width: 250px;
+        background-color: $color-green;
+        color: white;
+        border: none;
+
+        &:hover, &:active, &:focus {
+          background-color: #2fa750;
+        }
+      }
+    }
+  }
+    
+  .service-placeholder {
+    color: $color-green;
+    margin: 10px;
+  }
+  .list-services {
+    @include flexbox;
+    @include flex-wrap(wrap);
+    margin-bottom: 20px;
+    margin-left: 20%;
+
+    .service-item {
+      width: 40%;
+      font-size: 15px;
+      margin-top: 0px;
+      position: relative;
+      padding-left: 25px;
+      margin-bottom: 10px;
+      font-weight: 600;
+      color: $color-text;
+      cursor: pointer;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      text-align: left;
+      line-height: unset;
+      text-transform: none;
+    }
+
+    /* Hide the browser's default checkbox */
+    .service-item input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    /* Create a custom checkbox */
+    .checkmark {
+      position: absolute;
+      top: 1px;
+      left: 0;
+      height: 17px;
+      width: 17px;
+      background-color: white;
+      border: 2px solid $color-text;
+      border-radius: 7px;
+    }
+
+    /* On mouse-over, add a grey background color */
+    .service-item:hover input ~ .checkmark {
+      background-color: #ccc;
+    }
+
+    /* When the checkbox is checked, add a blue background */
+    .service-item input:checked ~ .checkmark {
+      background-color: $color-green-submit;
+    }
+
+    /* Create the checkmark/indicator (hidden when not checked) */
+    .checkmark:after {
+      content: "";
+      position: absolute;
+      display: none;
+    }
+
+    /* Show the checkmark when checked */
+    .service-item input:checked ~ .checkmark:after {
+      display: block;
+    }
+
+    /* Style the checkmark/indicator */
+    .service-item .checkmark:after {
+      left: 5px;
+      top: 1px;
+      width: 4px;
+      height: 9px;
+      border: solid white;
+      border-width: 0 3px 3px 0;
+      -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+      transform: rotate(45deg);
+    }
+  }
+  @media (max-width: 750px) {
+    .main-content .section {
+      .title {
+        p {
+          font-size: 16px;
+        }
+      }
+      .tradie-table {
+        overflow-y: scroll;
+        .table {
+          min-width: 700px;
+        }
+      }
+    }
+  }
+  @media (max-width: 600px) {
+    .main-content .section {
+      .view-uploader {
+        @include flex-direction(column);
+        @include justify-content(center);
+        @include align-items(center);
+        .pdf-view {
+          max-width: 60%;
+          
+          .no-file {
+            margin-left: calc(30vw - 150px);
+          }
+        }
+      }
+    }
+  }
+  @media (max-width: 400px) {
+    .main-content .section {
+      .view-uploader {
+        .pdf-view {
+          max-width: 70%;
+          
+          .no-file {
+            margin-left: calc(35vw - 150px);
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,6 +1,6 @@
 class ReceiptsController < ApplicationController
   before_action :require_login, only:[:show,:index]
-  
+  before_action :require_role
   before_action(only:[:show,:index]) {allow("Trady")}
   before_action(only:[:show]) {belongs_to_trady}
 
