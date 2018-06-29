@@ -5,9 +5,9 @@ class AvailabilityAccess
   validates :availability_access, presence: true
   
 
-def initialize(contact={})  
+def initialize(availability_access={})  
     # Instance variables  
-    @update_availability_access = update_availability_access[:update_availability_access]
+    @availability_access = availability_access[:availability_access]
     
   end
 
