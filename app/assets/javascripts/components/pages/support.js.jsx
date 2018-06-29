@@ -59,7 +59,7 @@ const Support = React.createClass({
 			success: function (res) {
         if (res) {
           self.setState({ 
-            errors: res.errors,
+            errors: res.errors || {},
             message: res.message
           });
         }
