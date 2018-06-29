@@ -81,30 +81,55 @@ class ApplicationController < ActionController::Base
   end
 
   def email_redirect
-
-    if params[:user_id]
+    
+    if current_user
+      user = current_user
+      token = user.set_password_token
+    elsif params[:user_id]
       user = User.find_by(id:params[:user_id])
       token = user.set_password_token
     elsif params[:email]
       user = User.find_by(email:params[:email])
       token = user.set_password_token
-    elsif current_user
-      user = current_user
-      token = user.set_password_token
+    
     end 
-
-    if user 
+    
+    
+    if current_user == user
+      
       if user.password_set
         #do nothing
       else
         flash[:message] = "Notice: You must first setup a password before you can access any maintenance request. Thank you for your time."
         redirect_to set_password_path(token:token)
       end
-    else
-      flash[:danger] = "Please log in to gain access."
-      redirect_to root_path(user_type:params[:user_type], maintenance_request_id:params[:id], anchor:params[:anchor], message:params[:message], quote_message_id:params[:quote_message_id], appointment_id:params[:appointment_id], stop_reminder:params[:stop_reminder], quote_request_id:params[:quote_request_id],role:params[:role] )
-    end 
+    else 
+      #they are not logged in but there is a user
+      if user 
+        if user.password_set
+          flash[:danger] = "Please log in to gain access"
+          redirect_to root_path(user_type:params[:user_type], maintenance_request_id:params[:id], anchor:params[:anchor], message:params[:message], quote_message_id:params[:quote_message_id], appointment_id:params[:appointment_id], stop_reminder:params[:stop_reminder], quote_request_id:params[:quote_request_id],role:params[:role] )
+        else
+          flash[:message] = "Notice: You must first setup a password before you can access any maintenance request. Thank you for your time."
+          redirect_to set_password_path(token:token)
+        end
+      else
+        flash[:danger] = "Please log in to gain access.!!!"
+        redirect_to root_path(user_type:params[:user_type], maintenance_request_id:params[:id], anchor:params[:anchor], message:params[:message], quote_message_id:params[:quote_message_id], appointment_id:params[:appointment_id], stop_reminder:params[:stop_reminder], quote_request_id:params[:quote_request_id],role:params[:role] )
+      end 
+  
+    end
+
+
+
+
+
+
+
+
   end
+
+
 
 
   def jfmo_terms_and_conditions
