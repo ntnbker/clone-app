@@ -219,7 +219,7 @@ var ModalEditAvailability = React.createClass({
 		e.preventDefault();
 		const self = this;
 		const params = {
-			availability: this.availability && this.availability.value,
+			availability_access: this.availability_access && this.availability_access.value,
 		}
 
 		this.props.editAvailability(params, function(err) {
@@ -257,7 +257,7 @@ var ModalEditAvailability = React.createClass({
 										style={{ width: '100%', marginTop: '10px' }}
 										placeholder="Availability"
 										defaultValue={maintenance_request.availability_and_access || ''}
-										ref={(rel) => this.availability = rel}
+										ref={(rel) => this.availability_access = rel}
 										onChange={this.removeError}
 										className={'textarea-message ' + (errorMessage ? ' has-error' : '')}
 									/>

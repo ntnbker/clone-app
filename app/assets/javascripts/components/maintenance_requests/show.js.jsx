@@ -1943,11 +1943,13 @@ var MaintenanceRequest = React.createClass({
 
 		$.ajax({
 			type: 'POST',
-			url: '/availability',
+			url: '/update_availabilty_access',
 			beforeSend: function(xhr) {
 				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
 			},
-			data: params,
+			data: {
+				availability_access: params
+			},
 			success: function(res){
 				if (res.errors) {
 					return callback(res.errors);
