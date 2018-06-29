@@ -7,7 +7,12 @@ class ContactUs
   validates :message, presence: true
   validates_format_of :email, :with => /\A[^@]+@([^@\.]+\.)+[^@\.]+\z/
 
-
+def initialize(contact={})  
+    # Instance variables  
+    @name = contact[:name]
+    @email = contact[:email]
+    @message = contact[:message] 
+  end
 
 
 
