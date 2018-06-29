@@ -100916,7 +100916,7 @@ var Footer = React.createClass({
         return React.createElement(
             "div",
             { className: "dontprint", id: "footer" },
-            this.props.expanded ? this.footerForExpanded() : this.footer()
+            this.footer()
         );
     }
 });
