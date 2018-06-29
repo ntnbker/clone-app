@@ -449,7 +449,7 @@ var HomeComponent = React.createClass({
           <textarea
             type="text"
             id="pac-input"
-            placeholder="Please tell us the address."
+            placeholder="Enter your property address here."
             ref={(elem) => this.address = elem}
             onChange={getAddressOfGoogleMap}
 
