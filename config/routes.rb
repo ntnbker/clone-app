@@ -343,6 +343,11 @@ Rails.application.routes.draw do
   ###########################################################
   resources :screen_tradies, only:[:index, :show]
   post "screen_tradies/:id" => "screen_tradies#screen"
+  ###########################################################
+  ##########TENANT AVAILABILITY AND ACCESS RESOURCES/ROUTES#####
+  ###########################################################
+  
+  post "update_availabilty_access" => "tenant_availabities#update"
   
 
 
