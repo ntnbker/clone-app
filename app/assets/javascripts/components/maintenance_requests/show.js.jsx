@@ -21,7 +21,7 @@ var ModalConfirm = React.createClass({
 							<h4 className="modal-title text-center">Confirm Landlord Details</h4>
 						</div>
 						<div className="modal-body">
-							<p className="text-center">{ 'Our records show that "' + this.props.landlord.name + '" is the landlord for "' + this.props.property.property_address + '". Please confirm if this is correct.'}</p>
+							<p className="text-center">{ 'Our records show that "' + this.props.landlord.name + '" is the landlord for "' + this.state.property.property_address + '". Please confirm if this is correct.'}</p>
 						</div>
 						<div className="modal-footer">
 							<button
@@ -571,7 +571,7 @@ var ModalAddTenant = React.createClass({
 				email: this.email && this.email.value,
 				mobile: this.mobile && this.mobile.value,
 				maintenance_request_id: this.props.maintenance_request_id,
-				property_id: this.props.property.id,
+				property_id: this.state.property.id,
 			},
 		}
 		if (tenant) params.tenant.id = tenant.id;
@@ -1225,6 +1225,7 @@ var MaintenanceRequest = React.createClass({
 			logs  	 	 		 						 : this.props.logs,
 			invoice_pdf_file  	 	 		 : null,
 			agency 										 : this.props.agency,
+			property 									 : this.props.property,
 			status  	 	 		 					 : this.props.status,
 			tenants 									 : this.props.tenants || [],
 			tradies  	 	 		 					 : this.props.tradies,
@@ -1934,6 +1935,49 @@ var MaintenanceRequest = React.createClass({
 		}
 	},
 
+	editAddress: function(params, callback) {
+		const self = this;
+		const { authenticity_token, maintenance_request } = this.props;
+		const {property} = this.state;
+
+		params.maintenance_request_id = maintenance_request.id;
+
+		$.ajax({
+			type: 'POST',
+			url: '/update_address',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: {
+				address: params
+			},
+			success: function(res){
+				if (res.errors) {
+					return callback(res.errors);
+				}
+				property.address = res.address;
+
+				self.setState({
+					property,
+					notification: {
+						bgClass: "bg-success",
+						title: "Edit Address",
+						content: 'Thank you, the address has been updated.',
+					}
+				});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					bgClass: "bg-error",
+					title: "Edit Address",
+					content: err.responseText,
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
+
 	approveJob: function(params, callback) {
 		const self = this;
 		const { authenticity_token, maintenance_request } = this.props;
@@ -2532,7 +2576,7 @@ var MaintenanceRequest = React.createClass({
 						<ModalConfirm
 							close={this.isClose}
 							landlord={this.state.landlord}
-							property={this.props.property}
+							property={this.state.property}
 							onModalWith={(modal) => this.onModalWith(modal)}
 						/>
 					);
@@ -2598,7 +2642,7 @@ var MaintenanceRequest = React.createClass({
 					return (
 						<ModalAddTenant
 							close={this.isClose}
-							property={this.props.property}
+							property={this.state.property}
 							tenant={this.state.tenant}
 							addTenant={this.addTenant}
 							authToken={this.props.authenticity_token}
@@ -2676,7 +2720,7 @@ var MaintenanceRequest = React.createClass({
 							quotes={this.state.quote_requests}
 							hideRestore={!!this.state.trady}
 							agency={this.props.agency}
-							property={this.props.property}
+							property={this.state.property}
 							landlord={this.state.landlord}
 							onModalWith={this.onModalWith}
 							updateStatusQuote={this.updateStatusQuote}
@@ -2742,7 +2786,7 @@ var MaintenanceRequest = React.createClass({
 							agency={this.props.agency}
 						 	invoice={this.state.invoice}
 						 	invoices={this.state.invoices}
-							property={this.props.property}
+							property={this.state.property}
 							viewInvoice={this.viewItem}
 							role={this.props.current_user_role}
 						/>
@@ -2756,7 +2800,7 @@ var MaintenanceRequest = React.createClass({
 						<ModalViewPDFInvoice
 							close={this.isClose}
 							agency={this.props.agency}
-							property={this.props.property}
+							property={this.state.property}
 							trady={this.props.assigned_trady}
 							invoice_pdf_file={this.state.invoice_pdf_file}
 							viewInvoice={this.viewItem}
@@ -2878,6 +2922,8 @@ var MaintenanceRequest = React.createClass({
 					return (
 						<ModalEditAddress
 							close={this.isClose}
+							editAddress={this.editAddress}
+							property={this.state.property}
 						/>
 					);
 
@@ -2907,7 +2953,7 @@ var MaintenanceRequest = React.createClass({
 						<ModalViewTrady
 							close={this.isClose}
 							trady={this.state.trady}
-							property={this.props.property}
+							property={this.state.property}
 							agency_admin={this.props.agency_admin}
 							maintenance_request={this.state.maintenance_request}
 							agency={this.props.agency}
@@ -2943,7 +2989,7 @@ var MaintenanceRequest = React.createClass({
 							quote={this.state.quote_request}
 							quotes={this.state.quote_requests}
 							agency={this.props.agency}
-							property={this.props.property}
+							property={this.state.property}
 							landlord={this.state.landlord}
 							onModalWith={this.onModalWith}
 							hideRestore={!!this.state.trady}
@@ -3243,7 +3289,7 @@ var MaintenanceRequest = React.createClass({
 						<ItemMaintenanceRequest
 							status={this.state.status}
 							gallery={this.state.gallery}
-							property={this.props.property}
+							property={this.state.property}
 							all_agents={this.props.all_agents}
 							updateStatusMR={this.updateStatusMR}
 							existLandlord={!!landlord}
