@@ -1355,6 +1355,7 @@ var MaintenanceRequest = React.createClass({
 			case 'approveJob':
 			case 'duplicateMR':
 			case 'justFindMeOne':
+			case 'editAvailability':
 			case 'confirmcancelTrady':
 			case 'editMaintenanceRequest': {
 				this.onModalWith(key);
@@ -1932,6 +1933,46 @@ var MaintenanceRequest = React.createClass({
 				}
 			});
 		}
+	},
+
+	editAvailability: function(params, callback) {
+		const self = this;
+		const { authenticity_token, maintenance_request } = this.props;
+
+		params.maintenance_request_id = maintenance_request.id;
+
+		$.ajax({
+			type: 'POST',
+			url: '/availability',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				if (res.errors) {
+					return callback(res.errors);
+				}
+				maintenance_request.availability = res.availability;
+
+				self.setState({
+					maintenance_request,
+					notification: {
+						bgClass: "bg-success",
+						title: "Edit Availability",
+						content: 'Edited',
+					}
+				});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					bgClass: "bg-error",
+					title: "Edit Availability",
+					content: err.responseText,
+				}});
+				self.onModalWith('notification');
+			}
+		});
 	},
 
 	approveJob: function(params, callback) {
@@ -3063,6 +3104,15 @@ var MaintenanceRequest = React.createClass({
 							close={this.isClose}
 						/>
 					)
+
+				case 'editAvailability':
+				return (
+					<ModalEditAvailability
+						close={this.isClose}
+						editAvailability={this.editAvailability}
+						maintenance_request={this.state.maintenance_request}
+					/>
+				)
 
 				default:
 					return null;

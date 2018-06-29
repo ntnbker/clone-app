@@ -198,6 +198,96 @@ var ModalApproveJob = React.createClass({
 	}
 });
 
+var ModalEditAvailability = React.createClass({
+	getInitialState: function() {
+		return {
+			errorMessage: false
+		};
+	},
+
+	removeError: function(e) {
+		this.setState({
+			errorMessage: '',
+		})
+	},
+
+	renderError: function(error) {
+	  return <p id="errorbox" className="error">{error || ''}</p>;
+	},
+
+	onSubmit: function(e) {
+		e.preventDefault();
+		const self = this;
+		const params = {
+			availability: this.availability && this.availability.value,
+		}
+
+		this.props.editAvailability(params, function(err) {
+			if (err) {
+				self.setState({ errorMessage: err });
+			}
+		});
+	},
+
+	render: function() {
+		const { maintenance_request } = this.props;
+		const { errorMessage } = this.state;
+
+		return (
+			<div className="modal-custom fade">
+				<div className="modal-dialog">
+					<form role="form">
+						<div className="modal-content">
+							<div className="modal-header">
+								<button
+									type="button"
+									className="close"
+									data-dismiss="modal"
+									aria-label="Close"
+									onClick={this.props.close}
+								>
+									<span aria-hidden="true">&times;</span>
+								</button>
+								<h4 className="modal-title text-center">Tenant Availability</h4>
+							</div>
+							<div className="modal-body">
+								<div>
+									<div className="note">Please add tenant availability and access instructions.</div>
+									<textarea
+										style={{ width: '100%', marginTop: '10px' }}
+										placeholder="Availability"
+										defaultValue={maintenance_request.availability_and_access || ''}
+										ref={(rel) => this.availability = rel}
+										onChange={this.removeError}
+										className={'textarea-message ' + (errorMessage ? ' has-error' : '')}
+									/>
+								</div>
+								{this.renderError(errorMessage)}
+							</div>
+							<div className="modal-footer">
+								<button
+									type="submit"
+									onClick={this.onSubmit}
+									className="btn btn-default success"
+								>
+									Submit
+								</button>
+								<button
+									type="submit"
+									onClick={this.props.close}
+									className="btn btn-default cancel"
+								>
+									Cancel
+								</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		);
+	}
+});
+
 var ModalConfirmDefere = React.createClass({
 	confirm: function() {
 		this.props.confirm();

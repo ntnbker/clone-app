@@ -1028,7 +1028,7 @@ var MaintenanceRequestInformation = React.createClass({
 			<div className="mr-information main-information">
 				{
 					show_assign &&
-					<div className="mr-information row-information">
+					<div className="mr-information row-information mr-status">
 						<span className="key">Status: </span>
 						<span className="data status">{status && status.agent_status}</span>
 						<span 
@@ -1140,17 +1140,25 @@ var TenantContactButton = React.createClass({
 				}
 				<div className="tenant-information">
 					<h5 className="mr-title">Tenant Details
+						{show_assign && 
+							<span 
+								className="edit-detail" 
+								onClick={() => this.props.onModalWith(tenants.length ? 'showTenants' : 'addTenant')}
+							>
+								(Edit Tenants)
+							</span>
+						}
+					</h5>
+					<div className="vailability">
+						<p className="header small-weight">Tenant Availability and Access Instructions: 
 							{show_assign && 
 								<span 
 									className="edit-detail" 
-									onClick={() => this.props.onModalWith(tenants.length ? 'showTenants' : 'addTenant')}
+									onClick={() => this.props.onModalWith('editAvailability')}
 								>
-									(Edit Tenants)
+									(Edit)
 								</span>
-							}
-						</h5>
-					<div className="vailability">
-						<p className="header small-weight">Tenant Availability and Access Instructions: </p>
+							}</p>
 						<p className="job-description">{maintenance_request.availability_and_access}</p>
 					</div>
 					{tenants.map(tenant => (
