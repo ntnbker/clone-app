@@ -47,7 +47,7 @@ var ModalEditAddress = React.createClass({
     }
 		
 		if (self.state.selectedAddress !== params.address) {
-			return this.setState({errorMessage: 'Please choose a address from list'});
+			return this.setState({errorMessage: 'Please choose an address from list'});
 		}
 
 		this.props.editAddress(params, function(err) {

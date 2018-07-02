@@ -103,7 +103,7 @@ var HomeComponent = React.createClass({
     const address        = this.address && this.address.value;
 		
 		if (self.state.selectedAddress !== this.address.value) {
-			return this.setState({error: 'Please choose a address from list'});
+			return this.setState({error: 'Please choose an address from list'});
 		}
 
     $.ajax({
