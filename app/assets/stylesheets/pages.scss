@@ -577,14 +577,6 @@ $color-text: #83878C;
 		width: 100%;
 	}
 
-	.suggestion-address {
-		margin-top: -5px;
-		position: absolute;
-		// top: 65px;
-		background-color: $color-white;
-		border-color: white;
-	}
-
 	@media (max-width: 1200px) {
 		.home-content .header .home-action {
 			.home-action-content .action-content {

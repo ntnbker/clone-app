@@ -19,24 +19,8 @@ var ModalEditAddress = React.createClass({
 	  return <p id="errorbox" className="error">{error || ''}</p>;
 	},
 
-	getAddressesFromGoogleMap() {
-		const addressInput = this.address.value;
-		var options = {types: ['address'], componentRestrictions: {country: 'au'}};
-		const self = this;
-		if (!addressInput) return self.setState({suggestions: []});
-
-    var service = new google.maps.places.AutocompleteService();
-    service.getPlacePredictions({ input: addressInput, ...options }, (places, status) => {
-			if (status != google.maps.places.PlacesServiceStatus.OK) {
-				return self.setState({suggestions: []});
-			}
-			self.setState({suggestions: places.map(({description}) => description)});
-		});
-	},
-
-	chooseAddress(place) {
-		this.setState({selectedAddress: place, suggestions: []});
-		this.address.value = place;
+	chooseAddress() {
+		this.setState({selectedAddress: this.address.value, errorMessage: ''});
 	},
 
 	onSubmit: function(e) {
@@ -59,8 +43,7 @@ var ModalEditAddress = React.createClass({
 
 	render: function() {
 		const { property } = this.props;
-		const { errorMessage, suggestions } = this.state;
-		const showSuggestion = !!suggestions.length;
+		const { errorMessage } = this.state;
 
 		return (
 			<div className="modal-custom fade">
@@ -83,28 +66,15 @@ var ModalEditAddress = React.createClass({
 								<div>
                   <div className="note">Please type in the property address.</div>
                   <input
-                    // id='pac-input'
+                    id='pac-input'
 										type='text'
                     name='address'
                     placeholder='Enter your property address here.'
                     defaultValue={property.property_address || ''}
                     ref={e => this.address = e}
-										onBlur={(e) => setTimeout(() => this.setState({suggestions: []}), 150)}
-                    onChange={() => {this.removeError(); this.getAddressesFromGoogleMap()}}
+                    onChange={() => {this.removeError(); getAddressOfGoogleMap(this.chooseAddress)}}
 										className={(errorMessage ? ' has-error' : '')}
-										autoComplete="off"
                   />
-									{showSuggestion && 
-										<div className="suggestion-address">
-											{suggestions.map((place, index) => (
-												<div 
-													className="place-autocomplete" 
-													key={index}
-													onClick={() => this.chooseAddress(place)}
-												>{place}</div>
-											))}
-										</div> 
-									}
 								</div>
 								{this.renderError(errorMessage)}
 							</div>
