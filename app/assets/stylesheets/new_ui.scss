@@ -609,6 +609,10 @@ $color-text: #83878C;
             }
         }
     }
+    .suggestion-address {
+        width: calc(80% - 2px);
+        margin: auto;
+    }
     @media (max-width: 599px) {
         .main-container {
             .main-content .section {
@@ -655,6 +659,27 @@ $color-text: #83878C;
     @media print {
         .modal-custom {
             top: 0;
+        }
+    }
+}
+
+.suggestion-address {
+    border: 1px solid $color-grey-1;
+    border-top: 0.5px;
+    width: calc(100% - 2px);
+
+    .place-autocomplete {
+        border-bottom: 1px solid;
+        cursor: pointer;
+        color: $color-text;
+        text-align: left;
+        padding: 3px 5px;
+
+        &:hover, &:focus {
+            color: $color-green;
+        }
+        &:last-child {
+            border: none;
         }
     }
 }

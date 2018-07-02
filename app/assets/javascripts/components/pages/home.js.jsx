@@ -12,6 +12,8 @@ var HomeComponent = React.createClass({
       user: current_user,
       focusEmail: false,
       focusPassword: false,
+			suggestions: [],
+			selectedAddress: ''
     };
   },
 
@@ -73,11 +75,36 @@ var HomeComponent = React.createClass({
     })
   },
 
+	getAddressesFromGoogleMap() {
+		const addressInput = this.address.value;
+		var options = {types: ['address'], componentRestrictions: {country: 'au'}};
+		const self = this;
+		if (!addressInput) return self.setState({suggestions: []});
+
+    var service = new google.maps.places.AutocompleteService();
+    service.getPlacePredictions({ input: addressInput, ...options }, (places, status) => {
+			if (status != google.maps.places.PlacesServiceStatus.OK) {
+				return self.setState({suggestions: []});
+			}
+			self.setState({suggestions: places.map(({description}) => description)});
+		});
+	},
+
+	chooseAddress(place) {
+		this.setState({selectedAddress: place, suggestions: []});
+		this.address.value = place;
+	},
+
   submitNewMR(e) {
     e.preventDefault();
     const { rolePicked } = this.state;
+    const self = this;
     const tradie         = this.service && this.service.value || '';
     const address        = this.address && this.address.value;
+		
+		if (self.state.selectedAddress !== this.address.value) {
+			return this.setState({error: 'Please choose a address from list'});
+		}
 
     $.ajax({
       type: 'POST',
@@ -360,7 +387,7 @@ var HomeComponent = React.createClass({
               ref={(elem) => this.password = elem}
             />
           </div>
-          { error && <div className="login-error">{error}</div> }
+          { error && <div className="home-error">{error}</div> }
         </div>
         <div className="button-group login-button">
           { showBackButton &&
@@ -419,8 +446,9 @@ var HomeComponent = React.createClass({
   },
 
   homeActionForSubmitNewMR() {
-    const { signed = false, active } = this.state;
+    const { signed = false, active, suggestions, error } = this.state;
     const { services } = this.props;
+    const showSuggestion = !!suggestions.length;
 
     return (
       <form
@@ -448,13 +476,26 @@ var HomeComponent = React.createClass({
         <div className="input-address">
           <textarea
             type="text"
-            id="pac-input"
+            // id="pac-input"
+            className={error ? 'has-error' : ''}
             placeholder="Please tell us the address."
             ref={(elem) => this.address = elem}
-            onChange={getAddressOfGoogleMap}
-
+            onBlur={() => setTimeout(() => this.setState({suggestions: []}), 50)}
+            onChange={() => {this.setState({error: ''}); this.getAddressesFromGoogleMap()}}
           />
+          {showSuggestion && 
+            <div className="suggestion-address">
+              {suggestions.map((place, index) => (
+                <div 
+                  className="place-autocomplete" 
+                  key={index}
+                  onClick={() => this.chooseAddress(place)}
+                >{place}</div>
+              ))}
+            </div> 
+          }
         </div>
+        { error && <div className="home-error">{error}</div>}
         <div className="button-group login-button new-mr-button">
           { active !== 'Agent' &&
             <button

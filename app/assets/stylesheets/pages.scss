@@ -1,7 +1,18 @@
 // Place all the styles related to the Pages controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+$color-white: #FFFFFF;
+$color-grey: #f4f8fb;
+$color-grey-1: #aab8c3;
+$color-grey-dark: #849aaa;
+$color-grey-dark-1: #cedae3;
+$color-green: #7dc691;
+$color-gray: #3e4b54;
+$color-gray-dark: #baccd8;
 $color-red: #e34f4f;
+$color-black: #000000;
+$color-blue-light: #7646FF;
+$color-text: #83878C;
 @-webkit-keyframes autofill {
 	to {
 		color: white;
@@ -297,14 +308,6 @@ $color-red: #e34f4f;
 									border-color: #5CC993;
 								}
 							}
-							.login-error {
-								margin-bottom: 20px;
-							  color: #a94442;
-							  border-color: #ebccd1;
-							  border-radius: 4px;
-							  padding: 5px 10px;
-							  background-color: #f2dede;
-							}
 							span {
 								@include flexbox;
 								width: 80px;
@@ -442,6 +445,7 @@ $color-red: #e34f4f;
 							}
 							.input-address {
 								margin: 10px -10% 30px -10%;
+								position: relative;
 								color: white;
 
 								textarea {
@@ -495,6 +499,15 @@ $color-red: #e34f4f;
 								color: #4aa576;
 							}
 						}
+					}
+
+					.home-error {
+						margin-bottom: 20px;
+						color: #a94442;
+						border-color: #ebccd1;
+						border-radius: 4px;
+						padding: 5px 10px;
+						background-color: #f2dede;
 					}
 				}
 			}
@@ -562,6 +575,14 @@ $color-red: #e34f4f;
 	.line {
 		border: 1px solid #e6ecf1;
 		width: 100%;
+	}
+
+	.suggestion-address {
+		margin-top: -5px;
+		position: absolute;
+		// top: 65px;
+		background-color: $color-white;
+		border-color: white;
 	}
 
 	@media (max-width: 1200px) {

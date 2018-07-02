@@ -1,9 +1,13 @@
 var ModalEditAddress = React.createClass({
 	getInitialState: function() {
 		return {
-			errorMessage: false
+			errorMessage: false,
+			suggestions: [],
+			selectedAddress: ''
 		};
 	},
+
+
 
 	removeError: function(e) {
 		this.setState({
@@ -15,13 +19,37 @@ var ModalEditAddress = React.createClass({
 	  return <p id="errorbox" className="error">{error || ''}</p>;
 	},
 
+	getAddressesFromGoogleMap() {
+		const addressInput = this.address.value;
+		var options = {types: ['address'], componentRestrictions: {country: 'au'}};
+		const self = this;
+		if (!addressInput) return self.setState({suggestions: []});
+
+    var service = new google.maps.places.AutocompleteService();
+    service.getPlacePredictions({ input: addressInput, ...options }, (places, status) => {
+			if (status != google.maps.places.PlacesServiceStatus.OK) {
+				return self.setState({suggestions: []});
+			}
+			self.setState({suggestions: places.map(({description}) => description)});
+		});
+	},
+
+	chooseAddress(place) {
+		this.setState({selectedAddress: place, suggestions: []});
+		this.address.value = place;
+	},
+
 	onSubmit: function(e) {
 		e.preventDefault();
 		const self = this;
 		const params = {
 			address: this.address && this.address.value,
     }
-    
+		
+		if (self.state.selectedAddress !== params.address) {
+			return this.setState({errorMessage: 'Please choose a address from list'});
+		}
+
 		this.props.editAddress(params, function(err) {
 			if (err) {
 				self.setState({ errorMessage: err['address'] });
@@ -31,7 +59,8 @@ var ModalEditAddress = React.createClass({
 
 	render: function() {
 		const { property } = this.props;
-		const { errorMessage } = this.state;
+		const { errorMessage, suggestions } = this.state;
+		const showSuggestion = !!suggestions.length;
 
 		return (
 			<div className="modal-custom fade">
@@ -54,15 +83,28 @@ var ModalEditAddress = React.createClass({
 								<div>
                   <div className="note">Please type in the property address.</div>
                   <input
-                    id='pac-input'
-                    type='text'
+                    // id='pac-input'
+										type='text'
                     name='address'
                     placeholder='Enter your property address here.'
                     defaultValue={property.property_address || ''}
                     ref={e => this.address = e}
-                    onChange={() => {this.removeError(); getAddressOfGoogleMap()}}
+										onBlur={() => setTimeout(() => this.setState({suggestions: []}), 50)}
+                    onChange={() => {this.removeError(); this.getAddressesFromGoogleMap()}}
 										className={(errorMessage ? ' has-error' : '')}
+										autoComplete="off"
                   />
+									{showSuggestion && 
+										<div className="suggestion-address">
+											{suggestions.map((place, index) => (
+												<div 
+													className="place-autocomplete" 
+													key={index}
+													onClick={() => this.chooseAddress(place)}
+												>{place}</div>
+											))}
+										</div> 
+									}
 								</div>
 								{this.renderError(errorMessage)}
 							</div>
