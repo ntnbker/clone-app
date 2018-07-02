@@ -480,7 +480,7 @@ var HomeComponent = React.createClass({
             className={error ? 'has-error' : ''}
             placeholder="Please tell us the address."
             ref={(elem) => this.address = elem}
-            onBlur={() => setTimeout(() => this.setState({suggestions: []}), 50)}
+            onBlur={() => setTimeout(() => this.setState({suggestions: []}), 150)}
             onChange={() => {this.setState({error: ''}); this.getAddressesFromGoogleMap()}}
           />
           {showSuggestion && 

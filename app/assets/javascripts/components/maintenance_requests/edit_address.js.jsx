@@ -89,7 +89,7 @@ var ModalEditAddress = React.createClass({
                     placeholder='Enter your property address here.'
                     defaultValue={property.property_address || ''}
                     ref={e => this.address = e}
-										onBlur={() => setTimeout(() => this.setState({suggestions: []}), 50)}
+										onBlur={(e) => setTimeout(() => this.setState({suggestions: []}), 150)}
                     onChange={() => {this.removeError(); this.getAddressesFromGoogleMap()}}
 										className={(errorMessage ? ' has-error' : '')}
 										autoComplete="off"
