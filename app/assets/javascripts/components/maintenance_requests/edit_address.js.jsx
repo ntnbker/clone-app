@@ -1,13 +1,11 @@
 var ModalEditAddress = React.createClass({
 	getInitialState: function() {
 		return {
-			errorMessage: false,
+			errorMessage: this.props.error || '',
 			suggestions: [],
 			selectedAddress: ''
 		};
 	},
-
-
 
 	removeError: function(e) {
 		this.setState({
@@ -31,7 +29,7 @@ var ModalEditAddress = React.createClass({
     }
 		
 		if (self.state.selectedAddress !== params.address) {
-			return this.setState({errorMessage: 'Please choose an address from list'});
+			return this.props.viewItem('confirmEditAddress', this.address.value);
 		}
 
 		this.props.editAddress(params, function(err) {
@@ -42,7 +40,7 @@ var ModalEditAddress = React.createClass({
 	},
 
 	render: function() {
-		const { property } = this.props;
+		const { address } = this.props;
 		const { errorMessage } = this.state;
 
 		return (
@@ -70,7 +68,7 @@ var ModalEditAddress = React.createClass({
 										type='text'
                     name='address'
                     placeholder='Enter your property address here.'
-                    defaultValue={property.property_address || ''}
+                    defaultValue={address || ''}
                     ref={e => this.address = e}
                     onChange={() => {this.removeError(); getAddressOfGoogleMap(this.chooseAddress)}}
 										className={(errorMessage ? ' has-error' : '')}

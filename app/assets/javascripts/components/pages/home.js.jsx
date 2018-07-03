@@ -81,13 +81,13 @@ var HomeComponent = React.createClass({
 
   submitNewMR(e) {
     e.preventDefault();
-    const { rolePicked } = this.state;
+    const { rolePicked, ignoreCheckAddress } = this.state;
     const self = this;
     const tradie         = this.service && this.service.value || '';
     const address        = this.address && this.address.value;
 		
-		if (self.state.selectedAddress !== this.address.value) {
-			return this.setState({error: 'Please choose an address from list'});
+		if (self.state.selectedAddress !== this.address.value && !ignoreCheckAddress) {
+			return this.setState({isShowModal: true});
 		}
 
     $.ajax({
@@ -619,6 +619,42 @@ var HomeComponent = React.createClass({
     )
   },
 
+  closeModal() {
+		var body = document.getElementsByTagName('body')[0];
+		body.classList.remove("modal-open");
+		var div = document.getElementsByClassName('modal-backdrop in')[0];
+		if(div){
+			div.parentNode.removeChild(div);
+    }
+    this.setState({isShowModal: false});
+  },
+
+  renderModal() {
+    const {isShowModal} = this.state;
+    if (!isShowModal) return '';
+    var body = document.getElementsByTagName('body')[0];
+    body.className += " modal-open";
+    var div = document.getElementsByClassName('modal-backdrop in');
+
+    if(div.length === 0) {
+      div = document.createElement('div')
+      div.className  = "modal-backdrop in";
+      body.appendChild(div);
+    }
+
+    return (
+      <ModalConfirmAnyThing 
+        title="Property Address"
+        content="We can not find this address. Please make sure it is correct!"
+        confirm={() => {
+          const self = this;
+          this.setState({ignoreCheckAddress: true}, () => self.submitNewMR({preventDefault: () => {}}));
+        }}
+        close={this.closeModal}
+      />
+    )
+  },
+
   render: function() {
     return (
       <div className="pages" ref={e => this.mainPage = e}>
@@ -640,6 +676,7 @@ var HomeComponent = React.createClass({
             <input type="hidden" id="refresh" value="no" />
           </div>
         </div>
+				{ this.renderModal() }
       </div>
     )
   }

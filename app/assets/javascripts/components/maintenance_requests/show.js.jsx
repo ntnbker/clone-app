@@ -1387,6 +1387,24 @@ var MaintenanceRequest = React.createClass({
 				break;
 			}
 
+			case 'editAddress':
+			case 'confirmEditAddress': {
+				this.setState({
+					addressTemp: item,
+					errorAddress: ''
+				})
+				this.onModalWith(key);
+				break;
+			}
+
+			case 'errorEditAddress': {
+				this.setState({
+					errorAddress: item
+				})
+				this.onModalWith('editAddress');
+				break;
+			}
+
 			default: {
 				break;
 			}
@@ -2817,6 +2835,7 @@ var MaintenanceRequest = React.createClass({
 							close={this.isClose}
 							services={this.props.services}
 							onModalWith={(modal) => this.onModalWith(modal)}
+							viewItem={this.viewItem}
 							maintenance_request={this.state.maintenance_request}
 							editMaintenanceRequest={this.editMaintenanceRequest}
 							trady={this.state.trady || this.props.assigned_trady}
@@ -2923,7 +2942,9 @@ var MaintenanceRequest = React.createClass({
 						<ModalEditAddress
 							close={this.isClose}
 							editAddress={this.editAddress}
-							property={this.state.property}
+							address={this.state.addressTemp || this.state.property.property_address}
+							error={this.state.errorAddress}
+							viewItem={this.viewItem}
 						/>
 					);
 
@@ -3107,6 +3128,26 @@ var MaintenanceRequest = React.createClass({
 						<ShowLandlordSettings
 							onModalWith={this.onModalWith}
 							close={this.isClose}
+						/>
+					)
+				
+				case 'confirmEditAddress':
+					const self = this;
+					const {addressTemp} = this.state;
+
+					return (
+						<ModalConfirmAnyThing 
+							title="Property Address"
+							content="We can not find this address. Please make sure it is correct!"
+							confirm={() => {
+
+								self.editAddress({address: addressTemp}, (err) => {
+									if (err) {
+										self.viewItem('errorEditAddress', err);
+									}
+								})
+							}}
+							close={() => this.viewItem('editAddress', addressTemp)}
 						/>
 					)
 
