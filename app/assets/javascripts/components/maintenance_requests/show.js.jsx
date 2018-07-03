@@ -3052,7 +3052,7 @@ var MaintenanceRequest = React.createClass({
 					return (
 						<ModalShowTenants
 							close={this.isClose}
-							property={this.property}
+							property={this.state.property}
 							tenants={this.state.tenants}
 							addTenant={this.addTenant}
 							authToken={this.props.authenticity_token}
