@@ -21,7 +21,7 @@ var ModalConfirm = React.createClass({
 							<h4 className="modal-title text-center">Confirm Landlord Details</h4>
 						</div>
 						<div className="modal-body">
-							<p className="text-center">{ 'Our records show that "' + this.props.landlord.name + '" is the landlord for "' + this.state.property.property_address + '". Please confirm if this is correct.'}</p>
+							<p className="text-center">{ 'Our records show that "' + this.props.landlord.name + '" is the landlord for "' + this.props.property.property_address + '". Please confirm if this is correct.'}</p>
 						</div>
 						<div className="modal-footer">
 							<button
@@ -571,7 +571,7 @@ var ModalAddTenant = React.createClass({
 				email: this.email && this.email.value,
 				mobile: this.mobile && this.mobile.value,
 				maintenance_request_id: this.props.maintenance_request_id,
-				property_id: this.state.property.id,
+				property_id: this.props.property.id,
 			},
 		}
 		if (tenant) params.tenant.id = tenant.id;
