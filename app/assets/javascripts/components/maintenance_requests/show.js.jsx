@@ -3138,7 +3138,7 @@ var MaintenanceRequest = React.createClass({
 					return (
 						<ModalConfirmAnyThing 
 							title="Property Address"
-							content="We can not find this address. Please make sure it is correct!"
+							content={(<div>Sorry, but we can’t find <b>{addressTemp}</b>. Is this address correct?</div>)}
 							confirm={() => {
 
 								self.editAddress({address: addressTemp}, (err) => {

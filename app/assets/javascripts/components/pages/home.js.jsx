@@ -645,7 +645,7 @@ var HomeComponent = React.createClass({
     return (
       <ModalConfirmAnyThing 
         title="Property Address"
-        content="We can not find this address. Please make sure it is correct!"
+        content={(<div>Sorry, but we can’t find <b>{this.address.value}</b>. Is this address correct?</div>)}
         confirm={() => {
           const self = this;
           this.setState({ignoreCheckAddress: true}, () => self.submitNewMR({preventDefault: () => {}}));
