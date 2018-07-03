@@ -13,14 +13,16 @@ class AddressesController < ApplicationController
         agency = maintenance_request.agent.agency
       end 
       #look up property 
-      property = Property.find_by(property_address:params[:address][:address], agency_id:agency.id)
+      
+      property = Property.where(property_address:params[:address][:address]).joins(:agency_properties).where(agency_properties:{agency_id:agency.id}).distinct.first
       #create property if none
       if property
         maintenance_request.update_attribute(:property_id, property.id)
         maintenance_request.reload
       else
         
-        property = Property.create(property_address:params[:address][:address],  agency_id:agency.id)
+        property = Property.create(property_address:params[:address][:address])
+        AgencyProperty.create(property_id:property.id, agency_id:agency.id)
         maintenance_request.update_attribute(:property_id, property.id)
         maintenance_request.reload
       end 
