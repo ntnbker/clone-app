@@ -5,7 +5,8 @@ class Agency < ApplicationRecord
   has_many :agents
   has_many :agency_tradies
   has_many :tradies, through: :agency_tradies
-  has_many :properties
+  has_many :agency_properties
+  has_many :properties, through: :agency_properties
   has_one :agency_profile_image
   has_one :customer_profile
   validates :company_name, uniqueness: true

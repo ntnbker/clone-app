@@ -86,13 +86,15 @@ class MaintenanceRequestsController < ApplicationController
         existing_role = @user.get_role("Tenant").present?
       end
       #look up property 
-      @property = Property.find_by(property_address:@customer_input.address)
+      #@property = Property.find_by(property_address:@customer_input.address, agency_id:@agency.id)
+      @property = Property.where(property_address:@customer_input.address).joins(:agency_properties).where(agency_properties:{agency_id:@agency.id}).distinct.first
       #CREATE PROPERTY
-      if !@property
-        @property = Property.create(property_address:@customer_input.address, agency_admin_id:@agency_admin.id, agency_id:@agency.id)
+      
+      if @property
         @maintenance_request.property_id = @property.id
       else
-        @property = Property.find_by(property_address:@customer_input.address)
+        @property = Property.create(property_address:@customer_input.address)
+        AgencyProperty.create(property_id:@property.id, agency_id:@agency.id)
         @maintenance_request.property_id = @property.id
       end 
 
