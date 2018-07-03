@@ -97,7 +97,7 @@ var EditMaintenanceRequest = React.createClass({
 									<button
 										type="button"
 										className="btn-edit btn-address"
-										onClick={() => this.props.onModalWith('editAddress')}
+										onClick={() => this.props.viewItem('editAddress')}
 									>
 										Edit Address
 									</button>
