@@ -175,7 +175,7 @@ UploadImageComponent = React.createClass({
         filename: filename.name,
       }
       // start upload file into S3
-      $.getJSON('/images/cache/presign', options, function (result) {
+      $.getJSON('/upload_invoice_pdf/cache/presign', options, function (result) {
         var fd = new FormData();
         $.each(result.fields, function (key, value) {
           fd.append(key, value);

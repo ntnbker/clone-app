@@ -348,6 +348,12 @@ Rails.application.routes.draw do
   ###########################################################
   
   post "update_availability_access" => "tenant_availabilities#update"
+
+  ###########################################################
+  ##########ADDRESS RESOURCES#####
+  ###########################################################
+  post "update_address" => "addresses#update"
+
   
 
 

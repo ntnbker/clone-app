@@ -25,9 +25,13 @@ $( document ).ready(function() {
   // google.maps.event.addDomListener(window, 'turbolinks:load', initialize);
 });
 
-function getAddressOfGoogleMap() {
+function getAddressOfGoogleMap(event) {
   $('.pac-container').not(':last').remove();
   var input = document.getElementById('pac-input');
   var options = {types: ['address'], componentRestrictions: {country: 'au'}};
   var autocomplete = new google.maps.places.Autocomplete(input,options);
+
+  if (event) {
+    google.maps.event.addListener(autocomplete, 'place_changed', event);
+  }
 }

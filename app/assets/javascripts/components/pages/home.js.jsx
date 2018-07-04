@@ -12,6 +12,8 @@ var HomeComponent = React.createClass({
       user: current_user,
       focusEmail: false,
       focusPassword: false,
+			suggestions: [],
+			selectedAddress: ''
     };
   },
 
@@ -73,11 +75,20 @@ var HomeComponent = React.createClass({
     })
   },
 
+	chooseAddress() {
+		this.setState({selectedAddress: this.address.value, error: ''});
+	},
+
   submitNewMR(e) {
     e.preventDefault();
-    const { rolePicked } = this.state;
+    const { rolePicked, ignoreCheckAddress } = this.state;
+    const self = this;
     const tradie         = this.service && this.service.value || '';
     const address        = this.address && this.address.value;
+		
+		if (self.state.selectedAddress !== this.address.value && !ignoreCheckAddress) {
+			return this.setState({isShowModal: true});
+		}
 
     $.ajax({
       type: 'POST',
@@ -360,7 +371,7 @@ var HomeComponent = React.createClass({
               ref={(elem) => this.password = elem}
             />
           </div>
-          { error && <div className="login-error">{error}</div> }
+          { error && <div className="home-error">{error}</div> }
         </div>
         <div className="button-group login-button">
           { showBackButton &&
@@ -395,7 +406,6 @@ var HomeComponent = React.createClass({
   },
 
   homeActionForTenant() {
-    const { signed = false } = this.props;
 
     return (
       <div className="button-group tenant-home-button">
@@ -419,7 +429,7 @@ var HomeComponent = React.createClass({
   },
 
   homeActionForSubmitNewMR() {
-    const { signed = false, active } = this.state;
+    const { active, error } = this.state;
     const { services } = this.props;
 
     return (
@@ -450,11 +460,12 @@ var HomeComponent = React.createClass({
             type="text"
             id="pac-input"
             placeholder="Enter your property address here."
+            className={error ? 'has-error' : ''}
             ref={(elem) => this.address = elem}
-            onChange={getAddressOfGoogleMap}
-
+            onChange={() => {this.setState({error: ''}); getAddressOfGoogleMap(this.chooseAddress)}}
           />
         </div>
+        { error && <div className="home-error">{error}</div>}
         <div className="button-group login-button new-mr-button">
           { active !== 'Agent' &&
             <button
@@ -608,6 +619,42 @@ var HomeComponent = React.createClass({
     )
   },
 
+  closeModal() {
+		var body = document.getElementsByTagName('body')[0];
+		body.classList.remove("modal-open");
+		var div = document.getElementsByClassName('modal-backdrop in')[0];
+		if(div){
+			div.parentNode.removeChild(div);
+    }
+    this.setState({isShowModal: false});
+  },
+
+  renderModal() {
+    const {isShowModal} = this.state;
+    if (!isShowModal) return '';
+    var body = document.getElementsByTagName('body')[0];
+    body.className += " modal-open";
+    var div = document.getElementsByClassName('modal-backdrop in');
+
+    if(div.length === 0) {
+      div = document.createElement('div')
+      div.className  = "modal-backdrop in";
+      body.appendChild(div);
+    }
+
+    return (
+      <ModalConfirmAnyThing 
+        title="Property Address"
+        content={(<div>Sorry, but we can’t find <b>{this.address.value}</b>. Is this address correct?</div>)}
+        confirm={() => {
+          const self = this;
+          this.setState({ignoreCheckAddress: true}, () => self.submitNewMR({preventDefault: () => {}}));
+        }}
+        close={this.closeModal}
+      />
+    )
+  },
+
   render: function() {
     return (
       <div className="pages" ref={e => this.mainPage = e}>
@@ -629,6 +676,7 @@ var HomeComponent = React.createClass({
             <input type="hidden" id="refresh" value="no" />
           </div>
         </div>
+				{ this.renderModal() }
       </div>
     )
   }
