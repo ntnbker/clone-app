@@ -21,14 +21,14 @@ class LandlordsController < ApplicationController
       role.save
       property.update_attribute(:landlord_id, existing_user.landlord.id)
       respond_to do |format|
-        format.json {render :json=>{landlord:@landlord, notice:"Landlord successfully added" }
+        format.json {render :json=>{landlord:@landlord, notice:"Landlord successfully added"} }
       end
 
     elsif existing_user && existing_role == true
       property.update_attribute(:landlord_id, existing_user.landlord.id)
       
       respond_to do |format|
-        format.json {render :json=>{landlord:existing_user.landlord, notice:"Landlord successfully added" }
+        format.json {render :json=>{landlord:existing_user.landlord, notice:"Landlord successfully added"} }
       end
     elsif existing_user == nil
        
