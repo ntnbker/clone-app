@@ -14,7 +14,7 @@ class AddressesController < ApplicationController
       end 
       #look up property 
       
-      property = Property.where(property_address:params[:address][:address]).joins(:agency_properties).where(agency_properties:{agency_id:agency.id}).distinct.first.includes(:landlord)
+      property = Property.includes(:landlord).where(property_address:params[:address][:address]).joins(:agency_properties).where(agency_properties:{agency_id:agency.id}).distinct.first
       #create property if none
       if property
         maintenance_request.update_attribute(:property_id, property.id)
