@@ -3025,7 +3025,7 @@ var MaintenanceRequest = React.createClass({
 					);
 
 				case 'viewTrady':
-					const hasApproved = this.state.quote_requests.some(quote_request => quote_request.quotes.some(quote => quote.status === 'Approved'));
+					const hasApproved = this.state.quote_requests.some(({quotes}) => quotes && quotes.some(({status}) => status === 'Approved'));
 
 					return (
 						<ModalViewTrady
@@ -3346,7 +3346,7 @@ var MaintenanceRequest = React.createClass({
 		const {work_order_appointments, landlord_appointments, quote_appointments, current_user_role, invoices} = this.props;
 		const {invoice_pdf_files, trady, quote_requests, tenants, landlord} = this.state;
 
-		const hasApproved = quote_requests.some(quote_request => quote_request.quotes.some(quote => quote.status === 'Approved'));
+		const hasApproved = quote_requests.some(({quotes}) => quotes && quotes.some(({status}) => status === 'Approved'));
 
 		return (
 			<div className="summary-container-index new-ui-maintenance-request main-container" id="summary-container-index">
