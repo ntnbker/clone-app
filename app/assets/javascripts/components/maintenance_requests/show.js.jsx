@@ -2590,7 +2590,7 @@ var MaintenanceRequest = React.createClass({
 
 	justFindMeOne: function() {
 		const self = this;
-		const {maintenance_request} = this.state;
+		const {maintenance_request, logs} = this.state;
 		const params = {
 			maintenance_request_id: maintenance_request.id,
 		};
@@ -2603,6 +2603,11 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
+				if (res.log) {
+					logs.push(res.log);
+
+					self.setState({logs});
+				}
 				if (res.message) {
 					self.setState({
 						notification: {
