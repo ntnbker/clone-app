@@ -1028,7 +1028,7 @@ var MaintenanceRequestInformation = React.createClass({
 			<div className="mr-information main-information">
 				{
 					show_assign &&
-					<div className="mr-information row-information">
+					<div className="mr-information row-information mr-status">
 						<span className="key">Status: </span>
 						<span className="data status">{status && status.agent_status}</span>
 						<span 
@@ -1065,7 +1065,7 @@ var MaintenanceRequestInformation = React.createClass({
 
 var TenantContactButton = React.createClass({
 	render() {
-		const {tenants = [], maintenance_request, landlord, isShowLandlord, show_assign, isTrady} = this.props;
+		const {tenants = [], maintenance_request, landlord, isShowLandlord, show_assign, isTrady, edit_availability} = this.props;
 		return (
 			<div className="box-shadow">
 				{isShowLandlord && 
@@ -1140,21 +1140,29 @@ var TenantContactButton = React.createClass({
 				}
 				<div className="tenant-information">
 					<h5 className="mr-title">Tenant Details
-							{show_assign && 
+						{show_assign && 
+							<span 
+								className="edit-detail" 
+								onClick={() => this.props.onModalWith(tenants.length ? 'showTenants' : 'addTenant')}
+							>
+								(Edit Tenants)
+							</span>
+						}
+					</h5>
+					<div className="vailability">
+						<p className="header small-weight">Tenant Availability and Access Instructions: 
+							{edit_availability && 
 								<span 
 									className="edit-detail" 
-									onClick={() => this.props.onModalWith(tenants.length ? 'showTenants' : 'addTenant')}
+									onClick={() => this.props.onModalWith('editAvailability')}
 								>
-									(Edit Tenants)
+									(Edit)
 								</span>
-							}
-						</h5>
-					<div className="vailability">
-						<p className="header small-weight">Tenant Availability and Access Instructions: </p>
+							}</p>
 						<p className="job-description">{maintenance_request.availability_and_access}</p>
 					</div>
-					{tenants.map(tenant => (
-						<div className="tenant-detail">
+					{tenants.map((tenant, idx) => (
+						<div className="tenant-detail" key={idx}>
 							<div className="phone-desktop">
 								<div className="phone">
 									<span className="key">Phone Number - {trimMaxLength(tenant.name, 20)}: </span>
