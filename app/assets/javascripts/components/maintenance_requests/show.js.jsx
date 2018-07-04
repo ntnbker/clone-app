@@ -1998,7 +1998,7 @@ var MaintenanceRequest = React.createClass({
 	editAddress: function(params, callback) {
 		const self = this;
 		const { authenticity_token, maintenance_request } = this.props;
-		const {property} = this.state;
+		let {property, landlord} = this.state;
 
 		params.maintenance_request_id = maintenance_request.id;
 
@@ -2016,9 +2016,11 @@ var MaintenanceRequest = React.createClass({
 					return callback(res.errors);
 				}
 				property.property_address = res.address;
-
+				landlord = res.landlord;
+				property.landlord_id = landlord && landlord.id;
 				self.setState({
 					property,
+					landlord,
 					notification: {
 						bgClass: "bg-success",
 						title: "Edit Address",
