@@ -1500,7 +1500,7 @@ var MaintenanceRequest = React.createClass({
 					return callback(res.errors);
 				}
 				self.setState({
-					landlord: res,
+					landlord: res.landlord,
 					notification: {
 						title: landlord ? "Change Landlord" : "Add Landlord",
 						content: landlord ? 'You have successfully changed the landlord for the property "Address".' : "Your Landlord has been added successfully!",
@@ -2093,7 +2093,7 @@ var MaintenanceRequest = React.createClass({
 				if (res.errors) {
 					return callback(res.errors);
 				}
-				
+
 				logs.push(res.log);
 				self.state.maintenance_request.trady_id = !!params.trady ? params.trady.trady_id : res.all_tradies[res.all_tradies.length-1].id;
 				if (res.work_order_quote_request) {
