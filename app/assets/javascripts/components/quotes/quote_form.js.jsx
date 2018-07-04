@@ -255,8 +255,8 @@ var QuoteSubmit = React.createClass({
               </div>
             </div>
             <div className="quote-item-data">
-              {quote_items.map((quoteItem) => (
-                <div className="invoice-item">
+              {quote_items.map((quoteItem, idx) => (
+                <div className="invoice-item" key={idx}>
                   <div className="text-capitalize">
                     {quoteItem.item_description}
                   </div>

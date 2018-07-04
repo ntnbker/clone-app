@@ -168,6 +168,7 @@ var TenantMaintenanceRequest = React.createClass({
 				break;
 			}
 
+			case 'editAvailability':
 			case 'createAppointment':
 			case 'createAppointmentForQuote':
 			case 'createLandlordAppointment': {
@@ -180,6 +181,48 @@ var TenantMaintenanceRequest = React.createClass({
 			}
 		}
 
+	},
+
+	editAvailability: function(params, callback) {
+		const self = this;
+		const { authenticity_token, maintenance_request } = this.props;
+
+		params.maintenance_request_id = maintenance_request.id;
+
+		$.ajax({
+			type: 'POST',
+			url: '/update_availability_access',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: {
+				availability_access: params
+			},
+			success: function(res){
+				if (res.errors) {
+					return callback(res.errors);
+				}
+				maintenance_request.availability_and_access = res.availability_and_access;
+
+				self.setState({
+					maintenance_request,
+					notification: {
+						bgClass: "bg-success",
+						title: "Edit Availability",
+						content: 'Thank you, the availability and access has been updated',
+					}
+				});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					bgClass: "bg-error",
+					title: "Edit Availability",
+					content: err.responseText,
+				}});
+				self.onModalWith('notification');
+			}
+		});
 	},
 
 	sendAgentMessage: function(params, callback) {
@@ -681,6 +724,15 @@ var TenantMaintenanceRequest = React.createClass({
 						/>
 					);
 
+				case 'editAvailability':
+					return (
+						<ModalEditAvailability
+							close={this.isClose}
+							editAvailability={this.editAvailability}
+							maintenance_request={this.state.maintenance_request}
+						/>
+					)
+					
 				default:
 					return null;
 			}
@@ -809,6 +861,7 @@ var TenantMaintenanceRequest = React.createClass({
 							viewItem={(key, item) => this.viewItem(key, item)}
 							onModalWith={this.onModalWith}
 							maintenance_request={this.state.maintenance_request}
+							edit_availability={true}
 						/>
 					</div>
 				</div>
