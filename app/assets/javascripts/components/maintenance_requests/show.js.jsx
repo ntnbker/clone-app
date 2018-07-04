@@ -2093,7 +2093,7 @@ var MaintenanceRequest = React.createClass({
 				if (res.errors) {
 					return callback(res.errors);
 				}
-				debugger
+				
 				logs.push(res.log);
 				self.state.maintenance_request.trady_id = !!params.trady ? params.trady.trady_id : res.all_tradies[res.all_tradies.length-1].id;
 				if (res.work_order_quote_request) {
