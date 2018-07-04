@@ -14,11 +14,12 @@ class AddressesController < ApplicationController
       end 
       #look up property 
       
-      property = Property.where(property_address:params[:address][:address]).joins(:agency_properties).where(agency_properties:{agency_id:agency.id}).distinct.first
+      property = Property.where(property_address:params[:address][:address]).joins(:agency_properties).where(agency_properties:{agency_id:agency.id}).distinct.first.includes(:landlord)
       #create property if none
       if property
         maintenance_request.update_attribute(:property_id, property.id)
         maintenance_request.reload
+        landlord = property.landlord
       else
         
         property = Property.create(property_address:params[:address][:address])
@@ -29,7 +30,7 @@ class AddressesController < ApplicationController
 
 
       respond_to do |format|
-        format.json {render :json=>{address:params[:address][:address]}}
+        format.json {render :json=>{address:params[:address][:address], landlord:landlord}}
         
       end
     else

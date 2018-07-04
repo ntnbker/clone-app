@@ -86,7 +86,7 @@ class TradiesController < ApplicationController
           #do nothing
         else
           new_quote_request = QuoteRequest.create(trady_id:@user.trady.id, maintenance_request_id:mr.id)
-          work_order_quote_request = QuoteRequest.where(id:new_quote_request.id).includes(trady:[:trady_profile_image, :trady_company=> :trady_company_profile_image]).as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}})
+          work_order_quote_request = QuoteRequest.where(id:new_quote_request.id).includes(trady:[:trady_profile_image, :trady_company=> :trady_company_profile_image]).distinct.first.as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}})
         end
         QuoteRequest.expire(mr.id)
       end 
@@ -142,7 +142,7 @@ class TradiesController < ApplicationController
           #do nothing
         else
           new_quote_request = QuoteRequest.create(trady_id:@user.trady.id, maintenance_request_id:mr.id)
-          work_order_quote_request = QuoteRequest.where(id:new_quote_request.id).includes(trady:[:trady_profile_image, :trady_company=> :trady_company_profile_image]).as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}})
+          work_order_quote_request = QuoteRequest.where(id:new_quote_request.id).includes(trady:[:trady_profile_image, :trady_company=> :trady_company_profile_image]).distinct.first.as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}})
         end
         QuoteRequest.expire(mr.id)
       end 
@@ -199,7 +199,7 @@ class TradiesController < ApplicationController
             #do nothing
           else
             new_quote_request = QuoteRequest.create(trady_id:@user.trady.id, maintenance_request_id:mr.id)
-            work_order_quote_request = QuoteRequest.where(id:new_quote_request.id).includes(trady:[:trady_profile_image, :trady_company=> :trady_company_profile_image]).as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}})
+            work_order_quote_request = QuoteRequest.where(id:new_quote_request.id).includes(trady:[:trady_profile_image, :trady_company=> :trady_company_profile_image]).distinct.first.as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}})
           end
           QuoteRequest.expire(mr.id)
 
