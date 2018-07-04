@@ -1143,7 +1143,6 @@ var ModalRequestModal = React.createClass({
 														readOnly={!this.state.isAdd}
 														onChange={self.removeError}
 														value={trady.mobile || ""}
-														onKeyPress={(e) => this.checkLength(e)}
 														className={"input-custom u-full-width " + (this.state.errorMobile && "has-error")}
 													/>
 												</div>
@@ -2080,7 +2079,7 @@ var MaintenanceRequest = React.createClass({
 	},
 
 	sendWorkOrder: function(params, callback) {
-		const {logs} = this.state;
+		const {logs, quote_requests} = this.state;
 		const self = this;
 		delete params.item;
 		$.ajax({
@@ -2094,12 +2093,20 @@ var MaintenanceRequest = React.createClass({
 				if (res.errors) {
 					return callback(res.errors);
 				}
+				debugger
 				logs.push(res.log);
 				self.state.maintenance_request.trady_id = !!params.trady ? params.trady.trady_id : res.all_tradies[res.all_tradies.length-1].id;
+				if (res.work_order_quote_request) {
+					if (quote_requests.some(({id}) => id === res.work_order_quote_request.id) === false) {
+						quote_requests.push(res.work_order_quote_request);
+					}
+				}
+
 				self.setState({
 					logs: logs,
 					trady: res.hired_trady,
 					tradies: res.all_tradies,
+					quote_requests,
 					notification: {
 						title: "Send Work Order",
 						content: 'Thank you, a work order has been emailed to ' + params.trady.company_name +'. You will receive an invoice from ' + params.trady.company_name +' once the job has been completed',
@@ -2557,7 +2564,7 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
-				logs.push(res.log);
+				if (res && res.log) logs.push(res.log);
 				self.setState({
 					trady: null,
 					notification: {
