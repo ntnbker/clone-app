@@ -84,6 +84,7 @@ class TradiesController < ApplicationController
         quote_request = QuoteRequest.where(:trady_id=>@user.trady.id, :maintenance_request_id=>mr.id).first
         if quote_request
           #do nothing
+          work_order_quote_request = QuoteRequest.where(id:quote_request.id).includes(trady:[:trady_profile_image, :trady_company=> :trady_company_profile_image]).distinct.first.as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}})
         else
           new_quote_request = QuoteRequest.create(trady_id:@user.trady.id, maintenance_request_id:mr.id)
           work_order_quote_request = QuoteRequest.where(id:new_quote_request.id).includes(trady:[:trady_profile_image, :trady_company=> :trady_company_profile_image]).distinct.first.as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}})
@@ -140,6 +141,7 @@ class TradiesController < ApplicationController
         quote_request = QuoteRequest.where(:trady_id=>@user.trady.id, :maintenance_request_id=>mr.id).first
         if quote_request
           #do nothing
+          work_order_quote_request = QuoteRequest.where(id:quote_request.id).includes(trady:[:trady_profile_image, :trady_company=> :trady_company_profile_image]).distinct.first.as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}})
         else
           new_quote_request = QuoteRequest.create(trady_id:@user.trady.id, maintenance_request_id:mr.id)
           work_order_quote_request = QuoteRequest.where(id:new_quote_request.id).includes(trady:[:trady_profile_image, :trady_company=> :trady_company_profile_image]).distinct.first.as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}})
@@ -197,6 +199,7 @@ class TradiesController < ApplicationController
           quote_request = QuoteRequest.where(:trady_id=>@trady.id, :maintenance_request_id=>mr.id).first
           if quote_request
             #do nothing
+            work_order_quote_request = QuoteRequest.where(id:quote_request.id).includes(trady:[:trady_profile_image, :trady_company=> :trady_company_profile_image]).distinct.first.as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}})
           else
             new_quote_request = QuoteRequest.create(trady_id:@user.trady.id, maintenance_request_id:mr.id)
             work_order_quote_request = QuoteRequest.where(id:new_quote_request.id).includes(trady:[:trady_profile_image, :trady_company=> :trady_company_profile_image]).distinct.first.as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}})
