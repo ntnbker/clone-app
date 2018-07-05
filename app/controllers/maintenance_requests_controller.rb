@@ -126,8 +126,8 @@ class MaintenanceRequestsController < ApplicationController
               hash.each do |key, value|
                 if key == "email"
                   contact = User.find_by(email:value )
-                  #
-                  contact = User.find_by(email:value)
+                  
+                  #contact = User.find_by(email:value)
                   if contact
                     existing_role = contact.get_role("Tenant").present?
                   end 
