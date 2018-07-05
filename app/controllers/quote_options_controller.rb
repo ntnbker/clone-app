@@ -3,6 +3,8 @@ class QuoteOptionsController < ApplicationController
   before_action :require_login, only:[:show]
   before_action :require_role
   before_action(only:[:show,:index]) {allow("Trady")}
+  before_action :check_for_assignment
+
   def show
     @maintenance_request= MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     @trady = Trady.find_by(id:params[:trady_id])
@@ -12,40 +14,24 @@ class QuoteOptionsController < ApplicationController
 
   private
 
-  # def email_auto_login(id)
-
-  #   user = User.find_by(id:id)
-  #   if user
-  #     if current_user
-  #       if current_user
-  #         if current_user.logged_in_as("Tenant") || current_user.logged_in_as("Landlord") || current_user.logged_in_as("AgencyAdmin") || current_user.logged_in_as("Agent")
-  #           answer = true
-  #         else
-  #           answer = false
-  #         end 
-  #       else
-  #         auto_login(user)
-  #         user.current_role.update_attribute(:role, "Trady")
-  #       end 
-
-  #       if current_user  && answer && user.has_role("Trady")
-  #         logout
-  #         auto_login(user)
-  #         user.current_role.update_attribute(:role, "Trady")
-  #       elsif current_user == nil
-  #         auto_login(user)
-  #         user.current_role.update_attribute(:role, "Trady")
-  #       elsif current_user && current_user.logged_in_as("Trady")
-  #           #do nothing
-  #       end 
-  #     else
-  #       auto_login(user)
-  #       user.current_role.update_attribute(:role, "Trady")
-  #     end 
-  #   else 
-  #     flash[:notice] = "You are not allowed to see that. Log in as an authorized user."
-  #     redirect_to root_path
-  #   end 
-
-  # end 
+  def check_for_assignment
+    # check if the MR has an assigned trady
+    # if is does have an assigned trady check if the assigned trady is the same as currentUser.trady
+    #   if yes then do ntohing 
+    #     if no 
+    maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
+    if maintenance_request.trady
+      if current_user.trady == maintenance_request.trady
+        #do nothing
+      else
+        flash[:danger] = "Sorry this job has been awarded to another tradie. To increase your chance of being awarded jobs please submit quotes as soon as possible."
+        redirect_to trady_maintenance_request_path(maintenance_request)
+      end 
+    else
+      #do nothing 
+    end 
+      
+  end
 end 
+
+

@@ -3,7 +3,7 @@ class QuotesController < ApplicationController
   before_action :require_login
   before_action :require_role
   before_action(only:[:new,:create,:edit,:update,:show,:show_quote]) {allow("Trady")}
-  
+  before_action :check_for_assignment, only:[:send_quote_email]
   #caches_action :new, :edit, :show
 
   def new
@@ -397,6 +397,25 @@ class QuotesController < ApplicationController
         user = User.find_by(id:id)
         auto_login(user)
       end 
+  end
+
+  def check_for_assignment
+    # check if the MR has an assigned trady
+    # if is does have an assigned trady check if the assigned trady is the same as currentUser.trady
+    #   if yes then do ntohing 
+    #     if no 
+    maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
+    if maintenance_request.trady
+      if current_user.trady == maintenance_request.trady
+        #do nothing
+      else
+        flash[:danger] = "Sorry this job has been awarded to another tradie. To increase your chance of being awarded jobs please submit quotes as soon as possible."
+        redirect_to trady_maintenance_request_path(maintenance_request)
+      end 
+    else
+      #do nothing 
+    end 
+      
   end
 
   

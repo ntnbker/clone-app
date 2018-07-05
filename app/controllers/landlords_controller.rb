@@ -20,27 +20,30 @@ class LandlordsController < ApplicationController
       @landlord.roles << role
       role.save
       property.update_attribute(:landlord_id, existing_user.landlord.id)
+      respond_to do |format|
+        format.json {render :json=>{landlord:@landlord, notice:"Landlord successfully added"} }
+      end
 
     elsif existing_user && existing_role == true
       property.update_attribute(:landlord_id, existing_user.landlord.id)
       
       respond_to do |format|
-        format.json {render json:existing_user.landlord, notice:"Landlord successfully added" }
+        format.json {render :json=>{landlord:existing_user.landlord, notice:"Landlord successfully added"} }
       end
     elsif existing_user == nil
        
         if @landlord.valid?
-           respond_to do |format|
-            format.json {render json:@landlord, :notice=>"Landlord successfully created" }
-            end
+           
           @user = User.create(email:params[:landlord][:email],password:SecureRandom.hex(5))
           @landlord.user_id = @user.id
           @landlord.save
           role = Role.create(user_id:@user.id)
           @landlord.roles << role
-          
           property.update_attribute(:landlord_id, @user.landlord.id)
           
+          respond_to do |format|
+            format.json {render :json=>{landlord:@landlord, notice:"Landlord successfully created"} }
+          end
         else
           respond_to do |format|
             format.json{render :json=>{errors:@landlord.errors.to_hash(true).as_json}}

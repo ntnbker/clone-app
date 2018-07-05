@@ -13,7 +13,7 @@ class JfmoTradiesController < ApplicationController
 
     if maintenance_request.trady
       message = "Sorry this maintenance request already has a tradie that has been assigned the work."
-      
+      log = nil
 
     else
       #if tradies.count > 0
@@ -49,21 +49,20 @@ class JfmoTradiesController < ApplicationController
         else
           FindTradieEmailWorker.perform_async(maintenance_request.id)
           JfmoRequest.create(maintenance_request_id:maintenance_request.id)
-          Log.create(maintenance_request_id:maintenance_request.id, action:"Just Find One Request")
+          log = Log.create(maintenance_request_id:maintenance_request.id, action:"Just Find One Request")
       
 
         end 
       #end 
       
-
-
-
       maintenance_request.update_attribute(:jfmo_status, "Active")
+
+
       
     end 
 
     respond_to do |format|
-      format.json {render :json=>{message:message}}
+      format.json {render :json=>{message:message, log:log}}
     end 
 
   end

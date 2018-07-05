@@ -1143,7 +1143,6 @@ var ModalRequestModal = React.createClass({
 														readOnly={!this.state.isAdd}
 														onChange={self.removeError}
 														value={trady.mobile || ""}
-														onKeyPress={(e) => this.checkLength(e)}
 														className={"input-custom u-full-width " + (this.state.errorMobile && "has-error")}
 													/>
 												</div>
@@ -1501,7 +1500,7 @@ var MaintenanceRequest = React.createClass({
 					return callback(res.errors);
 				}
 				self.setState({
-					landlord: res,
+					landlord: res.landlord,
 					notification: {
 						title: landlord ? "Change Landlord" : "Add Landlord",
 						content: landlord ? 'You have successfully changed the landlord for the property "Address".' : "Your Landlord has been added successfully!",
@@ -1999,7 +1998,7 @@ var MaintenanceRequest = React.createClass({
 	editAddress: function(params, callback) {
 		const self = this;
 		const { authenticity_token, maintenance_request } = this.props;
-		const {property} = this.state;
+		let {property, landlord} = this.state;
 
 		params.maintenance_request_id = maintenance_request.id;
 
@@ -2017,9 +2016,11 @@ var MaintenanceRequest = React.createClass({
 					return callback(res.errors);
 				}
 				property.property_address = res.address;
-
+				landlord = res.landlord;
+				property.landlord_id = landlord && landlord.id;
 				self.setState({
 					property,
+					landlord,
 					notification: {
 						bgClass: "bg-success",
 						title: "Edit Address",
@@ -2080,7 +2081,7 @@ var MaintenanceRequest = React.createClass({
 	},
 
 	sendWorkOrder: function(params, callback) {
-		const {logs} = this.state;
+		const {logs, quote_requests} = this.state;
 		const self = this;
 		delete params.item;
 		$.ajax({
@@ -2094,12 +2095,20 @@ var MaintenanceRequest = React.createClass({
 				if (res.errors) {
 					return callback(res.errors);
 				}
+
 				logs.push(res.log);
 				self.state.maintenance_request.trady_id = !!params.trady ? params.trady.trady_id : res.all_tradies[res.all_tradies.length-1].id;
+				if (res.work_order_quote_request) {
+					if (quote_requests.some(({id}) => id === res.work_order_quote_request.id) === false) {
+						quote_requests.push(res.work_order_quote_request);
+					}
+				}
+
 				self.setState({
 					logs: logs,
 					trady: res.hired_trady,
 					tradies: res.all_tradies,
+					quote_requests,
 					notification: {
 						title: "Send Work Order",
 						content: 'Thank you, a work order has been emailed to ' + params.trady.company_name +'. You will receive an invoice from ' + params.trady.company_name +' once the job has been completed',
@@ -2557,7 +2566,7 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
-				logs.push(res.log);
+				if (res && res.log) logs.push(res.log);
 				self.setState({
 					trady: null,
 					notification: {
@@ -2581,7 +2590,7 @@ var MaintenanceRequest = React.createClass({
 
 	justFindMeOne: function() {
 		const self = this;
-		const {maintenance_request} = this.state;
+		const {maintenance_request, logs} = this.state;
 		const params = {
 			maintenance_request_id: maintenance_request.id,
 		};
@@ -2594,6 +2603,11 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
+				if (res.log) {
+					logs.push(res.log);
+
+					self.setState({logs});
+				}
 				if (res.message) {
 					self.setState({
 						notification: {
@@ -3011,7 +3025,7 @@ var MaintenanceRequest = React.createClass({
 					);
 
 				case 'viewTrady':
-					const hasApproved = this.state.quote_requests.some(quote_request => quote_request.quotes.some(quote => quote.status === 'Approved'));
+					const hasApproved = this.state.quote_requests.some(({quotes}) => quotes && quotes.some(({status}) => status === 'Approved'));
 
 					return (
 						<ModalViewTrady
@@ -3332,7 +3346,7 @@ var MaintenanceRequest = React.createClass({
 		const {work_order_appointments, landlord_appointments, quote_appointments, current_user_role, invoices} = this.props;
 		const {invoice_pdf_files, trady, quote_requests, tenants, landlord} = this.state;
 
-		const hasApproved = quote_requests.some(quote_request => quote_request.quotes.some(quote => quote.status === 'Approved'));
+		const hasApproved = quote_requests.some(({quotes}) => quotes && quotes.some(({status}) => status === 'Approved'));
 
 		return (
 			<div className="summary-container-index new-ui-maintenance-request main-container" id="summary-container-index">

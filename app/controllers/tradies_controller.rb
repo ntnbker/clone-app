@@ -84,8 +84,10 @@ class TradiesController < ApplicationController
         quote_request = QuoteRequest.where(:trady_id=>@user.trady.id, :maintenance_request_id=>mr.id).first
         if quote_request
           #do nothing
+          work_order_quote_request = QuoteRequest.where(id:quote_request.id).includes(trady:[:trady_profile_image, :trady_company=> :trady_company_profile_image]).distinct.first.as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}})
         else
-          QuoteRequest.create(trady_id:@user.trady.id, maintenance_request_id:mr.id)
+          new_quote_request = QuoteRequest.create(trady_id:@user.trady.id, maintenance_request_id:mr.id)
+          work_order_quote_request = QuoteRequest.where(id:new_quote_request.id).includes(trady:[:trady_profile_image, :trady_company=> :trady_company_profile_image]).distinct.first.as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}})
         end
         QuoteRequest.expire(mr.id)
       end 
@@ -97,7 +99,7 @@ class TradiesController < ApplicationController
         @hired_trady = mr.trady.as_json({:include => :trady_company})
        end 
       respond_to do |format|
-        format.json{render :json=>{all_tradies:@all_tradies, added_trady:@trady, hired_trady:@hired_trady, log:log}}
+        format.json{render :json=>{all_tradies:@all_tradies, added_trady:@trady, hired_trady:@hired_trady, log:log, work_order_quote_request:work_order_quote_request}}
       end
     elsif @user && existing_role == true
 
@@ -139,8 +141,10 @@ class TradiesController < ApplicationController
         quote_request = QuoteRequest.where(:trady_id=>@user.trady.id, :maintenance_request_id=>mr.id).first
         if quote_request
           #do nothing
+          work_order_quote_request = QuoteRequest.where(id:quote_request.id).includes(trady:[:trady_profile_image, :trady_company=> :trady_company_profile_image]).distinct.first.as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}})
         else
-          QuoteRequest.create(trady_id:@user.trady.id, maintenance_request_id:mr.id)
+          new_quote_request = QuoteRequest.create(trady_id:@user.trady.id, maintenance_request_id:mr.id)
+          work_order_quote_request = QuoteRequest.where(id:new_quote_request.id).includes(trady:[:trady_profile_image, :trady_company=> :trady_company_profile_image]).distinct.first.as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}})
         end
         QuoteRequest.expire(mr.id)
       end 
@@ -151,7 +155,7 @@ class TradiesController < ApplicationController
         @hired_trady = mr.trady.as_json({:include => :trady_company})
        end 
       respond_to do |format|
-        format.json{render :json=>{all_tradies:@all_tradies, added_trady:@trady, hired_trady:@hired_trady, log:log}}
+        format.json{render :json=>{all_tradies:@all_tradies, added_trady:@trady, hired_trady:@hired_trady, log:log, work_order_quote_request:work_order_quote_request}}
       end
 
 ####NEW USER STARTS HERE
@@ -195,8 +199,10 @@ class TradiesController < ApplicationController
           quote_request = QuoteRequest.where(:trady_id=>@trady.id, :maintenance_request_id=>mr.id).first
           if quote_request
             #do nothing
+            work_order_quote_request = QuoteRequest.where(id:quote_request.id).includes(trady:[:trady_profile_image, :trady_company=> :trady_company_profile_image]).distinct.first.as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}})
           else
-            QuoteRequest.create(trady_id:@trady.id, maintenance_request_id:mr.id)
+            new_quote_request = QuoteRequest.create(trady_id:@user.trady.id, maintenance_request_id:mr.id)
+            work_order_quote_request = QuoteRequest.where(id:new_quote_request.id).includes(trady:[:trady_profile_image, :trady_company=> :trady_company_profile_image]).distinct.first.as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}})
           end
           QuoteRequest.expire(mr.id)
 
@@ -212,7 +218,7 @@ class TradiesController < ApplicationController
         @hired_trady = mr.trady.as_json({:include => :trady_company})
        end 
       respond_to do |format|
-        format.json{render :json=>{all_tradies:@all_tradies, added_trady:@trady, hired_trady:@hired_trady, log:log}}
+        format.json{render :json=>{all_tradies:@all_tradies, added_trady:@trady, hired_trady:@hired_trady, log:log, work_order_quote_request:work_order_quote_request}}
       end
       else
         respond_to do |format|

@@ -9,8 +9,8 @@ class ReceiptProcessor
 
 
   customers_profiles_trady_ids.each do |trady_id|
-    system_invoices = Invoice.where(active:true,delivery_status:true, mapp_payment_status:"Outstanding", trady_id:trady_id).includes(trady:[:customer_profile]).to_a
-    uploaded_invoices = UploadedInvoice.where(active:true, delivery_status:true, mapp_payment_status:"Outstanding", trady_id:trady_id).includes(trady:[:customer_profile]).to_a
+    system_invoices = Invoice.where(active:true,delivery_status:true, mapp_payment_status:"Outstanding", trady_id:trady_id).where.not(service_fee:nil).includes(trady:[:customer_profile]).to_a
+    uploaded_invoices = UploadedInvoice.where(active:true, delivery_status:true, mapp_payment_status:"Outstanding", trady_id:trady_id).where.not(service_fee:nil).includes(trady:[:customer_profile]).to_a
     
 
     all_invoices = system_invoices + uploaded_invoices
