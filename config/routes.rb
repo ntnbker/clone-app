@@ -354,6 +354,12 @@ Rails.application.routes.draw do
   ###########################################################
   post "update_address" => "addresses#update"
 
+  ###########################################################
+  ##########ADDRESS RESOURCES#####
+  ###########################################################
+  resources :access_contacts, only:[:create, :update]
+
+
   
 
 

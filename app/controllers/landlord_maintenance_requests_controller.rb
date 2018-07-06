@@ -125,12 +125,14 @@ class LandlordMaintenanceRequestsController < ApplicationController
 
 ########APPOINTMENT STUFF############
 
-
+  if @maintenance_request.access_contacts
+    @access_contacts = @maintenance_request.access_contacts
+  end
 
 
 
     respond_to do |format|
-      format.json { render :json=>{:gallery=>@gallery, :instruction=>@instruction,:quotes=> @quotes, :landlord=> @landlord,:signed_in_landlord=>@signed_in_landlord ,:tenant=>@tenants.first, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation,:agency=>@agency,:property=>@maintenance_request.property,:agent=>@agent,:quote=>@quotes,logs:@logs, landlord_appointments:@landlord_appointments,time_and_access:@maintenance_request.availability_and_access}}
+      format.json { render :json=>{:gallery=>@gallery, :instruction=>@instruction,:quotes=> @quotes, :landlord=> @landlord,:signed_in_landlord=>@signed_in_landlord ,:tenant=>@tenants.first, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation,:agency=>@agency,:property=>@maintenance_request.property,:agent=>@agent,:quote=>@quotes,logs:@logs, landlord_appointments:@landlord_appointments,time_and_access:@maintenance_request.availability_and_access, access_contacts:@access_contacts}}
       format.html{render :show}
     end 
 

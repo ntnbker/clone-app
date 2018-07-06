@@ -170,11 +170,14 @@ class TradyMaintenanceRequestsController < ApplicationController
     #we need to have the tradys_id in the form
 
 ########APPOINTMENT STUFF############
+  if @maintenance_request.access_contacts
+    @access_contacts = @maintenance_request.access_contacts
+  end
 
 
 
     respond_to do |format|
-      format.json { render :json=>{:gallery=>@gallery,:instruction=>@instruction ,:quote_requests=>@quote_requests, :landlord=> @landlord,:trady_agent_conversation=>@trady_agent_conversation ,:tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, :agency=>@agency, :property=>@maintenance_request.property, :agent=>@agent, agency_admin:@agency_admin ,:assigned_trady=>@assigned_trady, :signed_in_trady=>@signed_in_trady, :pdf_urls=>@invoice_pdf_urls, pdf_files:@pdf_files,:invoices=>@invoices, logs:@logs,tenants:@tenants, work_order_appointments:@work_order_appointments, :trady => @trady, :quote_appointments => @quote_appointments,time_and_access:@maintenance_request.availability_and_access}}
+      format.json { render :json=>{:gallery=>@gallery,:instruction=>@instruction ,:quote_requests=>@quote_requests, :landlord=> @landlord,:trady_agent_conversation=>@trady_agent_conversation ,:tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, :agency=>@agency, :property=>@maintenance_request.property, :agent=>@agent, agency_admin:@agency_admin ,:assigned_trady=>@assigned_trady, :signed_in_trady=>@signed_in_trady, :pdf_urls=>@invoice_pdf_urls, pdf_files:@pdf_files,:invoices=>@invoices, logs:@logs,tenants:@tenants, work_order_appointments:@work_order_appointments, :trady => @trady, :quote_appointments => @quote_appointments,time_and_access:@maintenance_request.availability_and_access, access_contacts:@access_contacts}}
       format.html{render :show}
     end 
   end
