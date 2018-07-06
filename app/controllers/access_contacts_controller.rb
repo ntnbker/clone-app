@@ -23,7 +23,7 @@ class AccessContactsController < ApplicationController
     
     if access_contact.update(access_contacts_params)
       respond_to do |format|
-        format.json {render :json=>{access_contact:access_contact}}
+        format.json {render :json=>{access_contact:access_contact, message:"You have updated the access contact information for #{access_contact.name.capitalize}"}}
       end 
     else
       respond_to do |format|
