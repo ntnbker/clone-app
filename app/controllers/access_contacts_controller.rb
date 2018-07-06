@@ -1,4 +1,4 @@
-class AccessContacts < ApplicationController
+class AccessContactsController < ApplicationController
   before_action :require_login
   before_action :require_role
 
@@ -30,6 +30,11 @@ class AccessContacts < ApplicationController
         format.json {render :json=>{errors:access_contact.errors.to_hash(true).as_json}}
       end 
     end 
+  end
+
+
+  def destroy
+    
   end
 
   private
