@@ -6,6 +6,7 @@ class AccessContactsController < ApplicationController
   def create
     access_contact = AccessContact.new(access_contacts_params)
     
+    access_contact.turn_off_validations = false
     if access_contact.save
       respond_to do |format|
         format.json {render :json=>{access_contact:access_contact}}
