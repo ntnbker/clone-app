@@ -1065,7 +1065,16 @@ var MaintenanceRequestInformation = React.createClass({
 
 var TenantContactButton = React.createClass({
 	render() {
-		const {tenants = [], maintenance_request, landlord, isShowLandlord, show_assign, isTrady, edit_availability} = this.props;
+		const {tenants = [], maintenance_request, landlord, isShowLandlord, show_assign, isTrady, edit_availability, access_contact} = this.props;
+		const access_contacts = [{
+			id: 1,
+			name: 'Jeff',
+			mobile: '0969264497',
+		},{
+			id: 2,
+			name: 'Martin',
+			mobile: '0261123123',
+		}]
 		return (
 			<div className="box-shadow">
 				{isShowLandlord && 
@@ -1193,6 +1202,45 @@ var TenantContactButton = React.createClass({
 										</button>
 									</div>
 								}
+							</div>
+						</div>
+					))}
+				</div>
+				<div className="tenant-information">
+					<h5 className="mr-title">Additional Access Contacts
+						{show_assign && 
+							<span 
+								className="edit-detail" 
+								onClick={() => this.props.onModalWith(access_contacts.length ? 'showAccessContacts' : 'addAccessContact')}
+							>
+								(Edit)
+							</span>
+						}
+					</h5>
+					{access_contacts.map((access_contact, idx) => (
+						<div className="tenant-detail" key={idx}>
+							<div className="phone-desktop">
+								<div className="phone">
+									<span className="key">Phone Number - {trimMaxLength(access_contact.name, 20)}: </span>
+									<span className="value">{access_contact.mobile}</span>
+								</div>
+							</div>
+							<div className="contact-button">
+								<div className="phone">
+									<button
+										type="button"
+										className="call-tenant"
+										onClick={() => this[`accessContactPhone${access_contact.id}`].click()}
+									>
+										<a
+											href={`tel:${access_contact.mobile}`}
+											ref={e => this[`accessContactPhone${access_contact.id}`] = e}
+											className="display-none"
+										/>
+										<i className="fa fa-phone" aria-hidden="true" />
+										Tenant - {access_contact.name}
+									</button>
+								</div>
 							</div>
 						</div>
 					))}

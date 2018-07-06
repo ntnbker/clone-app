@@ -683,6 +683,125 @@ var ModalAddTenant = React.createClass({
 	}
 });
 
+var ModalAddAccessContact = React.createClass({
+	getInitialState: function() {
+		return {
+			errorName: '',
+			errorMobile: '',
+		};
+	},
+
+	removeError: function(e) {
+		var key = e.target.id;
+		var errorField = {
+			'name'  : 'errorName',
+			'mobile': 'errorMobile',
+		}[key];
+		if (!errorField || !this.state[errorField]) return;
+		this.setState({ [errorField]: '' });
+	},
+
+	submit: function(e) {
+		e.preventDefault();
+		const self = this;
+		const {access_contact} = this.props;
+		var params = {
+			authenticity_token: this.props.authToken,
+			access_contact: {
+				name: this.name && this.name.value,
+				mobile: this.mobile && this.mobile.value,
+				maintenance_request_id: this.props.maintenance_request_id,
+				property_id: this.props.property.id,
+			},
+		}
+		if (access_contact) params.access_contact.id = access_contact.id;
+
+		this.props.addAccessContact(params, function(err) {
+			if (err) {
+				self.setState({
+					errorName: err.name,
+					errorMobile: err.mobile,
+				})
+			}
+		});
+		return
+	},
+
+	render: function() {
+		const access_contact = this.props.access_contact;
+		return (
+			<div className="modal-custom fade">
+				<div className="modal-dialog">
+					<div className="modal-content">
+						<form role="form" id="addForm" onSubmit={this.submit}>
+							<div className="modal-header">
+								<button
+									type="button"
+									className="close"
+									aria-label="Close"
+									data-dismiss="modal"
+									onClick={this.props.close}
+								>
+									<span aria-hidden="true">&times;</span>
+								</button>
+								<h4 className="modal-title text-center">{access_contact ? 'Edit' : 'Add'} Access Contact</h4>
+							</div>
+							<div className="modal-body">
+									<div className="row">
+										<div>
+											<label>Name <strong>*</strong>:</label>
+											<input
+												id="name"
+												type="text"
+												name="access_contact[name]"
+												placeholder="Enter Name"
+												defaultValue={access_contact && access_contact.name}
+												ref={e => this.name = e}
+												onChange={this.removeError}
+												className={"u-full-width " + (this.state.errorName && "has-error")}
+											/>
+										</div>
+										{renderError(this.state['errorName'])}
+									</div>
+									<div className="row m-t-lg">
+										<div>
+											<label>Mobile <strong>*</strong>:</label>
+											<input
+												id="mobile"
+												type="text"
+												name="access_contact[mobile]"
+												placeholder="Enter Mobile"
+												defaultValue={access_contact && access_contact.mobile}
+												ref={e => this.mobile = e}
+												onChange={this.removeError}
+												className={"u-full-width " + (this.state.errorMobile && "has-error")}
+											/>
+										</div>
+										{renderError(this.state['errorMobile'])}
+									</div>
+							</div>
+							<div className="modal-footer">
+								<button
+									type="button"
+									onClick={() => {
+										if (access_contact) {
+											this.props.viewItem('showAccessContacts');
+										} else {
+											this.props.close();
+										}
+									}}
+									className="btn btn-primary cancel"
+								>Cancel</button>
+								<button type="submit" className="btn btn-default success">Submit</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		);
+	}
+});
+
 var ModalShowTenants = React.createClass({
 	render: function() {
 		const {tenants = []} = this.props;
@@ -740,6 +859,71 @@ var ModalShowTenants = React.createClass({
 									onClick={() => this.props.viewItem('addTenant')}
 								>
 									Add Tenant
+								</button>
+							</div>
+					</div>
+				</div>
+			</div>
+		);
+	}
+});
+
+var ModalShowAccessContacts = React.createClass({
+	render: function() {
+		const {accessContacts = [], canRemove} = this.props;
+		return (
+			<div className="modal-custom fade">
+				<div className="modal-dialog">
+					<div className="modal-content">
+							<div className="modal-header">
+								<button
+									type="button"
+									className="close"
+									aria-label="Close"
+									data-dismiss="modal"
+									onClick={this.props.close}
+								>
+									<span aria-hidden="true">&times;</span>
+								</button>
+								<h4 className="modal-title text-center">Access Contacts</h4>
+							</div>
+							<div className="modal-body">
+								{
+									accessContacts.map((accessContact) => (
+										<div className="row tenant-detail" key={accessContact.id}>
+											<span className="tenant-name">{accessContact.name}</span>
+						          <div className="view-tenant-button">
+							          <span
+							          	title="Edit Information"
+							          	className="edit-tenant fa fa-pencil-square-o"
+							            onClick={() => this.props.viewItem('editAccessContact', accessContact)}
+							          />
+							          { canRemove &&
+							          	<span
+								          	title="Remove Access Contact"
+								            className="remove-tenant fa fa-times"
+								            onClick={() => this.props.viewItem('removeAccessContact', accessContact)}
+								          />
+								        }
+						          </div>
+										</div>
+									))
+								}
+							</div>
+							<div className="modal-footer">
+								<button
+									type="button"
+									onClick={this.props.close}
+									className="btn btn-primary cancel"
+								>
+									Cancel
+								</button>
+								<button
+									type="button"
+									className="btn btn-default success"
+									onClick={() => this.props.viewItem('addAccessContact')}
+								>
+									Add More
 								</button>
 							</div>
 					</div>
@@ -1224,6 +1408,8 @@ var MaintenanceRequest = React.createClass({
 			comments  	 	 		 			 	 : comments,
 			logs  	 	 		 						 : this.props.logs,
 			invoice_pdf_file  	 	 		 : null,
+			access_contact						 : null,
+			access_contacts 					 : this.props.access_contacts,
 			agency 										 : this.props.agency,
 			property 									 : this.props.property,
 			status  	 	 		 					 : this.props.status,
@@ -1403,6 +1589,17 @@ var MaintenanceRequest = React.createClass({
 					errorAddress: item
 				})
 				this.onModalWith('editAddress');
+				break;
+			}
+
+			case 'addAccessContact':
+			case 'editAccessContact':
+			case 'showAccessContacts':
+			case 'removeAccessContact': {
+				this.setState({
+					access_contact: item
+				})
+				this.onModalWith(key);
 				break;
 			}
 
@@ -3203,6 +3400,44 @@ var MaintenanceRequest = React.createClass({
 					/>
 				)
 
+				case 'addAccessContact':
+				case 'editAccessContact':
+					return (
+						<ModalAddAccessContact
+							close={this.isClose}
+							property={this.state.property}
+							access_contact={this.state.access_contact}
+							addAccessContact={this.addAccessContact}
+							authToken={this.props.authenticity_token}
+							viewItem={this.viewItem}
+							maintenance_request_id={this.state.maintenance_request.id}
+						/>
+					);
+
+
+				case 'showAccessContacts':
+					return (
+						<ModalShowAccessContacts
+							close={this.isClose}
+							property={this.state.property}
+							access_contacts={this.state.access_contacts}
+							authToken={this.props.authenticity_token}
+							viewItem={this.viewItem}
+							maintenance_request_id={this.state.maintenance_request.id}
+						/>
+					)
+
+
+				case 'removeAccessContact':
+					return (
+						<ModalConfirmAnyThing
+							title="Remove Access Contact"
+							content={`Are you sure you want to remove ${this.state.access_contact.name} from this maintenance request`}
+							confirm={this.removeAccessContact}
+							close={() => this.viewItem('showAccessContacts')}
+						/>
+					)
+
 				default:
 					return null;
 			}
@@ -3327,6 +3562,95 @@ var MaintenanceRequest = React.createClass({
 		});
 		this.onModalWith('confirmAddPhoto');
 	},
+	
+	addAccessContact: function (params, callback) {
+    const { access_contact, access_contacts } = this.state;
+    var self = this;
+    $.ajax({
+      type: access_contact ? 'PUT' : 'POST',
+      url: '/access_contacts' + (access_contact ? '/' + access_contact.id : ''),
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', params.authenticity_token);
+      },
+      data: params,
+      success: function (res) {
+        if (res.errors) {
+          return callback(res.errors);
+        }
+        let updatedAccessContacts = access_contacts;
+
+        if (!access_contact) {
+          updatedAccessContacts.push(res.access_contact);
+        } else {
+          updatedAccessContacts = access_contacts.map((a_c_state) => {
+            return a_c_state.id === res.access_contact.id ? res.access_contact : a_c_state;
+          });
+        }
+
+        self.setState({
+          access_contacts: updatedAccessContacts,
+          notification: {
+            title: access_contact ? "Edit Access Contact" : "Add Access Contact",
+            content: res.message,
+            bgClass: "bg-success",
+            reopenModal: 'showAccessContacts',
+          },
+        });
+        self.onModalWith('notification');
+      },
+      error: function (err) {
+        self.setState({
+          notification: {
+            title: (access_contact ? "Edit" : "Add") + " Access Contact",
+            content: err.responseText,
+            bgClass: "bg-error",
+          }
+        });
+        self.onModalWith('notification');
+      }
+    });
+  },
+
+  removeAccessContact: function (callback) {
+    var self = this;
+    const { access_contact, maintenance_request, access_contacts } = this.state;
+    $.ajax({
+      type: 'DELETE',
+      url: '/access_contacts/' + access_contact.id,
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      data: {
+        access_contact: {
+          id: access_contact.id,
+          maintenance_request_id: maintenance_request.id,
+        }
+      },
+      success: function (res) {
+        const filterAccessContact = access_contacts.filter(te => te.id !== access_contact.id);
+        self.setState({
+          access_contacts: filterAccessContact,
+          notification: {
+            title: "Remove Access Contact",
+            content: res.message,
+            bgClass: "bg-success",
+            reopenModal: 'showAccessContacts',
+          },
+        });
+        self.onModalWith('notification');
+      },
+      error: function (err) {
+        self.setState({
+          notification: {
+            title: "Remove Access Contact",
+            content: err.responseText,
+            bgClass: "bg-error",
+          }
+        });
+        self.onModalWith('notification');
+      }
+    });
+  },
 
 	summary(e) {
 		const {work_order_appointments, landlord_appointments, quote_appointments, current_user_role, invoices} = this.props;
