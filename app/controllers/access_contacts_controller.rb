@@ -9,7 +9,7 @@ class AccessContactsController < ApplicationController
     access_contact.turn_off_validations = false
     if access_contact.save
       respond_to do |format|
-        format.json {render :json=>{access_contact:access_contact}}
+        format.json {render :json=>{access_contact:access_contact, message:"You have added access contact information for #{access_contact.name.capitalize}"}}
       end 
     else
       respond_to do |format|
@@ -35,7 +35,10 @@ class AccessContactsController < ApplicationController
 
 
   def destroy
-    
+    access_contact = AccessContact.find_by(id:params[:access_contact][:id]).destroy
+    respond_to do |format|
+      format.json {render :json=>{message:"You have updated the access contact information for #{access_contact.name.capitalize}"}}
+    end
   end
 
   private

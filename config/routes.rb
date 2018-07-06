@@ -357,7 +357,7 @@ Rails.application.routes.draw do
   ###########################################################
   ##########ADDRESS RESOURCES#####
   ###########################################################
-  resources :access_contacts, only:[:create, :update]
+  resources :access_contacts, only:[:create, :update, :destroy]
 
 
   
