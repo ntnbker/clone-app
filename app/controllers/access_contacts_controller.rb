@@ -37,7 +37,7 @@ class AccessContactsController < ApplicationController
   def destroy
     access_contact = AccessContact.find_by(id:params[:access_contact][:id]).destroy
     respond_to do |format|
-      format.json {render :json=>{message:"You have updated the access contact information for #{access_contact.name.capitalize}"}}
+      format.json {render :json=>{message:"You have deleted the access contact information for #{access_contact.name.capitalize}"}}
     end
   end
 
