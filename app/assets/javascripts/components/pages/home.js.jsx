@@ -431,38 +431,13 @@ var HomeComponent = React.createClass({
   homeActionForSubmitNewMR() {
     const { active, error, isVacant } = this.state;
     const { services } = this.props;
-    const isAgent = active === 'Agent';
+    
     return (
       <form
         className={`submit-new-mr ${active.toLowerCase()}-content`}
         id="submit-new-mr"
         onSubmit={this.submitNewMR}
       >
-      { isAgent &&
-        <div className="choose-role is-vacant">
-          <div className="question">Is the property vacant?</div>
-          <label className="radio-option">Yes
-            <input
-              type="radio"
-              name="role-picked"
-              value="Yes"
-              onChange={() => this.setState({isVacant: true})}
-              defaultChecked={!!isVacant}
-            />
-            <span className="radio-checkmark"></span>
-          </label>
-          <label className="radio-option">No
-            <input
-              type="radio"
-              name="role-picked"
-              onChange={() => this.setState({isVacant: false})}
-              value="No"
-              defaultChecked={!isVacant}
-            />
-            <span className="radio-checkmark"></span>
-          </label>
-        </div>
-      }
         <div className="type-service">
           <select
             className="type-service"

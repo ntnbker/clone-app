@@ -771,7 +771,8 @@ var ModalShowTenants = React.createClass({
 
 var ModalShowAccessContacts = React.createClass({
 	render: function() {
-		const {accessContacts = [], canRemove} = this.props;
+    const {access_contacts = []} = this.props;
+    const canRemove = true;
 		return (
 			<div className="modal-custom fade">
 				<div className="modal-dialog">
@@ -790,7 +791,7 @@ var ModalShowAccessContacts = React.createClass({
 							</div>
 							<div className="modal-body">
 								{
-									accessContacts.map((accessContact) => (
+									access_contacts.map((accessContact) => (
 										<div className="row tenant-detail" key={accessContact.id}>
 											<span className="tenant-name">{accessContact.name}</span>
 						          <div className="view-tenant-button">

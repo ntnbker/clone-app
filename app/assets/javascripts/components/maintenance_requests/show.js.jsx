@@ -135,7 +135,7 @@ var MaintenanceRequest = React.createClass({
 			logs  	 	 		 						 : this.props.logs,
 			invoice_pdf_file  	 	 		 : null,
 			access_contact						 : null,
-			access_contacts 					 : this.props.access_contacts,
+			access_contacts 					 : this.props.access_contacts || [],
 			agency 										 : this.props.agency,
 			property 									 : this.props.property,
 			status  	 	 		 					 : this.props.status,
@@ -2433,6 +2433,7 @@ var MaintenanceRequest = React.createClass({
 							status={this.state.status}
 							gallery={this.state.gallery}
 							property={this.state.property}
+							access_contacts={this.state.access_contacts}
 							all_agents={this.props.all_agents}
 							updateStatusMR={this.updateStatusMR}
 							existLandlord={!!landlord}

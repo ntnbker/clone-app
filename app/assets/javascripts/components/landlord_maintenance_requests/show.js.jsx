@@ -1005,6 +1005,7 @@ var LandlordMaintenanceRequest = React.createClass({
 							gallery={this.props.gallery}
 							property={this.props.property}
 							onModalWith={this.onModalWith}
+							access_contacts={this.props.access_contacts}
 							landlord={this.state.landlord}
 							current_role={this.props.current_role}
 							viewItem={(key, item) => this.viewItem(key, item)}

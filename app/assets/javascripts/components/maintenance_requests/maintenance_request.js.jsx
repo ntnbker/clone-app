@@ -1065,16 +1065,8 @@ var MaintenanceRequestInformation = React.createClass({
 
 var TenantContactButton = React.createClass({
 	render() {
-		const {tenants = [], maintenance_request, landlord, isShowLandlord, show_assign, isTrady, edit_availability, access_contact} = this.props;
-		const access_contacts = [{
-			id: 1,
-			name: 'Jeff',
-			mobile: '0969264497',
-		},{
-			id: 2,
-			name: 'Martin',
-			mobile: '0261123123',
-		}]
+		const {tenants = [], maintenance_request, landlord, isShowLandlord, show_assign, isTrady, edit_availability, access_contacts} = this.props;
+		
 		return (
 			<div className="box-shadow">
 				{isShowLandlord && 
