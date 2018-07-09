@@ -1695,6 +1695,7 @@ var TradyMaintenanceRequest = React.createClass({
 							gallery={needShowInfo && this.state.gallery}
 							property={this.props.property}
 							access_contacts={needShowInfo ? this.props.access_contacts : []}
+							agent={this.props.agent || this.props.agency_admin}
 							tenants={needShowInfo ? this.props.tenants : []}
 							viewItem={(key, item) => this.viewItem(key, item)}
 							onModalWith={this.onModalWith}

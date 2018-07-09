@@ -790,6 +790,7 @@ var ModalShowAccessContacts = React.createClass({
 								<h4 className="modal-title text-center">Access Contacts</h4>
 							</div>
 							<div className="modal-body">
+								Add/Edit non tenant access contacts
 								{
 									access_contacts.map((accessContact) => (
 										<div className="row tenant-detail" key={accessContact.id}>
