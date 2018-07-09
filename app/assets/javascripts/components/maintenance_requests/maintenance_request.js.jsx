@@ -1069,7 +1069,7 @@ var TenantContactButton = React.createClass({
 		const {vacant, landlord_fix_myself} = maintenance_request;
 		const needShowAgentContact = !!vacant && !!agent && !tenants.length;
 		const agentName = needShowAgentContact 
-										? agent.name || ((agent.first_name || '') + (agent.last_name || ''))
+										? agent.name || ((agent.first_name || '')+ ' ' + (agent.last_name || '')).trim()
 										: '';
 		let showAccessContacts = !current_role || current_role.role !== 'Tenant';
 		let showTenantDetail = !current_role || current_role.role !== 'Landlord' || !!landlord_fix_myself;
@@ -1148,16 +1148,18 @@ var TenantContactButton = React.createClass({
 				}
 				{ showTenantDetail && 
 					<div className="tenant-information">
-						<h5 className="mr-title">Tenant Details
-							{show_assign && 
-								<span 
-									className="edit-detail" 
-									onClick={() => this.props.onModalWith(tenants.length ? 'showTenants' : 'addTenant')}
-								>
-									(Edit Tenants)
-								</span>
-							}
-						</h5>
+						{tenants.length > 0 &&
+							<h5 className="mr-title">Tenant Details
+								{show_assign && 
+									<span 
+										className="edit-detail" 
+										onClick={() => this.props.onModalWith(tenants.length ? 'showTenants' : 'addTenant')}
+									>
+										(Edit Tenants)
+									</span>
+								}
+							</h5>
+						}
 						<div className="vailability">
 							<p className="header small-weight">Availability and Access Instructions: 
 								{edit_availability && 
