@@ -325,7 +325,65 @@ class MaintenanceRequestsController < ApplicationController
   end
 
   def create_vacant_maintenance_request
-    
+    @customer_input = Query.find_by(id:session[:customer_input])
+    @maintenance_request = MaintenanceRequest.new(maintenance_request_params)
+    @access_contacts
+    @maintenance_request.perform_contact_maintenance_request_validation = false
+    if current_user.logged_in_as("AgencyAdmin")
+      @agency_admin = current_user.agency_admin
+      @agency = @agency_admin.agency
+      @maintenance_request.agency_admin_id = @agency_admin.id
+      @maintenance_request.perform_realestate_validations = false
+    elsif current_user.logged_in_as("Agent")
+      @agent = current_user.agent
+      @agency = @agent.agency
+      @agency_admin = @agent.agency.agency_admins.first
+      @maintenance_request.agent_id = @agent.id
+      @maintenance_request.perform_realestate_validations = false
+    end 
+
+    if @maintenance_request.valid?
+      #look up property 
+      @property = Property.where(property_address:@customer_input.address).joins(:agency_properties).where(agency_properties:{agency_id:@agency.id}).distinct.first
+      #create property if none
+      if @property
+        @maintenance_request.property_id = @property.id
+      else
+        @property = Property.create(property_address:@customer_input.address)
+        AgencyProperty.create(property_id:@property.id, agency_id:@agency.id)
+        @maintenance_request.property_id = @property.id
+      end 
+
+        @maintenance_request.perform_uniqueness_validation_of_email = false
+        @maintenance_request.service_type = @customer_input.tradie
+        @maintenance_request.save 
+        
+
+      
+       
+
+      MaintenanceRequest.last.reindex
+      Log.create(maintenance_request_id:@maintenance_request.id, action:"Maintenance request created.")
+
+      if current_user.logged_in_as("AgencyAdmin")
+        flash[:success]= "Thank you for submitting a maintenance request. Please action the maintenance request at the earliest convenience."
+        redirect_to agency_admin_maintenance_request_path(@maintenance_request)
+      elsif current_user.logged_in_as("Agent")
+        flash[:success]= "Thank you for submitting a maintenance request. Please action the maintenance request at the earliest convenience."
+        redirect_to agent_maintenance_request_path(@maintenance_request)
+      end
+
+      
+    else
+      
+      flash[:danger]= "Please fill out all the required information thanks :)"
+      respond_to do |format|
+        format.json {render :json=>{errors:@maintenance_request.errors.to_hash(true).as_json}}
+        format.html
+      end 
+      
+
+    end 
   end
 
   def update
@@ -519,7 +577,7 @@ class MaintenanceRequestsController < ApplicationController
   
 
   def maintenance_request_params
-    params.require(:maintenance_request).permit(:maintenance_request_id,:agency_business_name,  :service_type,:name,:email,:mobile,:maintenance_heading,:availability_and_access,:agent_id,:agency_admin_id,:tenant_id,:tradie_id,:maintenance_description,:images,:availability,:access_contact,:real_estate_office, :agent_email, :agent_name, :agent_mobile,:person_in_charge ,availabilities_attributes:[:id,:maintenance_request_id,:date,:start_time,:finish_time,:available_only_by_appointment,:_destroy],access_contacts_attributes: [:id,:maintenance_request_id,:relation,:name,:email,:mobile,:_destroy], images_attributes:[:id,:maintenance_request_id,:image,:_destoy])
+    params.require(:maintenance_request).permit(:maintenance_request_id,:agency_business_name,  :service_type,:name,:email,:mobile,:maintenance_heading,:availability_and_access,:agent_id,:agency_admin_id,:tenant_id,:tradie_id,:maintenance_description,:vacant,:images,:availability,:access_contact,:real_estate_office, :agent_email, :agent_name, :agent_mobile,:person_in_charge ,availabilities_attributes:[:id,:maintenance_request_id,:date,:start_time,:finish_time,:available_only_by_appointment,:_destroy],access_contacts_attributes: [:id,:maintenance_request_id,:relation,:name,:email,:mobile,:_destroy], images_attributes:[:id,:maintenance_request_id,:image,:_destoy])
   end
 
   def set_user
