@@ -648,7 +648,8 @@ var ModalAddAccessContact = React.createClass({
 								<h4 className="modal-title text-center">{access_contact ? 'Edit' : 'Add'} Access Contact</h4>
 							</div>
 							<div className="modal-body">
-									<div className="row">
+									<div>{access_contact ? 'Edit' : 'Add'} non tenant access contacts</div>
+									<div className="row m-t-lg">
 										<div>
 											<label>Name <strong>*</strong>:</label>
 											<input
