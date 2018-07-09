@@ -177,19 +177,20 @@ var MaintenanceRequestsNew = React.createClass({
   handleCheckSubmit: function (e) {
     e.preventDefault();
     const self = this;
+    const {isVacant} = this.state;
 
     var FD = new FormData(document.getElementById('new_maintenance_request'));
     self.state.dataImages.map((image, index) => {
       var idx = index + 1;
       FD.append('maintenance_request[images_attributes][' + idx + '][image]', JSON.stringify(image));
     });
-    FD.append('maintenance_request[vacant]', self.state.isVacant);
     FD.append('commit', 'Submit Maintenance Request');
 
+    const url = isVacant ? '/vacant_maintenance_requests' : '/maintenance_requests';
     var props = self.props;
     $.ajax({
       type: 'POST',
-      url: '/maintenance_requests',
+      url,
       beforeSend: function (xhr) {
         xhr.setRequestHeader('X-CSRF-Token', props.authenticity_token);
       },
@@ -198,7 +199,7 @@ var MaintenanceRequestsNew = React.createClass({
       contentType: false,
       data: FD,
       success: function (res) {
-        if (res.errors) {
+        if (res && res.errors) {
           self.setState({errors: res.errors});
         }
       },
@@ -565,7 +566,7 @@ var MaintenanceRequestsNew = React.createClass({
               <label className="radio-option">Yes
                 <input
                   type="radio"
-                  name="is_vacant"
+                  name="maintenance_request[vacant]"
                   value={true}
                   onChange={() => this.setState({isVacant: true, errors: {}})}
                   defaultChecked={isVacant === true}
@@ -575,7 +576,7 @@ var MaintenanceRequestsNew = React.createClass({
               <label className="radio-option">No
                 <input
                   type="radio"
-                  name="is_vacant"
+                  name="maintenance_request[vacant]"
                   value={false}
                   onChange={() => this.setState({isVacant: false, errors: {}})}
                   defaultChecked={isVacant === false}
