@@ -613,6 +613,8 @@ var ModalAddAccessContact = React.createClass({
 				mobile: this.mobile && this.mobile.value,
 				maintenance_request_id: this.props.maintenance_request_id,
 				property_id: this.props.property.id,
+				email: 'guest@email.com',
+				relation: 'guest',
 			},
 		}
 		if (access_contact) params.access_contact.id = access_contact.id;
