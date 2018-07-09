@@ -77,7 +77,7 @@ Rails.application.routes.draw do
   ###################################################
     get 'ordered_maintenance_requests' => "maintenance_requests#ordered_maintenance_requests"
     resources :maintenance_requests, only:[:new,:create,:destroy]
-    post "vacant_maintenance_request" => "maintenance_requests#create_vacant_maintenance_request"
+    post "vacant_maintenance_requests" => "maintenance_requests#create_vacant_maintenance_request"
     post "update_maintenance_request" => "maintenance_requests#update"
     post "update_maintenance_request_status"=> "maintenance_requests#update_status"
     post "duplicate_maintenance_request"=> "maintenance_requests#duplicate"
