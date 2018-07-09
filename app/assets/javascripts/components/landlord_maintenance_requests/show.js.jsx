@@ -638,6 +638,7 @@ var LandlordMaintenanceRequest = React.createClass({
 					}});
 				}
 				else {
+					maintenance_request.landlord_fix_myself = true;
 					self.setState({
 						maintenance_request,
 						notification: {
