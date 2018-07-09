@@ -2435,6 +2435,7 @@ var MaintenanceRequest = React.createClass({
 							property={this.state.property}
 							access_contacts={this.state.access_contacts}
 							all_agents={this.props.all_agents}
+							agent={this.props.agent}
 							updateStatusMR={this.updateStatusMR}
 							existLandlord={!!landlord}
 							existQuoteRequest={!!quote_requests.length}

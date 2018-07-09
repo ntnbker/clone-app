@@ -183,6 +183,7 @@ var MaintenanceRequestsNew = React.createClass({
       var idx = index + 1;
       FD.append('maintenance_request[images_attributes][' + idx + '][image]', JSON.stringify(image));
     });
+    FD.append('maintenance_request[vacant]', self.state.isVacant);
     FD.append('commit', 'Submit Maintenance Request');
 
     var props = self.props;
@@ -566,7 +567,7 @@ var MaintenanceRequestsNew = React.createClass({
                   type="radio"
                   name="is_vacant"
                   value={true}
-                  onChange={() => this.setState({isVacant: true})}
+                  onChange={() => this.setState({isVacant: true, errors: {}})}
                   defaultChecked={isVacant === true}
                 />
                 <span className="radio-checkmark"></span>
@@ -576,7 +577,7 @@ var MaintenanceRequestsNew = React.createClass({
                   type="radio"
                   name="is_vacant"
                   value={false}
-                  onChange={() => this.setState({isVacant: false})}
+                  onChange={() => this.setState({isVacant: false, errors: {}})}
                   defaultChecked={isVacant === false}
                 />
                 <span className="radio-checkmark"></span>
@@ -632,7 +633,12 @@ var MaintenanceRequestsNew = React.createClass({
           }
 
           <div id="access_contacts" className="m-b-lg">
-            <FieldList SampleField={AccessContactField} errors={errors} flag="contact" />
+            {!isVacant && <FieldList 
+                SampleField={AccessContactField} 
+                errors={errors} 
+                flag="contact"
+              />
+            }
           </div>
 
           <div className="field">

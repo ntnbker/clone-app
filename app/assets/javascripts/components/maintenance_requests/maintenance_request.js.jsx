@@ -1065,8 +1065,9 @@ var MaintenanceRequestInformation = React.createClass({
 
 var TenantContactButton = React.createClass({
 	render() {
-		const {tenants = [], maintenance_request, landlord, isShowLandlord, show_assign, isTrady, edit_availability, access_contacts} = this.props;
-		
+		const {tenants = [], maintenance_request, landlord, isShowLandlord, show_assign, isTrady, edit_availability, access_contacts, agent} = this.props;
+		const {vacant} = maintenance_request;
+		const needShowAgentContact = !!vacant && !!agent; 
 		return (
 			<div className="box-shadow">
 				{isShowLandlord && 
@@ -1162,6 +1163,72 @@ var TenantContactButton = React.createClass({
 							}</p>
 						<p className="job-description">{maintenance_request.availability_and_access}</p>
 					</div>
+					<div className="vailability">
+						<p className="header small-weight">Additional Access Contacts:
+							{show_assign && 
+								<span 
+									className="edit-detail" 
+									onClick={() => this.props.onModalWith(access_contacts.length ? 'showAccessContacts' : 'addAccessContact')}
+								>
+									(Edit)
+								</span>
+							}
+						</p>
+						{ needShowAgentContact &&	
+						<div className="tenant-detail">
+							<div className="phone-desktop">
+								<div className="phone">
+									<span className="key">Phone Number - {trimMaxLength(agent.name, 20)}: </span>
+									<span className="value">{agent.mobile_phone}</span>
+								</div>
+							</div>
+							<div className="contact-button">
+								<div className="phone">
+									<button
+										type="button"
+										className="call-tenant"
+										onClick={() => this[`accessContactPhone${agent.id}`].click()}
+									>
+										<a
+											href={`tel:${agent.mobile_phone}`}
+											ref={e => this[`accessContactPhone${agent.id}`] = e}
+											className="display-none"
+										/>
+										<i className="fa fa-phone" aria-hidden="true" />
+										Agent - {agent.name}
+									</button>
+								</div>
+							</div>
+						</div>
+						}
+						{access_contacts.map((access_contact, idx) => (
+							<div className="tenant-detail" key={idx}>
+								<div className="phone-desktop">
+									<div className="phone">
+										<span className="key">Phone Number - {trimMaxLength(access_contact.name, 20)}: </span>
+										<span className="value">{access_contact.mobile}</span>
+									</div>
+								</div>
+								<div className="contact-button">
+									<div className="phone">
+										<button
+											type="button"
+											className="call-tenant"
+											onClick={() => this[`accessContactPhone${access_contact.id}`].click()}
+										>
+											<a
+												href={`tel:${access_contact.mobile}`}
+												ref={e => this[`accessContactPhone${access_contact.id}`] = e}
+												className="display-none"
+											/>
+											<i className="fa fa-phone" aria-hidden="true" />
+											Tenant - {access_contact.name}
+										</button>
+									</div>
+								</div>
+							</div>
+						))}
+					</div>
 					{tenants.map((tenant, idx) => (
 						<div className="tenant-detail" key={idx}>
 							<div className="phone-desktop">
@@ -1194,45 +1261,6 @@ var TenantContactButton = React.createClass({
 										</button>
 									</div>
 								}
-							</div>
-						</div>
-					))}
-				</div>
-				<div className="tenant-information">
-					<h5 className="mr-title">Additional Access Contacts
-						{show_assign && 
-							<span 
-								className="edit-detail" 
-								onClick={() => this.props.onModalWith(access_contacts.length ? 'showAccessContacts' : 'addAccessContact')}
-							>
-								(Edit)
-							</span>
-						}
-					</h5>
-					{access_contacts.map((access_contact, idx) => (
-						<div className="tenant-detail" key={idx}>
-							<div className="phone-desktop">
-								<div className="phone">
-									<span className="key">Phone Number - {trimMaxLength(access_contact.name, 20)}: </span>
-									<span className="value">{access_contact.mobile}</span>
-								</div>
-							</div>
-							<div className="contact-button">
-								<div className="phone">
-									<button
-										type="button"
-										className="call-tenant"
-										onClick={() => this[`accessContactPhone${access_contact.id}`].click()}
-									>
-										<a
-											href={`tel:${access_contact.mobile}`}
-											ref={e => this[`accessContactPhone${access_contact.id}`] = e}
-											className="display-none"
-										/>
-										<i className="fa fa-phone" aria-hidden="true" />
-										Tenant - {access_contact.name}
-									</button>
-								</div>
 							</div>
 						</div>
 					))}
