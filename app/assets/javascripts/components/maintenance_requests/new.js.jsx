@@ -545,6 +545,7 @@ var MaintenanceRequestsNew = React.createClass({
     } else {
       $imagePreview = (<div className="previewText">Please select an Image for Preview</div>);
     }
+    
     return (
       <div>
         <form key="add" role="form" id="new_maintenance_request" encType="multipart/form-data" acceptCharset="UTF-8" onSubmit={(e) => this.handleCheckSubmit(e)} >
@@ -560,31 +561,33 @@ var MaintenanceRequestsNew = React.createClass({
             name="maintenance_request[service_type]"
             id="maintenance_request_service_type"
           />
-          <div className="form-group text-center">
-            Is the property vacant?
-            <div className="radio-same-address">
-              <label className="radio-option">Yes
-                <input
-                  type="radio"
-                  name="maintenance_request[vacant]"
-                  value={true}
-                  onChange={() => this.setState({isVacant: true, errors: {}})}
-                  defaultChecked={isVacant === true}
-                />
-                <span className="radio-checkmark"></span>
-              </label>
-              <label className="radio-option">No
-                <input
-                  type="radio"
-                  name="maintenance_request[vacant]"
-                  value={false}
-                  onChange={() => this.setState({isVacant: false, errors: {}})}
-                  defaultChecked={isVacant === false}
-                />
-                <span className="radio-checkmark"></span>
-              </label>
-            </div>
-          </div> 
+          {!isTenant && 
+            <div className="form-group text-center">
+              Is the property vacant?
+              <div className="radio-same-address">
+                <label className="radio-option">Yes
+                  <input
+                    type="radio"
+                    name="maintenance_request[vacant]"
+                    value={true}
+                    onChange={() => this.setState({isVacant: true, errors: {}})}
+                    defaultChecked={isVacant === true}
+                  />
+                  <span className="radio-checkmark"></span>
+                </label>
+                <label className="radio-option">No
+                  <input
+                    type="radio"
+                    name="maintenance_request[vacant]"
+                    value={false}
+                    onChange={() => this.setState({isVacant: false, errors: {}})}
+                    defaultChecked={isVacant === false}
+                  />
+                  <span className="radio-checkmark"></span>
+                </label>
+              </div>
+            </div> 
+          }
           {!isVacant && <h5 className="text-center color-grey">Enter Tenant Details</h5>}
           {!isVacant && <div className="field">
             <input
