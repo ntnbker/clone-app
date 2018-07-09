@@ -324,6 +324,10 @@ class MaintenanceRequestsController < ApplicationController
     end 
   end
 
+  def create_vacant_maintenance_request
+    
+  end
+
   def update
 
     @maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request][:maintenance_request_id])
