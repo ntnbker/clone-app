@@ -139,7 +139,8 @@ class MaintenanceRequest < ApplicationRecord
   def get_image_urls
     image_array = []
     self.images.each do |image|
-      image_array.push(image.image_url)
+      image = {id:image.id, url:image.image_url} 
+      image_array.push(image)
     end 
     return image_array
   end
