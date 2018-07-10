@@ -240,7 +240,8 @@ Rails.application.routes.draw do
   ##########IMAGES RESOURCES/ROUTES#########
   ################################################### 
     post "update_images"=> "images#update"
-    resources :images, only:[:destroy]
+    delete "delete_image"=> "images#destroy"
+    #resources :images, only:[:destroy]
   ###################################################
   ##########WORK ORDER RESOURCES/ROUTES#########
   ################################################### 
