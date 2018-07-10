@@ -21,6 +21,21 @@ class ImagesController < ApplicationController
     
   end
 
+  def destroy
+    Image.find_by(id:params[:id]).destroy
+    image = Image.find_by(id:params[:id])
+    if image
+      respond_to do |format|
+        format.json {render :json=>{:message=>"Somethign went wrong we could not delete your photo. Please refresh teh page and try again."}}
+      end 
+    else
+      respond_to do |format|
+        format.json {render :json=>{:message=>"You have successfully deleted that image."}}
+      end 
+      
+    end
+  end
+
   private
 
   def image_params
