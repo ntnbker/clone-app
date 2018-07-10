@@ -99,6 +99,8 @@ var AccessContactField = React.createClass({
 
     render : function() {
       var { errorsForm } = this.state;
+      const {params: {isVacant}, position} = this.props;
+      const needShowRemove = !isVacant || position > 1;
 
       var accessContact = this.props.content;
       var x= this.props.x;
@@ -126,14 +128,13 @@ var AccessContactField = React.createClass({
   	  			  id={this.generateAtt("id", x, "relation")}
               onChange={(e) => {this.changeRelation(e, x)}}
             >
-  		  	    <option value="Tenant">Tenant</option>
+  		  	    {!isVacant && <option value="Tenant">Tenant</option>}
   		  	    <option value="family">Family(Non-tenant)</option>
   		  	    <option value="friend">Friend(Non-tenant)</option>
   		  	  </select>
 
   		  	  <p> Name </p>
   		  	  <input
-
               type="text" placeholder="Full name"
               id={this.generateAtt("id", x, "name")}
 	  	  		  name={this.generateAtt("name", x, "name")}
@@ -151,7 +152,8 @@ var AccessContactField = React.createClass({
 										document.getElementById($fullnameid).textContent = strNone;
 										e.target.classList.remove("border_on_error");
 									}
-								}} />
+								}} 
+            />
 					<p id={$fullnameid} className="error"></p>
 
   		  	<p> Email </p>

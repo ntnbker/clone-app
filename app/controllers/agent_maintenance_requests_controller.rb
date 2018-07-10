@@ -159,9 +159,14 @@ class AgentMaintenanceRequestsController < ApplicationController
       end
     end  
 
+
+    if @maintenance_request.access_contacts
+      @access_contacts = @maintenance_request.access_contacts
+    end
+
     respond_to do |format|
 
-      format.json { render :json=>{:quote_requests=>@quote_requests,agency_admin:@agency_admin ,hired_trady: @hired_trady,:gallery=>@gallery,:status=>@status ,:instruction=>@instruction, :landlord=> @landlord,:services=>@services,:assigned_trady=>@assigned_trady, :all_tradies=> @all_tradies,:trady_agent_conversation=>@trady_agent_conversation ,:tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, :agency=>@agency,:property=>@maintenance_request.property, :agent=>@current_user.agent, :invoices=> @invoices, :pdf_files=>@pdf_files,:pdf_urls=> @invoice_pdf_urls, tradies_with_quote_requests:@quote_request_trady_list, logs:@logs, all_agents:@all_agents, all_agency_admins:@all_agency_admins, work_order_appointments:@work_order_appointments,quote_appointments:@quote_appointments,:landlord_appointments=>@landlord_appointments,:tenants=>@tenants,time_and_access:@maintenance_request.availability_and_access}}
+      format.json { render :json=>{:quote_requests=>@quote_requests,agency_admin:@agency_admin ,hired_trady: @hired_trady,:gallery=>@gallery,:status=>@status ,:instruction=>@instruction, :landlord=> @landlord,:services=>@services,:assigned_trady=>@assigned_trady, :all_tradies=> @all_tradies,:trady_agent_conversation=>@trady_agent_conversation ,:tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, :agency=>@agency,:property=>@maintenance_request.property, :agent=>@current_user.agent, :invoices=> @invoices, :pdf_files=>@pdf_files,:pdf_urls=> @invoice_pdf_urls, tradies_with_quote_requests:@quote_request_trady_list, logs:@logs, all_agents:@all_agents, all_agency_admins:@all_agency_admins, work_order_appointments:@work_order_appointments,quote_appointments:@quote_appointments,:landlord_appointments=>@landlord_appointments,:tenants=>@tenants,time_and_access:@maintenance_request.availability_and_access, access_contacts:@access_contacts}}
       format.html{render :show}
     end 
 

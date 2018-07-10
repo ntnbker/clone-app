@@ -1065,9 +1065,17 @@ var MaintenanceRequestInformation = React.createClass({
 
 var TenantContactButton = React.createClass({
 	render() {
-		const {tenants = [], maintenance_request, landlord, isShowLandlord, show_assign, isTrady, edit_availability} = this.props;
+		const {tenants = [], maintenance_request, landlord, isShowLandlord, show_assign, isTrady, edit_availability, access_contacts, agent, current_role} = this.props;
+		const {vacant, landlord_fix_myself} = maintenance_request;
+		const needShowAgentContact = !!vacant && !!agent && !tenants.length;
+		const agentName = needShowAgentContact 
+										? agent.name || ((agent.first_name || '')+ ' ' + (agent.last_name || '')).trim()
+										: '';
+		let showAccessContacts = !current_role || current_role.role !== 'Tenant';
+		let showTenantDetail = !current_role || current_role.role !== 'Landlord' || !!landlord_fix_myself;
+
 		return (
-			<div className="box-shadow">
+			<div className={(isShowLandlord || showTenantDetail) ? "box-shadow" : ''}>
 				{isShowLandlord && 
 					<div className="landlord-information">
 						<h5 className="mr-title">Landlord Details
@@ -1138,65 +1146,137 @@ var TenantContactButton = React.createClass({
 						}
 					</div>
 				}
-				<div className="tenant-information">
-					<h5 className="mr-title">Tenant Details
-						{show_assign && 
-							<span 
-								className="edit-detail" 
-								onClick={() => this.props.onModalWith(tenants.length ? 'showTenants' : 'addTenant')}
-							>
-								(Edit Tenants)
-							</span>
-						}
-					</h5>
-					<div className="vailability">
-						<p className="header small-weight">Tenant Availability and Access Instructions: 
-							{edit_availability && 
-								<span 
-									className="edit-detail" 
-									onClick={() => this.props.onModalWith('editAvailability')}
-								>
-									(Edit)
-								</span>
-							}</p>
-						<p className="job-description">{maintenance_request.availability_and_access}</p>
-					</div>
-					{tenants.map((tenant, idx) => (
-						<div className="tenant-detail" key={idx}>
-							<div className="phone-desktop">
-								<div className="phone">
-									<span className="key">Phone Number - {trimMaxLength(tenant.name, 20)}: </span>
-									<span className="value">{tenant.mobile}</span>
-								</div>
-							</div>
-							<div className="contact-button">
-								<div className="phone">
-									<button
-										type="button"
-										className="call-tenant"
-										onClick={() => this[`tenantPhone${tenant.id}`].click()}
+				{ showTenantDetail && 
+					<div className="tenant-information">
+						{tenants.length > 0 &&
+							<h5 className="mr-title">Tenant Details
+								{show_assign && 
+									<span 
+										className="edit-detail" 
+										onClick={() => this.props.onModalWith(tenants.length ? 'showTenants' : 'addTenant')}
 									>
-										<a
-											href={`tel:${tenant.mobile}`}
-											ref={e => this[`tenantPhone${tenant.id}`] = e}
-											className="display-none"
-										/>
-										<i className="fa fa-phone" aria-hidden="true" />
-										Tenant - {tenant.name}
-									</button>
+										(Edit Tenants)
+									</span>
+								}
+							</h5>
+						}
+						<div className="vailability">
+							<p className="header small-weight">Availability and Access Instructions: 
+								{edit_availability && 
+									<span 
+										className="edit-detail" 
+										onClick={() => this.props.onModalWith('editAvailability')}
+									>
+										(Edit)
+									</span>
+								}</p>
+							<p className="job-description">{maintenance_request.availability_and_access}</p>
+						</div>
+						{ showAccessContacts && 
+							<div className="vailability">
+								<p className="header small-weight">Access Contacts:
+									{show_assign && 
+										<span 
+											className="edit-detail" 
+											onClick={() => this.props.onModalWith(access_contacts.length ? 'showAccessContacts' : 'addAccessContact')}
+										>
+											(Edit)
+										</span>
+									}
+								</p>
+								{ needShowAgentContact &&	
+								<div className="tenant-detail">
+									<div className="phone-desktop">
+										<div className="phone">
+											<span className="key">Phone Number - {trimMaxLength(agentName, 20)}: </span>
+											<span className="value">{agent.mobile_phone}</span>
+										</div>
+									</div>
+									<div className="contact-button">
+										<div className="phone">
+											<button
+												type="button"
+												className="call-tenant"
+												onClick={() => this[`accessContactPhone${agent.id}`].click()}
+											>
+												<a
+													href={`tel:${agent.mobile_phone}`}
+													ref={e => this[`accessContactPhone${agent.id}`] = e}
+													className="display-none"
+												/>
+												<i className="fa fa-phone" aria-hidden="true" />
+												Agent - {agentName}
+											</button>
+										</div>
+									</div>
 								</div>
-								{ !isTrady && 
-									<div className="message">
-										<button className="message-landlord" onClick={() => this.props.onModalWith('sendMessageTenant')}>
-											<i className="fa fa-commenting" aria-hidden="true" />
+								}
+								{access_contacts.map((access_contact, idx) => (
+									<div className="tenant-detail" key={idx}>
+										<div className="phone-desktop">
+											<div className="phone">
+												<span className="key">Phone Number - {trimMaxLength(access_contact.name, 20)}: </span>
+												<span className="value">{access_contact.mobile}</span>
+											</div>
+										</div>
+										<div className="contact-button">
+											<div className="phone">
+												<button
+													type="button"
+													className="call-tenant"
+													onClick={() => this[`accessContactPhone${access_contact.id}`].click()}
+												>
+													<a
+														href={`tel:${access_contact.mobile}`}
+														ref={e => this[`accessContactPhone${access_contact.id}`] = e}
+														className="display-none"
+													/>
+													<i className="fa fa-phone" aria-hidden="true" />
+													Tenant - {access_contact.name}
+												</button>
+											</div>
+										</div>
+									</div>
+								))}
+							</div>
+						}
+						{tenants.map((tenant, idx) => (
+							<div className="tenant-detail" key={idx}>
+								<div className="phone-desktop">
+									<div className="phone">
+										<span className="key">Phone Number - {trimMaxLength(tenant.name, 20)}: </span>
+										<span className="value">{tenant.mobile}</span>
+									</div>
+								</div>
+								<div className="contact-button">
+									<div className="phone">
+										<button
+											type="button"
+											className="call-tenant"
+											onClick={() => this[`tenantPhone${tenant.id}`].click()}
+										>
+											<a
+												href={`tel:${tenant.mobile}`}
+												ref={e => this[`tenantPhone${tenant.id}`] = e}
+												className="display-none"
+											/>
+											<i className="fa fa-phone" aria-hidden="true" />
 											Tenant - {tenant.name}
 										</button>
 									</div>
-								}
+									{ !isTrady && 
+										<div className="message">
+											<button className="message-landlord" onClick={() => this.props.onModalWith('sendMessageTenant')}>
+												<i className="fa fa-commenting" aria-hidden="true" />
+												Tenant - {tenant.name}
+											</button>
+										</div>
+									}
+								</div>
 							</div>
-						</div>
-					))}
-				</div>
+						))}
+					</div>
+				}
 			</div>
 		)
 	}
