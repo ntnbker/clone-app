@@ -775,7 +775,7 @@ var TenantMaintenanceRequest = React.createClass({
 			const {gallery, photo} = this.state;
 			this.setState({
 				notification: {
-					title: "Delete",
+					title: "Delete Photo",
 					content: res.message,
 					bgClass: "bg-success",
 					reopenModal: 'addPhoto',
