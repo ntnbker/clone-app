@@ -995,7 +995,7 @@ var MaintenaceRequestDetail = React.createClass({
 				</div>
 				{this.props.gallery && this.props.gallery.length > 0 &&
 					<div className="mr-photo">
-						<Carousel gallery={this.props.gallery} />
+						<Carousel gallery={this.props.gallery.map(({url}) => url)} />
 					</div>
 				}
 				{needAddPhotoButton &&

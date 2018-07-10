@@ -326,7 +326,16 @@ var MaintenanceRequest = React.createClass({
         })
         this.onModalWith(key);
         break;
-      }
+			}
+			
+			case 'deletePhoto': {
+				this.setState({
+					photo: item
+				})
+
+				this.onModalWith(key);
+				break;
+			}
 
       default: {
         break;
@@ -2022,7 +2031,8 @@ var MaintenanceRequest = React.createClass({
             <ModalAddPhoto
               close={this.isClose}
               gallery={this.state.gallery}
-              notifyAddPhoto={this.notifyAddPhoto}
+							notifyAddPhoto={this.notifyAddPhoto}
+							viewItem={this.viewItem}
               authenticity_token={this.props.authenticity_token}
               maintenance_request={this.state.maintenance_request}
             />
@@ -2265,7 +2275,16 @@ var MaintenanceRequest = React.createClass({
               confirm={this.removeAccessContact}
               close={() => this.viewItem('showAccessContacts')}
             />
-          )
+					)
+					
+				case 'deletePhoto':
+				return (
+					<ModalDeletePhoto
+						close={this.isClose}
+						photoData={this.state.photo}
+						authenticity_token={this.props.authenticity_token}
+					/>
+				)
 
         default:
           return null;
