@@ -7,6 +7,7 @@ class LandlordActionsController < ApplicationController
   def fix_myself
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     maintenance_request.action_status.update_attribute(:agent_status, "Maintenance Scheduled With Landlord")
+    maintenance_request.update_attribute(:landlord_fix_myself, true)
     landlord = current_user.landlord 
 
     TenantNoticeLandlordSelfRepairEmailWorker.perform_async(maintenance_request.id, landlord.id)

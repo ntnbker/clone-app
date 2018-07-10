@@ -50,7 +50,7 @@ var FieldList = React.createClass({
     var Fields = {};
     var params = this.props.params || {};
     var x = 0;
-
+    
     if (existingContent ? existingContent.length > 0 : false) {
       existingContent.map((content, index) => {
         x = index + 1;
