@@ -429,9 +429,9 @@ var HomeComponent = React.createClass({
   },
 
   homeActionForSubmitNewMR() {
-    const { active, error } = this.state;
+    const { active, error, isVacant } = this.state;
     const { services } = this.props;
-
+    
     return (
       <form
         className={`submit-new-mr ${active.toLowerCase()}-content`}

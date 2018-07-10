@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180702115522) do
+ActiveRecord::Schema.define(version: 20180709074353) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -378,6 +378,8 @@ ActiveRecord::Schema.define(version: 20180702115522) do
     t.string   "agency_business_name"
     t.text     "preapproved_note"
     t.string   "jfmo_status",             default: "Passive"
+    t.boolean  "vacant"
+    t.boolean  "landlord_fix_myself"
   end
 
   create_table "messages", force: :cascade do |t|

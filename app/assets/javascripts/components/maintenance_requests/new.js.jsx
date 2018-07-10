@@ -22,6 +22,7 @@ var MaintenanceRequestsNew = React.createClass({
       emailAgencies: [],
       totalSize: 0,
       errors: {},
+      isVacant: false,
     };
   },
 
@@ -71,14 +72,6 @@ var MaintenanceRequestsNew = React.createClass({
     else if (e.target.value.length >= 4) {
       this.validateEmail(e.target.value, e, true);
     }
-  },
-
-  handleRadioChange: function (e) {
-    const value = e.currentTarget.value;
-    this.setState({
-      selectedRadio: value,
-      isAgent: value == "Owner" ? false : true
-    });
   },
 
   generateAtt: function (name_id, type) {
@@ -184,6 +177,7 @@ var MaintenanceRequestsNew = React.createClass({
   handleCheckSubmit: function (e) {
     e.preventDefault();
     const self = this;
+    const {isVacant} = this.state;
 
     var FD = new FormData(document.getElementById('new_maintenance_request'));
     self.state.dataImages.map((image, index) => {
@@ -192,10 +186,11 @@ var MaintenanceRequestsNew = React.createClass({
     });
     FD.append('commit', 'Submit Maintenance Request');
 
+    const url = isVacant ? '/vacant_maintenance_requests' : '/maintenance_requests';
     var props = self.props;
     $.ajax({
       type: 'POST',
-      url: '/maintenance_requests',
+      url,
       beforeSend: function (xhr) {
         xhr.setRequestHeader('X-CSRF-Token', props.authenticity_token);
       },
@@ -204,7 +199,7 @@ var MaintenanceRequestsNew = React.createClass({
       contentType: false,
       data: FD,
       success: function (res) {
-        if (res.errors) {
+        if (res && res.errors) {
           self.setState({errors: res.errors});
         }
       },
@@ -530,7 +525,7 @@ var MaintenanceRequestsNew = React.createClass({
   },
 
   render: function () {
-    let { images, errors, emailAgencies } = this.state;
+    let { images, errors, emailAgencies, isVacant } = this.state;
     let $imagePreview = [];
     const { current_user_tenant, current_role, current_user } = this.props;
     const renderError = this.renderError;
@@ -550,9 +545,9 @@ var MaintenanceRequestsNew = React.createClass({
     } else {
       $imagePreview = (<div className="previewText">Please select an Image for Preview</div>);
     }
+    
     return (
       <div>
-        <h5 className="text-center color-grey">Enter Tenant Details</h5>
         <form key="add" role="form" id="new_maintenance_request" encType="multipart/form-data" acceptCharset="UTF-8" onSubmit={(e) => this.handleCheckSubmit(e)} >
           <input name="utf8" type="hidden" value="✓" />
           <input
@@ -566,7 +561,35 @@ var MaintenanceRequestsNew = React.createClass({
             name="maintenance_request[service_type]"
             id="maintenance_request_service_type"
           />
-          <div className="field">
+          {!isTenant && 
+            <div className="form-group text-center">
+              Is the property vacant?
+              <div className="radio-same-address">
+                <label className="radio-option">Yes
+                  <input
+                    type="radio"
+                    name="maintenance_request[vacant]"
+                    value={true}
+                    onChange={() => this.setState({isVacant: true, errors: {}})}
+                    defaultChecked={isVacant === true}
+                  />
+                  <span className="radio-checkmark"></span>
+                </label>
+                <label className="radio-option">No
+                  <input
+                    type="radio"
+                    name="maintenance_request[vacant]"
+                    value={false}
+                    onChange={() => this.setState({isVacant: false, errors: {}})}
+                    defaultChecked={isVacant === false}
+                  />
+                  <span className="radio-checkmark"></span>
+                </label>
+              </div>
+            </div> 
+          }
+          {!isVacant && <h5 className="text-center color-grey">Enter Tenant Details</h5>}
+          {!isVacant && <div className="field">
             <input
               className={(errors['name'] ? ' border_on_error' : '')}
               type="text"
@@ -611,9 +634,15 @@ var MaintenanceRequestsNew = React.createClass({
             />
             {renderError(errors['mobile'])}
           </div>
+          }
 
           <div id="access_contacts" className="m-b-lg">
-            <FieldList SampleField={AccessContactField} errors={errors} flag="contact" />
+            {!isVacant && <FieldList 
+                SampleField={AccessContactField} 
+                errors={errors} 
+                flag="contact"
+              />
+            }
           </div>
 
           <div className="field">
@@ -680,94 +709,94 @@ var MaintenanceRequestsNew = React.createClass({
             {renderError(errors['images.image'])}
           </div>
 
-          {isTenant &&
-            <div className="field">
-              <hr />
+          {!!isTenant &&
+          <div className="field">
+            <hr />
 
-              <div>
-                <div id="the-basics">
-                  <input
-                    className="typeahead agency_business_name"
-                    type="text"
-                    placeholder="Agency name"
-                    id={this.generateAtt("id", "agency_business_name")}
-                    name={this.generateAtt("name", "agency_business_name")}
-                    onChange={this.removeError}
-                    onBlur={this.selectAgencies}
-                  />
-                </div>
-                {this.renderError(errors['agency_business_name'])}
-                <select
-                  id={this.generateAtt("id", "agent_email")}
-                  name={this.generateAtt("name", "agent_email")}
-                  ref={e => this.agent_email = e}
-                  className="form-control input-custom"
+            <div>
+              <div id="the-basics">
+                <input
+                  className="typeahead agency_business_name"
+                  type="text"
+                  placeholder="Agency name"
+                  id={this.generateAtt("id", "agency_business_name")}
+                  name={this.generateAtt("name", "agency_business_name")}
                   onChange={this.removeError}
-                >
-                  <option value="">Agent email</option>
-                  {
-                    emailAgencies.map(function(email, index) {
-                      return (
-                        <option
-                          key={index+1}
-                          value={email}
-                        >
-                          {email}
-                        </option>
-                      );
-                    })
-                  }
-                </select>
-                {renderError(errors['agent_email'])}
-                {!this.state.isAgent ?
-                  <div>
-                    <input
-
-                      type="text"
-                      pattern=".{4,}"
-                      title={strShortRealEstate}
-                      placeholder="Real estate office"
-                      ref={(ref) => this.real_estate_office = ref}
-                      id={this.generateAtt("id", "real_estate_office")}
-                      name={this.generateAtt("name", "real_estate_office")}
-                      onChange={this.removeError}
-                    />
-                    {renderError(errors['real_estate_office'])}
-
-                    <input
-
-                      type="text"
-                      pattern=".{4,}"
-                      placeholder="Agent name"
-                      title={strShortName}
-                      ref={(ref) => this.agent_name = ref}
-                      id={this.generateAtt("id", "agent_name")}
-                      name={this.generateAtt("name", "agent_name")}
-                      onChange={this.removeError}
-                    />
-                    {renderError(errors['agent_name'])}
-
-                    <input
-
-                      type="text"
-                      maxLength="11"
-                      minLength="10"
-                      pattern=".{8,}"
-                      title={strShortMobile}
-                      placeholder="Agent mobile"
-                      ref={(ref) => this.agent_mobile = ref}
-                      id={this.generateAtt("id", "agent_mobile")}
-                      name={this.generateAtt("name", "agent_mobile")}
-                      onChange={this.removeError}
-                    />
-                    {renderError(errors['agent_mobile'])}
-                  </div>
-                  :
-                  null
-                }
+                  onBlur={this.selectAgencies}
+                />
               </div>
-              <hr />
+              {this.renderError(errors['agency_business_name'])}
+              <select
+                id={this.generateAtt("id", "agent_email")}
+                name={this.generateAtt("name", "agent_email")}
+                ref={e => this.agent_email = e}
+                className="form-control input-custom"
+                onChange={this.removeError}
+              >
+                <option value="">Agent email</option>
+                {
+                  emailAgencies.map(function(email, index) {
+                    return (
+                      <option
+                        key={index+1}
+                        value={email}
+                      >
+                        {email}
+                      </option>
+                    );
+                  })
+                }
+              </select>
+              {renderError(errors['agent_email'])}
+              {!this.state.isAgent ?
+                <div>
+                  <input
+
+                    type="text"
+                    pattern=".{4,}"
+                    title={strShortRealEstate}
+                    placeholder="Real estate office"
+                    ref={(ref) => this.real_estate_office = ref}
+                    id={this.generateAtt("id", "real_estate_office")}
+                    name={this.generateAtt("name", "real_estate_office")}
+                    onChange={this.removeError}
+                  />
+                  {renderError(errors['real_estate_office'])}
+
+                  <input
+
+                    type="text"
+                    pattern=".{4,}"
+                    placeholder="Agent name"
+                    title={strShortName}
+                    ref={(ref) => this.agent_name = ref}
+                    id={this.generateAtt("id", "agent_name")}
+                    name={this.generateAtt("name", "agent_name")}
+                    onChange={this.removeError}
+                  />
+                  {renderError(errors['agent_name'])}
+
+                  <input
+
+                    type="text"
+                    maxLength="11"
+                    minLength="10"
+                    pattern=".{8,}"
+                    title={strShortMobile}
+                    placeholder="Agent mobile"
+                    ref={(ref) => this.agent_mobile = ref}
+                    id={this.generateAtt("id", "agent_mobile")}
+                    name={this.generateAtt("name", "agent_mobile")}
+                    onChange={this.removeError}
+                  />
+                  {renderError(errors['agent_mobile'])}
+                </div>
+                :
+                null
+              }
             </div>
+            <hr />
+          </div>
           }
           <p id="errCantSubmit" className="error"></p>
           <div className="text-center">
