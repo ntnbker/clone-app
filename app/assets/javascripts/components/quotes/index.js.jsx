@@ -1719,3 +1719,72 @@ var ShowTradyActions = React.createClass({
     );
   }
 });
+
+var ModalDeletePhoto = React.createClass({
+  deletePhoto() {
+    const {photoData: {id}, authenticity_token} = this.props;
+    const self = this;
+
+		$.ajax({
+		  type: 'DELETE',
+		  url: '/delete_image',
+		  beforeSend: function (xhr) {
+		    xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+		  },
+		  data: {
+        id: id,
+      },
+		  success: function (res) {
+        self.props.close(null, res);
+		  },
+		  error: function (err) {
+        self.props.close(err);
+		  }
+		});
+  },
+
+  render: function() {
+    const {photoData} = this.props;
+    const imageUrl = photoData.url;
+
+    return (
+      <div className="modal-custom fade">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <button
+                type="button"
+                className="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                onClick={this.props.close}
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <h4 className="modal-title text-center">
+                Delete Photo
+              </h4>
+            </div>
+            <div className="modal-body">
+              <p>Are you sure you want to delete this photo?</p>
+              <Carousel gallery={[imageUrl]} fullWidth />
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-default success"
+                onClick={this.deletePhoto}
+                data-dismiss="modal"
+              >Yes</button>
+              <button
+                type="button"
+                className="btn btn-primary cancel"
+                onClick={() => this.props.close()}
+              >No</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+});

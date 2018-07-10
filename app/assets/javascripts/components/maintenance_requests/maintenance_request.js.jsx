@@ -995,7 +995,7 @@ var MaintenaceRequestDetail = React.createClass({
 				</div>
 				{this.props.gallery && this.props.gallery.length > 0 &&
 					<div className="mr-photo">
-						<Carousel gallery={this.props.gallery} />
+						<Carousel gallery={this.props.gallery.map(({url}) => url)} />
 					</div>
 				}
 				{needAddPhotoButton &&
@@ -1006,7 +1006,7 @@ var MaintenaceRequestDetail = React.createClass({
 								className=""
 								onClick={() => this.props.onModalWith('addPhoto')}
 							>
-								Add Photo
+								Add/Delete Photo
 							</button>
 						</div>
 					</div>

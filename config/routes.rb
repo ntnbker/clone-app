@@ -237,9 +237,11 @@ Rails.application.routes.draw do
     post "update_instruction"=> "instructions#update"
 
   ###################################################
-  ##########REASSIGN AGENTS RESOURCES/ROUTES#########
+  ##########IMAGES RESOURCES/ROUTES#########
   ################################################### 
     post "update_images"=> "images#update"
+    delete "delete_image"=> "images#destroy"
+    #resources :images, only:[:destroy]
   ###################################################
   ##########WORK ORDER RESOURCES/ROUTES#########
   ################################################### 

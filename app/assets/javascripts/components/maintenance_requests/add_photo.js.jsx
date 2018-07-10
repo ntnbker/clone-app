@@ -355,6 +355,7 @@ var ModalAddPhoto = React.createClass({
 
   render: function () {
     const { images, gallery, dataImages, error } = this.state;
+    const self = this;
 
     const uploadButton = !this.state.uploadComplete ? <div className="browse-wrap">
       <div className="title" id="title-upload">
@@ -385,14 +386,20 @@ var ModalAddPhoto = React.createClass({
                 >
                   <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 className="modal-title text-center">Add Photo</h4>
+                <h4 className="modal-title text-center">Add / Delete Photo</h4>
               </div>
               <div className="modal-body add-photo">
                 <div className="list-img">
                   {
                     gallery.map((item, key) => {
                       return (
-                        <img key={key} src={item} className="img" />
+                        <div className="img" key={key}>
+                          <img 
+                            src={item.url}
+                            className="img"
+                          />
+                          <i className="fa fa-close" onClick={() => self.props.viewItem('deletePhoto', item)} />
+                        </div> 
                       );
                     })
                   }
