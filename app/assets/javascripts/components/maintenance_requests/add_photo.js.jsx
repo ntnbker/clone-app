@@ -386,7 +386,7 @@ var ModalAddPhoto = React.createClass({
                 >
                   <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 className="modal-title text-center">Add/Delete Photo</h4>
+                <h4 className="modal-title text-center">Add / Delete Photo</h4>
               </div>
               <div className="modal-body add-photo">
                 <div className="list-img">
