@@ -263,9 +263,10 @@ var MaintenanceRequest = React.createClass({
       }
 
       case 'splitMR':
+			case 'addPhoto':
       case 'addTenant':
       case 'approveJob':
-      case 'duplicateMR':
+			case 'duplicateMR':
       case 'justFindMeOne':
       case 'editAvailability':
       case 'confirmcancelTrady':
@@ -1701,7 +1702,7 @@ var MaintenanceRequest = React.createClass({
 
         case 'notification':
           const {notification} = this.state;
-          const {reopenModal} = notification;
+					const {reopenModal} = notification;
           return (
             <ModalNotification
               close={reopenModal ? this.viewItem.bind(this, reopenModal) : this.isClose}
@@ -2028,7 +2029,7 @@ var MaintenanceRequest = React.createClass({
 
         case 'addPhoto':
           return (
-            <ModalAddPhoto
+						<ModalAddPhoto
               close={this.isClose}
               gallery={this.state.gallery}
 							notifyAddPhoto={this.notifyAddPhoto}
@@ -2280,7 +2281,7 @@ var MaintenanceRequest = React.createClass({
 				case 'deletePhoto':
 				return (
 					<ModalDeletePhoto
-						close={this.isClose}
+						close={this.closeDeletePhoto}
 						photoData={this.state.photo}
 						authenticity_token={this.props.authenticity_token}
 					/>
@@ -2290,7 +2291,35 @@ var MaintenanceRequest = React.createClass({
           return null;
       }
     }
-  },
+	},
+	
+	closeDeletePhoto(err, res) {
+		if (err === undefined) {
+			return this.onModalWith('addPhoto');
+		}
+		if (err) {
+			this.setState({notification: {
+				title: "Delete Photo",
+				content: err.responseText,
+				bgClass: "bg-error",
+			}});
+			return this.onModalWith('notification');
+		}
+		if (res) {
+			const {gallery, photo} = this.state;
+			this.setState({
+				notification: {
+					title: "Delete",
+					content: res.message,
+					bgClass: "bg-success",
+					reopenModal: 'addPhoto',
+				},
+				gallery: gallery.filter(({id}) => id !== photo.id)
+			});
+			return this.onModalWith('notification');
+		}
+		this.isClose();
+	},
 
   autoScroll: function(key) {
     var offset = $('#' + key).offset();

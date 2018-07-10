@@ -168,6 +168,7 @@ var TenantMaintenanceRequest = React.createClass({
 				break;
 			}
 
+			case 'addPhoto':
 			case 'editAvailability':
 			case 'createAppointment':
 			case 'createAppointmentForQuote':
@@ -176,6 +177,14 @@ var TenantMaintenanceRequest = React.createClass({
 				break;
 			}
 
+			case 'deletePhoto': {
+				this.setState({
+					photo: item
+				})
+
+				this.onModalWith(key);
+				break;
+			}
 			default: {
 				break;
 			}
@@ -539,16 +548,18 @@ var TenantMaintenanceRequest = React.createClass({
 			}
 
 			switch(this.state.modal) {
-				case 'notification': {
-					return (
-						<ModalNotification
-							close={this.isClose}
-							bgClass={this.state.notification.bgClass}
-							title={this.state.notification.title}
-							content={this.state.notification.content}
-						/>
-					);
-				}
+        case 'notification':
+          const {notification} = this.state;
+					const {reopenModal} = notification;
+          return (
+            <ModalNotification
+              close={reopenModal ? this.viewItem.bind(this, reopenModal) : this.isClose}
+              bgClass={this.state.notification.bgClass}
+              title={this.state.notification.title}
+              content={this.state.notification.content}
+            />
+          );
+
 
 				case 'sendAgentMessage': {
 					return (
@@ -703,6 +714,7 @@ var TenantMaintenanceRequest = React.createClass({
 						<ModalAddPhoto
 							close={this.isClose}
 							gallery={this.state.gallery}
+							viewItem={this.viewItem}
 							notifyAddPhoto={this.notifyAddPhoto}
 							authenticity_token={this.props.authenticity_token}
 							maintenance_request={this.state.maintenance_request}
@@ -733,10 +745,46 @@ var TenantMaintenanceRequest = React.createClass({
 						/>
 					)
 					
+				case 'deletePhoto':
+				return (
+					<ModalDeletePhoto
+						close={this.closeDeletePhoto}
+						photoData={this.state.photo}
+						authenticity_token={this.props.authenticity_token}
+					/>
+				)
 				default:
 					return null;
 			}
 		}
+	},
+
+	closeDeletePhoto(err, res) {
+		if (err === undefined) {
+			return this.onModalWith('addPhoto');
+		}
+		if (err) {
+			this.setState({notification: {
+				title: "Delete Photo",
+				content: err.responseText,
+				bgClass: "bg-error",
+			}});
+			return this.onModalWith('notification');
+		}
+		if (res) {
+			const {gallery, photo} = this.state;
+			this.setState({
+				notification: {
+					title: "Delete",
+					content: res.message,
+					bgClass: "bg-success",
+					reopenModal: 'addPhoto',
+				},
+				gallery: gallery.filter(({id}) => id !== photo.id)
+			});
+			return this.onModalWith('notification');
+		}
+		this.isClose();
 	},
 
 	openAppointment: function(appointment_id) {

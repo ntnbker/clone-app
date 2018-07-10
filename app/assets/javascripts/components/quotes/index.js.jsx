@@ -1724,15 +1724,15 @@ var ModalDeletePhoto = React.createClass({
   deletePhoto() {
     const {photoData: {id}, authenticity_token} = this.props;
     const self = this;
-    debugger
+
 		$.ajax({
 		  type: 'DELETE',
-		  url: '/images/' + id,
+		  url: '/delete_image',
 		  beforeSend: function (xhr) {
 		    xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
 		  },
 		  data: {
-        image_id: id,
+        id: id,
       },
 		  success: function (res) {
         self.props.close(null, res);
@@ -1748,16 +1748,16 @@ var ModalDeletePhoto = React.createClass({
     const imageUrl = photoData.url;
 
     return (
-      <div className="modal-custom modal-quote fade">
+      <div className="modal-custom fade">
         <div className="modal-dialog">
-          <div className="modal-content" id="print-quote">
+          <div className="modal-content">
             <div className="modal-header">
               <button
                 type="button"
                 className="close"
                 data-dismiss="modal"
                 aria-label="Close"
-                onClick={() => this.props.close()}
+                onClick={this.props.close}
               >
                 <span aria-hidden="true">&times;</span>
               </button>

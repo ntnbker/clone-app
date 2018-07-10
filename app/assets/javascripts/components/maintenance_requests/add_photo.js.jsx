@@ -393,12 +393,13 @@ var ModalAddPhoto = React.createClass({
                   {
                     gallery.map((item, key) => {
                       return (
-                        <img 
-                          key={key} 
-                          src={item.url} 
-                          className="img" 
-                          onClick={() => self.props.viewItem('deletePhoto', item)} 
-                        />
+                        <div className="img" key={key}>
+                          <img 
+                            src={item.url}
+                            className="img"
+                          />
+                          <i className="fa fa-close" onClick={() => self.props.viewItem('deletePhoto', item)} />
+                        </div> 
                       );
                     })
                   }

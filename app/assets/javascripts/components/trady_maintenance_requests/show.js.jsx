@@ -637,7 +637,14 @@ var TradyMaintenanceRequest = React.createClass({
 				break;
 			}
 
+			case 'deletePhoto': {
+				this.setState({
+					photo: item
+				})
 
+				this.onModalWith(key);
+				break;
+			}
 			default: {
 				break;
 			}
@@ -893,15 +900,18 @@ var TradyMaintenanceRequest = React.createClass({
 			}
 
 			switch(this.state.modal) {
-				case 'notification':
-					return (
-						<ModalNotification
-							close={this.isClose}
-							bgClass={this.state.notification.bgClass}
-							title={this.state.notification.title}
-							content={this.state.notification.content}
-						/>
-					);
+        case 'notification':
+          const {notification} = this.state;
+					const {reopenModal} = notification;
+          return (
+            <ModalNotification
+              close={reopenModal ? this.viewItem.bind(this, reopenModal) : this.isClose}
+              bgClass={this.state.notification.bgClass}
+              title={this.state.notification.title}
+              content={this.state.notification.content}
+            />
+          );
+
 
 				case 'viewQuote': {
 					return (
@@ -1124,6 +1134,7 @@ var TradyMaintenanceRequest = React.createClass({
 						<ModalAddPhoto
 							close={this.isClose}
 							gallery={this.state.gallery}
+							viewItem={this.viewItem}
 							notifyAddPhoto={this.notifyAddPhoto}
 							authenticity_token={this.props.authenticity_token}
 							maintenance_request={this.state.maintenance_request}
@@ -1244,6 +1255,34 @@ var TradyMaintenanceRequest = React.createClass({
 					return null;
 			}
 		}
+	},
+
+	closeDeletePhoto(err, res) {
+		if (err === undefined) {
+			return this.onModalWith('addPhoto');
+		}
+		if (err) {
+			this.setState({notification: {
+				title: "Delete Photo",
+				content: err.responseText,
+				bgClass: "bg-error",
+			}});
+			return this.onModalWith('notification');
+		}
+		if (res) {
+			const {gallery, photo} = this.state;
+			this.setState({
+				notification: {
+					title: "Delete",
+					content: res.message,
+					bgClass: "bg-success",
+					reopenModal: 'addPhoto',
+				},
+				gallery: gallery.filter(({id}) => id !== photo.id)
+			});
+			return this.onModalWith('notification');
+		}
+		this.isClose();
 	},
 
 	chooseQuoteRequest: function(quote_request) {
