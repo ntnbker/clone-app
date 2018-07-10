@@ -106,7 +106,7 @@ var EditMaintenanceRequest = React.createClass({
 										className="btn-edit"
 										onClick={() => this.props.onModalWith('addPhoto')}
 									>
-										Add Photo
+										Add/Delete Photo
 									</button>
 								</div>
 								{this.renderServiceType(maintenance_request, services)}

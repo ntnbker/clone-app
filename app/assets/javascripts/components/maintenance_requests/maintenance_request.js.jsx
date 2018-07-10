@@ -1006,7 +1006,7 @@ var MaintenaceRequestDetail = React.createClass({
 								className=""
 								onClick={() => this.props.onModalWith('addPhoto')}
 							>
-								Add Photo
+								Add/Delete Photo
 							</button>
 						</div>
 					</div>
