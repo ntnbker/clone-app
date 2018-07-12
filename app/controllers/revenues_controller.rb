@@ -1,4 +1,4 @@
-class RevenuesController < ApplicationsController
+class RevenuesController < ApplicationController
 
   def index
     @all_invoices = AllInvoice.all_outstanding_invoices

@@ -1,0 +1,30 @@
+%div.container
+  Fees Collected To Date: 
+  =@paid_revenue
+  %br
+  Outstanding fees owed:
+  =@outstanding_revenue
+  %br
+
+  
+
+  / -@all_invoices.each do |invoice|
+  /   -if invoice.class == Invoice 
+  /     id:
+  /     = invoice.id
+  /     due date:
+  /     = invoice.due_date
+  /     invoice total:
+  /     = invoice.amount
+  /     service fee:
+  /     = invoice.service_fee
+  /     status:
+  /     = invoice.mapp_payment_status
+  /   -else
+  /     = invoice.id
+  /     = invoice.due_date
+  /     = invoice.total_invoice_amount
+  /     = invoice.service_fee
+  /     = invoice.mapp_payment_status
+  /   %br
+
