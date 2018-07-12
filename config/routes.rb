@@ -362,6 +362,10 @@ Rails.application.routes.draw do
   ###########################################################
   resources :access_contacts, only:[:create, :update, :destroy]
 
+  ###########################################################
+  ##########REVENUE DASHBOARD RESOURCES#####
+  ###########################################################
+  resources :revenues, only:[:index]
 
   
 
