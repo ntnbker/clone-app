@@ -1,0 +1,23 @@
+.main-container #dashboard {
+  .dashboard-title {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+    margin: 10px 0 20px;
+  }
+  .section {
+    .amount-statistics {
+      > div {
+        @include flex(1);
+        max-width: unset;
+      }
+      .feeling img {
+        height: 50px;
+      }
+    }
+    .main-data {
+      margin-top: 20px;
+      border: none;
+    }
+  }
+}
