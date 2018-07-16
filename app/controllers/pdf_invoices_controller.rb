@@ -1,7 +1,7 @@
-class PdfInvoicesController < ApplicationController
-
-  def pdf
+# class PdfInvoicesController < ApplicationController
+  
+#   def pdf
     
-  end
+#   end
 
-end 
+# end 
