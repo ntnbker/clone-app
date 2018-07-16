@@ -369,7 +369,7 @@ Rails.application.routes.draw do
   ###########################################################
   ##########DOWLOADS RESOURCES#####
   ###########################################################
-  resources :download_pdfs, only:[:show, :test]
+  resources :download_pdfs, only:[:show]
 
   ###########################################################
   ##########PDF invoice preview for dev RESOURCES#####
