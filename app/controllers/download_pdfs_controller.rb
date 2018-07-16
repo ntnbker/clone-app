@@ -2,8 +2,12 @@ class DownloadPdfsController < ApplicationController
   before_action :require_login, only:[:edit,:update]
   before_action :require_role
 
-  
+
   def show
+    invoice = Invoice.find(params[:invoice_id])
+    InvoicePdf.new(invoice)
+
+
     respond_to do |format|
       format.pdf { send_invoice_pdf }
     end
@@ -14,6 +18,7 @@ class DownloadPdfsController < ApplicationController
   def invoice_pdf
     invoice = Invoice.find(params[:invoice_id])
     InvoicePdf.new(invoice)
+    
   end
  
   def send_invoice_pdf
