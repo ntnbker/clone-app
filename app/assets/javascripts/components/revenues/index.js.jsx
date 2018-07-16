@@ -50,7 +50,7 @@ const Dashboard = React.createClass({
                 </div>
                 <div className="agent-made">
                   <div className="title">Leon and Martin's Happiness Index</div>
-                  <div className="amount">${(paid_revenue + outstanding_revenue) || 0}</div>
+                  <div className="amount">${(parseFloat(paid_revenue || 0) + parseFloat(outstanding_revenue))}</div>
                 </div>
               </div>
               <div className="main-data">
