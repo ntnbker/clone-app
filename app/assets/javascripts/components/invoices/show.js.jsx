@@ -151,7 +151,7 @@ var ModalViewInvoice = React.createClass({
 	download: function() {
 		const {invoice, authenticity_token} = this.props;
 
-		window.open(`/download_pdfs/${invoice.id}?invoice_id=${invoice.id}`, '_blank');
+		window.open(`/download_pdfs/${invoice.id}.pdf?invoice_id=${invoice.id}`, '_blank');
 	},
 
 	render: function() {
