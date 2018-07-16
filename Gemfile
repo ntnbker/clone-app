@@ -52,6 +52,9 @@ gem 'twilio-ruby', '~> 4.11.1'
 gem 'actionpack-action_caching'
 gem 'rails-observers'
 gem 'where_exists'
+gem 'pdfkit'
+gem 'render_anywhere'
+gem 'wkhtmltopdf-binary'
 # gem "tod"
 # gem "chronic"
 gem 'rufus-scheduler'
