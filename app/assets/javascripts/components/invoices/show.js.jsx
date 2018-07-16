@@ -151,20 +151,7 @@ var ModalViewInvoice = React.createClass({
 	download: function() {
 		const {invoice, authenticity_token} = this.props;
 
-		$.ajax({
-			type: 'GET',
-			url: '/download_pdfs/' + invoice.id,
-			beforeSend: function(xhr) {
-				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
-			},
-			data: {
-				invoice_id: invoice.id,
-			},
-			success: function(res){
-			},
-			error: function(err) {
-			}
-		})
+		window.open(`/download_pdfs/${invoice.id}?invoice_id=${invoice.id}`, '_blank');
 	},
 
 	render: function() {
