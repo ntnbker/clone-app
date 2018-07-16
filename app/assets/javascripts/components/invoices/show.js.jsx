@@ -148,6 +148,25 @@ var ModalViewInvoice = React.createClass({
 		window.print();
 	},
 
+	download: function() {
+		const {invoice, authenticity_token} = this.props;
+
+		$.ajax({
+			type: 'GET',
+			url: '/download_pdfs/' + invoice.id,
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: {
+				invoice_id: invoice.id,
+			},
+			success: function(res){
+			},
+			error: function(err) {
+			}
+		})
+	},
+
 	render: function() {
 		const self = this.props;
 		const {invoice} = this.state;
@@ -337,6 +356,7 @@ var ModalViewInvoice = React.createClass({
                   </button>
               }
               <ButtonPrint printQuote={this.printInvoice} />
+              <ButtonPrint printQuote={this.download} text="Download" />
             </div>
 					</div>
 				</div>

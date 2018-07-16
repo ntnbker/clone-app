@@ -1886,6 +1886,7 @@ var MaintenanceRequest = React.createClass({
               property={this.state.property}
               viewInvoice={this.viewItem}
               role={this.props.current_user_role}
+              authenticity_token={this.props.authenticity_token}
             />
           );
 
