@@ -4,8 +4,6 @@ class DownloadPdfsController < ApplicationController
 
 
   def show
-    invoice = Invoice.find(params[:invoice_id])
-    InvoicePdf.new(invoice)
 
 
     respond_to do |format|

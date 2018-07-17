@@ -1,6 +1,6 @@
 
 class ActionStatus < ApplicationRecord
-  
+  searchkick word_start: [:agent_status]
   belongs_to :maintenance_request, touch: true
   belongs_to :agent
   belongs_to :agency_admin
