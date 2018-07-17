@@ -1,3 +1,192 @@
-= react_component 'Dashboard', {:link => "/agency_admin_maintenance_requests", :paid_revenue => 0, :outstanding_revenue => 0, :invoices => []}
+= invoice = @invoice
+- image_url = '', subTotal = 0, isShowVoidModal = invoice.paid === false && invoice.active === false
+- role = current_user.current_role.role
+- trady = invoice.trady
+- trady_company = trady.trady_company
+- agency = @agency, property = @property
+- landlord = @landlord
+
+- if trady_company && trady_company.trady_company_profile_image
+  - image_url = trady_company.trady_company_profile_image.image_url
+
+- def capitalizeText(text)
+  - text.split.map(&:capitalize).join(' ')
+- end
+
+- def formatABN(text) 
+  return text.match(/.{1,3}/g).join(' ');
 
 
+formatPhone(text) {
+  return text.replace(/(.{2})(.{4})(.{4})(.*)/, '$1 $2 $3 $4').trim();
+},
+
+formatMobile(text) {
+  return text.replace(/(.{4})(.{3})(.{3})(.*)/, '$1 $2 $3 $4').trim();
+},
+
+// Sum total invoice from invoice_items
+= subTotal = !invoice.invoice_items
+  ? 0
+  : invoice.invoice_items.reduce((total, item) => {
+    if (item.pricing_type == "Fixed Cost") {
+      total += item.amount;
+    } else {
+      total += (item.amount * item.hours);
+    }
+    return total;
+  }, 0);
+
+  #view-pdf-format
+    %div{:className => "invoice-pdf-format"}
+      %div{:className => "header"}
+        %div{:className => "logo"}
+          %span{:className => "icon-user"}
+            - if = image_url 'src' do
+              %img#avatar{:alt => "Avatar Image", :src => image_url}
+  
+        %div{:className => "info-trady"}
+          %p
+            %span
+              %b{:className => "company-name"}=capitalizeText(trady.company_name)
+          %p
+            %span
+              -if trady.trady_company.abn do
+                ="ABN #{formatABN(trady.trady_company.abn)}"
+              - else
+                =""
+          %p
+            %span
+              =capitalizeText(trady.trady_company.address)
+          %p
+            %span
+              - if trady.trady_company.mobile_number do
+                ="Mobile: #{formatMobile(trady.trady_company.mobile_number)}"
+          %p
+            %span
+              - if trady.trady_company.landline do
+                ="Landline: #{formatPhone(trady.trady_company.landline)}"
+          %p
+            %span
+              - if trady.trady_company.email do
+                ="Email: #{trady.trady_company.email}"
+      %div{:className => "body"}
+        %div{:className => "main-content"}
+          %div{:className => "main-info"}
+            %div{:className => "agency-info"}
+              %div
+                %p{:className => "font-bold bill-to"} Bill To
+                %p 
+                  - if landlord do
+                    =capitalizeText(landlord.name)
+                %p
+                  %span{:className => "font-bold"} C/-
+                  - if agency do
+                    =capitalizeText(agency.business_name)
+                %p 
+                  - if agency do
+                    =capitalizeText(agency.address)
+            %div{:className => "invoice-info"}
+              %p
+                %span{:className => "font-bold"} Invoice Ref:
+                %span=invoice.trady_invoice_reference || 'N/A'
+              %p
+                %span{:className => "font-bold"} Issue date:
+                %span=moment(invoice.created_at).format("LL") 
+              %p
+                %span{:className => "font-bold"} Due date:
+                %span=moment(invoice.due_date).format("LL") 
+          %p{:className => "font-bold service-address"}
+            ="Service Address: #{capitalizeText(property.property_address)}"
+          %div{:className => "detail position-rl"}
+            -if invoice.invoice_items do
+              %table{:className => "table"}
+                %thead
+                  %tr
+                    %th{:className => "invoice-description"}
+                      Description
+                    %th{:className => "invoice-price"}
+                      Pricing
+                    %th{:className => "invoice-hour"}
+                      Hours
+                    %th{:className => "invoice-rate"}
+                      Rate
+                    %th{:className => "invoice-amount"}
+                      Amount
+                %tbody
+                  -if isShowVoidModal do
+                  %div{:className => "text-center position-ab reason-void"}
+                    %div{:className => "reason-header"} INVOICE VOID DO NOT PAY
+                    %div{:className => "reason-title"} Reason for voiding:
+                    %div{:className => "reason-content"} {invoice.void_reason}
+                  -invoice.invoice_items.map(function(item, key)
+                    %tr
+                      %td{:className => "invoice-description"} {item.item_description}
+                      %td{:className => "invoice-price"} {item.pricing_type}
+                      %td{:className => "invoice-hour"} {item.pricing_type === 'Fixed Cost' ? 'N/A' : item.hours.toFixed(2)}
+                      %td{:className => "invoice-rate"} { item.pricing_type == "Fixed Cost" ? 'N/A' : !!item.amount ? `$ ${item.amount}` : 'N/A' }
+                      %td{:className => "invoice-amount"} ${ item.pricing_type == "Fixed Cost" ? item.amount.toFixed(2) : (item.amount * item.hours).toFixed(2) }
+                  )
+                %tr
+                  %td{:className => "border-none p-b-n", :colSpan => "3"}
+                  %td{:className => "text-right border-none font-bold p-b-n"}
+                    Subtotal:
+                  %td{:className => "border-none p-b-n"}
+                    $ {(subTotal - invoice.gst_amount).toFixed(2)}
+                %tr
+                  %td{:className => "border-none p-t-n", :colSpan => "3"}
+                  %td{:className => "text-right font-bold p-t-n"}
+                    GST 10%:
+                  %td{:className => "p-t-n"}
+                    $ {invoice.gst_amount.toFixed(2)}
+                %tr{:className => "position-rl"}
+                  %td{:className => "border-none", :colSpan => "3"}
+                  %td{:className => "text-right font-bold border-none"}
+                    Amount Due:
+                  %td{:className => "font-bold border-none"}
+                    $ {subTotal.toFixed(2)}
+                {
+                role === 'Trady'  trady  trady.jfmo_participant  invoice.service_fee
+                %tr
+                  %td{:className => "border-none", :colSpan => "3"}
+                  %td{:className => "text-right font-bold border-none"}
+                    Service Fee:
+                  %td{:className => "font-bold border-none"}
+                    $ {invoice.service_fee}
+                }
+
+      %div{:className => "footer"}
+        %div{:className => "bank"}
+          %div
+            %i{:className => "fa fa-bank"}
+            %p{:className => "font-bold"} Bank Deposit
+          %p
+            %span{:className => "font-bold"} Account Name:
+            %span {capitalizeText(trady.trady_company.account_name)}
+          %p
+            %span{:className => "font-bold"} BSB no.
+            %span {formatABN(trady.trady_company.bsb_number)}
+          %p
+            %span{:className => "font-bold"} ACC no.
+            %span {formatABN(trady.trady_company.bank_account_number)}
+          { !!invoice.invoice_items
+          %p
+            %span{:className => "font-bold"} Invoice Amount:
+            %span { subTotal.toFixed(2) }
+          }
+        %div{:className => "contact"}
+          %div
+            %i{:className => "fa fa-envelope-o"}
+            %p{:className => "font-bold"} Mail
+          %p
+            %span{:className => "font-bold"} Make your cheque payable to:
+            %span {capitalizeText(trady.trady_company.account_name)}
+          %p
+            %span{:className => "font-bold"} Detach this section and mail with your cheque to:
+            %span {capitalizeText(trady.trady_company.address)}
+          { !!invoice.invoice_items
+          %p
+            %span{:className => "font-bold"} Invoice Ref:
+            %span {invoice.trady_invoice_reference || 'N/A'}
+          }
+  
