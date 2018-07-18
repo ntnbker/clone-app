@@ -34,7 +34,7 @@
   - else
     - subTotal += (item.amount * item.hours)
 
-%div{:id => "view-pdf-format"}
+#view-pdf-format
   %div{:className => "invoice-pdf-format"}
     %div{:className => "header"}
       %div{:className => "logo"}
@@ -159,17 +159,17 @@
           %span{:className => "font-bold"} Account Name:
           %span
             /ADD NEW METHODS HERE
-            / = capitalizeText(trady.trady_company.account_name)
+            = trady.trady_company.capitalize_account_name
         %p
           %span{:className => "font-bold"} BSB no.
           %span
             /ADD NEW METHODS HERE
-            /= formatABN(trady.trady_company.bsb_number)
+            = trady.trady_company.format_bsb_number
         %p
           %span{:className => "font-bold"} ACC no.
           %span
             /ADD NEW METHODS HERE
-            / = formatABN(trady.trady_company.bank_account_number)
+            = trady.trady_company.format_bank_account_number
         -if invoice.invoice_items 
           %p
             %span{:className => "font-bold"} Invoice Amount:
@@ -184,11 +184,11 @@
           %span{:className => "font-bold"} Make your cheque payable to:
           %span
             /ADD NEW METHODS HERE
-            / = capitalizeText(trady.trady_company.account_name)
+            = trady.trady_company.capitalize_account_name
         %p
           %span{:className => "font-bold"} Detach this section and mail with your cheque to:
           %span
             /ADD NEW METHODS HERE
-            / = capitalizeText(trady.trady_company.address)
+            = trady.trady_company.capitalize_address
 
 

@@ -252,6 +252,12 @@ var Header = React.createClass({
           </div>
           <div className="archived-checkbox">
             <input 
+              type="hidden"
+              id="search_archived"
+              name="search_archived"
+              value="false"
+            />
+            <input 
               type="checkbox"
               id="search_archived"
               name="search_archived"
@@ -259,12 +265,6 @@ var Header = React.createClass({
             />
             <span className="text">Archived Only</span>
           </div>
-          <input 
-            type="hidden"
-            id="search_archived"
-            name="search_archived"
-            value="false"
-          />
         </form>
       </div>
     );

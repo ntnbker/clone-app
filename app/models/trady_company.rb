@@ -41,6 +41,18 @@ class TradyCompany < ApplicationRecord
     self.company_name.split.map(&:capitalize).join(' ')
   end
 
+  def capitalize_account_name
+    self.account_name.split.map(&:capitalize).join(' ')
+  end
+
+  def capitalize_address
+    self.address.split.map(&:capitalize).join(' ')
+  end
+
+  def capitalize_company_name
+    self.company_name.split.map(&:capitalize).join(' ')
+  end
+
   def capitalize_trading_name
     self.trading_name.split.map(&:capitalize).join(' ')
   end
@@ -79,6 +91,26 @@ class TradyCompany < ApplicationRecord
 
   def format_account_name
     self.account_name = self.account_name.split.map(&:capitalize).join(' ')
+  end
+
+  def format_mobile_number
+    self.mobile_phone.unpack("A4A3A3A*").join' '
+  end
+
+  def format_landline
+    self.landline.unpack("A2A4A4A*").join' '
+  end
+
+  def format_abn
+    self.abn.unpack("A3A3A3A*").join' '
+  end
+
+  def format_bsb_number
+    self.bsb_number.unpack("A3A3A3A*").join' '
+  end
+
+  def format_bank_account_number
+    self.bank_account_number.unpack("A3A3A3A*").join' '
   end
 
 
