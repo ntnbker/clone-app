@@ -5,7 +5,7 @@ class SearchMaintenanceRequestsController < ApplicationController
   def search_maintenance_request
     user = current_user
     @link = ''
-binding.pry
+
     if params[:query]
       if params[:search_archived]== "true" 
         if current_user.agency_admin && current_user.logged_in_as("AgencyAdmin")
