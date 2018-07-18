@@ -49,10 +49,6 @@ class TradyCompany < ApplicationRecord
     self.address.split.map(&:capitalize).join(' ')
   end
 
-  def capitalize_company_name
-    self.company_name.split.map(&:capitalize).join(' ')
-  end
-
   def capitalize_trading_name
     self.trading_name.split.map(&:capitalize).join(' ')
   end
