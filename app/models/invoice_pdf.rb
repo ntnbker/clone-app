@@ -8,7 +8,7 @@ class InvoicePdf
   end
  
   def to_pdf
-    kit = PDFKit.new(as_html, size: 'A4')
+    kit = PDFKit.new(as_html, page_size: 'A4', print_media_type:true, dpi: 400)
     kit.to_file("#{Rails.root}/tmp/invoice.pdf")
   end
  

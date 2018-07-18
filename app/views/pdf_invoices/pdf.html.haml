@@ -50,18 +50,18 @@
         %p
           %span
             -if trady.trady_company.abn 
-              ="ABN "
+              ="ABN #{trady.trady_company.format_abn}"
         %p
           %span
-            =trady.trady_company.format_address
+            =trady.trady_company.capitalize_address
         %p
           %span
             - if trady.trady_company.mobile_number 
-              ="Mobile:"
+              ="Mobile: #{trady.trady_company.format_mobile_number}"
         %p
           %span
             - if trady.trady_company.landline 
-              ="Landline:" 
+              ="Landline: #{trady.trady_company.format_landline}" 
         %p
           %span
             - if trady.trady_company.email 

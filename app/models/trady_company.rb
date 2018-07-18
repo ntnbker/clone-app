@@ -90,7 +90,7 @@ class TradyCompany < ApplicationRecord
   end
 
   def format_mobile_number
-    self.mobile_phone.unpack("A4A3A3A*").join' '
+    self.mobile_number.unpack("A4A3A3A*").join' '
   end
 
   def format_landline
