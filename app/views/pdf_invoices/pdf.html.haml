@@ -1,6 +1,6 @@
 - subTotal = 0
 -isShowVoidModal = invoice.paid == false && invoice.active == false
-- role = current_user.current_role.role
+/ -role = current_user.current_role.role
 - trady = invoice.trady
 - maintenance_request = invoice.maintenance_request
 - trady_company = trady.trady_company
@@ -144,7 +144,7 @@
                     Amount Due:
                   %td{:className => "font-bold border-none"}
                     ="$ #{subTotal.toFixed(2)}"
-                -if role === 'Trady' && trady && trady.jfmo_participant && invoice.service_fee 
+                -if invoice.service_fee == 0 || invoice.service_fee.nil?
                   %tr
                     %td{:className => "border-none", :colSpan => "3"}
                     %td{:className => "text-right font-bold border-none"}
