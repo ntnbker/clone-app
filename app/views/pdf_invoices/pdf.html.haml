@@ -35,17 +35,17 @@
     - subTotal += (item.amount * item.hours)
 
 #view-pdf-format
-  %div{:className => "invoice-pdf-format"}
-    %div{:className => "header"}
-      %div{:className => "logo"}
-        %span{:className => "icon-user"}
+  %div{:class => "invoice-pdf-format"}
+    %div{:class => "header"}
+      %div{:class => "logo"}
+        %span{:class => "icon-user"}
           - if image_url
             %img#avatar{:alt => "Avatar Image", :src => image_url}
 
-      %div{:className => "info-trady"}
+      %div{:class => "info-trady"}
         %p
           %span
-            %b{:className => "company-name"}
+            %b{:class => "company-name"}
               =trady.capitalize_company_name
         %p
           %span
@@ -66,127 +66,127 @@
           %span
             - if trady.trady_company.email 
               ="Email: #{trady.trady_company.email}"
-    %div{:className => "body"}
-      %div{:className => "main-content"}
-        %div{:className => "main-info"}
-          %div{:className => "agency-info"}
+    %div{:class => "body"}
+      %div{:class => "main-content"}
+        %div{:class => "main-info"}
+          %div{:class => "agency-info"}
             %div
-              %p{:className => "font-bold bill-to"} Bill To
+              %p{:class => "font-bold bill-to"} Bill To
               %p 
                 - if landlord 
                   =landlord.capitalize_name
               %p
-                %span{:className => "font-bold"} C/-
+                %span{:class => "font-bold"} C/-
                 - if agency 
                   =agency.format_business_name
               %p 
                 - if agency 
                   =agency.format_address
-          %div{:className => "invoice-info"}
+          %div{:class => "invoice-info"}
             %p
-              %span{:className => "font-bold"} Invoice Ref:
+              %span{:class => "font-bold"} Invoice Ref:
               %span 
                 =invoice.trady_invoice_reference.nil? ? 'N/A': invoice.trady_invoice_reference
             %p
-              %span{:className => "font-bold"} Issue date:
+              %span{:class => "font-bold"} Issue date:
               %span= invoice.created_at.format("LL") 
             %p
-              %span{:className => "font-bold"} Due date:
+              %span{:class => "font-bold"} Due date:
               %span=invoice.due_date.strftime("%B  %m, %Y")
-        %p{:className => "font-bold service-address"}
+        %p{:class => "font-bold service-address"}
           ="Service Address: #{property.property_address}"
-        %div{:className => "detail position-rl"}
+        %div{:class => "detail position-rl"}
           -if invoice.invoice_items 
-            %table{:className => "table"}
+            %table{:class => "table"}
               %thead
                 %tr
-                  %th{:className => "invoice-description"}
+                  %th{:class => "invoice-description"}
                     Description
-                  %th{:className => "invoice-price"}
+                  %th{:class => "invoice-price"}
                     Pricing
-                  %th{:className => "invoice-hour"}
+                  %th{:class => "invoice-hour"}
                     Hours
-                  %th{:className => "invoice-rate"}
+                  %th{:class => "invoice-rate"}
                     Rate
-                  %th{:className => "invoice-amount"}
+                  %th{:class => "invoice-amount"}
                     Amount
               %tbody
                 -if isShowVoidModal 
-                  %div{:className => "text-center position-ab reason-void"}
-                    %div{:className => "reason-header"} INVOICE VOID DO NOT PAY
-                    %div{:className => "reason-title"} Reason for voiding:
-                    %div{:className => "reason-content"}=invoice.void_reason
+                  %div{:class => "text-center position-ab reason-void"}
+                    %div{:class => "reason-header"} INVOICE VOID DO NOT PAY
+                    %div{:class => "reason-title"} Reason for voiding:
+                    %div{:class => "reason-content"}=invoice.void_reason
               
                 -invoice.invoice_items.each do |item|
                   %tr
-                    %td{:className => "invoice-description"}=item.item_description
-                    %td{:className => "invoice-price"}=item.pricing_type
-                    %td{:className => "invoice-hour"}= item.pricing_type == 'Fixed Cost' ? 'N/A' : item.hours.to_f.round(2)
-                    %td{:className => "invoice-rate"}= item.pricing_type == "Fixed Cost" ? 'N/A' : item.amount ? "$ #{item.amount}" : 'N/A'
-                    %td{:className => "invoice-amount"}="$#{item.pricing_type == 'Fixed Cost' ? item.amount.to_f.round(2) : (item.amount * item.hours).to_f.round(2)}"
+                    %td{:class => "invoice-description"}=item.item_description
+                    %td{:class => "invoice-price"}=item.pricing_type
+                    %td{:class => "invoice-hour"}= item.pricing_type == 'Fixed Cost' ? 'N/A' : item.hours.to_f.round(2)
+                    %td{:class => "invoice-rate"}= item.pricing_type == "Fixed Cost" ? 'N/A' : item.amount ? "$ #{item.amount}" : 'N/A'
+                    %td{:class => "invoice-amount"}="$#{item.pricing_type == 'Fixed Cost' ? item.amount.to_f.round(2) : (item.amount * item.hours).to_f.round(2)}"
               
                 %tr
-                  %td{:className => "border-none p-b-n", :colSpan => "3"}
-                  %td{:className => "text-right border-none font-bold p-b-n"}
+                  %td{:class => "border-none p-b-n", :colSpan => "3"}
+                  %td{:class => "text-right border-none font-bold p-b-n"}
                     Subtotal:
-                  %td{:className => "border-none p-b-n"}
+                  %td{:class => "border-none p-b-n"}
                     ="$ #{(subTotal - invoice.gst_amount).to_f.round(2)}"
                 %tr
-                  %td{:className => "border-none p-t-n", :colSpan => "3"}
-                  %td{:className => "text-right font-bold p-t-n"}
+                  %td{:class => "border-none p-t-n", :colSpan => "3"}
+                  %td{:class => "text-right font-bold p-t-n"}
                     GST 10%:
-                  %td{:className => "p-t-n"}
+                  %td{:class => "p-t-n"}
                     ="$ #{invoice.gst_amount.to_f.round(2)}"
-                %tr{:className => "position-rl"}
-                  %td{:className => "border-none", :colSpan => "3"}
-                  %td{:className => "text-right font-bold border-none"}
+                %tr{:class => "position-rl"}
+                  %td{:class => "border-none", :colSpan => "3"}
+                  %td{:class => "text-right font-bold border-none"}
                     Amount Due:
-                  %td{:className => "font-bold border-none"}
+                  %td{:class => "font-bold border-none"}
                     ="$ #{subTotal.to_f.round(2)}"
                 -if invoice.service_fee == 0 || invoice.service_fee.nil?
                   %tr
-                    %td{:className => "border-none", :colSpan => "3"}
-                    %td{:className => "text-right font-bold border-none"}
+                    %td{:class => "border-none", :colSpan => "3"}
+                    %td{:class => "text-right font-bold border-none"}
                       Service Fee:
-                    %td{:className => "font-bold border-none"}
+                    %td{:class => "font-bold border-none"}
                       ="$ #{invoice.service_fee}"
-    %div{:className => "footer"}
-      %div{:className => "bank"}
+    %div{:class => "footer"}
+      %div{:class => "bank"}
         %div
-          %i{:className => "fa fa-bank"}
-          %p{:className => "font-bold"} Bank Deposit
+          %i{:class => "fa fa-bank"}
+          %p{:class => "font-bold"} Bank Deposit
         %p
-          %span{:className => "font-bold"} Account Name:
+          %span{:class => "font-bold"} Account Name:
           %span
             /ADD NEW METHODS HERE
             = trady.trady_company.capitalize_account_name
         %p
-          %span{:className => "font-bold"} BSB no.
+          %span{:class => "font-bold"} BSB no.
           %span
             /ADD NEW METHODS HERE
             = trady.trady_company.format_bsb_number
         %p
-          %span{:className => "font-bold"} ACC no.
+          %span{:class => "font-bold"} ACC no.
           %span
             /ADD NEW METHODS HERE
             = trady.trady_company.format_bank_account_number
         -if invoice.invoice_items 
           %p
-            %span{:className => "font-bold"} Invoice Amount:
+            %span{:class => "font-bold"} Invoice Amount:
             %span
               =subTotal.to_f.round(2) 
       
-      %div{:className => "contact"}
+      %div{:class => "contact"}
         %div
-          %i{:className => "fa fa-envelope-o"}
-          %p{:className => "font-bold"} Mail
+          %i{:class => "fa fa-envelope-o"}
+          %p{:class => "font-bold"} Mail
         %p
-          %span{:className => "font-bold"} Make your cheque payable to:
+          %span{:class => "font-bold"} Make your cheque payable to:
           %span
             /ADD NEW METHODS HERE
             = trady.trady_company.capitalize_account_name
         %p
-          %span{:className => "font-bold"} Detach this section and mail with your cheque to:
+          %span{:class => "font-bold"} Detach this section and mail with your cheque to:
           %span
             /ADD NEW METHODS HERE
             = trady.trady_company.capitalize_address
