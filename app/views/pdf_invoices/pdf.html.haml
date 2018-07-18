@@ -92,7 +92,7 @@
               %span= invoice.created_at.format("LL") 
             %p
               %span{:className => "font-bold"} Due date:
-              %span=moment(invoice.due_date).format("LL") 
+              %span=invoice.due_date.strftime("%B  %m, %Y")
         %p{:className => "font-bold service-address"}
           ="Service Address: #{capitalizeText(property.property_address)}"
         %div{:className => "detail position-rl"}
