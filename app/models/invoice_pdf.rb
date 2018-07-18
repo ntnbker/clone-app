@@ -9,7 +9,7 @@ class InvoicePdf
  
   def to_pdf
     kit = PDFKit.new(as_html, size: [width,height],
-     margins : {
+     margins: {
          top: 72, 
          bottom: 72,
          left: 72,
