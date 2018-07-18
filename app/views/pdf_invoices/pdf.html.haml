@@ -94,7 +94,7 @@
               %span{:className => "font-bold"} Due date:
               %span=invoice.due_date.strftime("%B  %m, %Y")
         %p{:className => "font-bold service-address"}
-          ="Service Address: #{capitalizeText(property.property_address)}"
+          ="Service Address: #{property.property_address}"
         %div{:className => "detail position-rl"}
           -if invoice.invoice_items 
             %table{:className => "table"}
@@ -121,28 +121,28 @@
                   %tr
                     %td{:className => "invoice-description"}=item.item_description
                     %td{:className => "invoice-price"}=item.pricing_type
-                    %td{:className => "invoice-hour"}= item.pricing_type == 'Fixed Cost' ? 'N/A' : item.hours.toFixed(2)
+                    %td{:className => "invoice-hour"}= item.pricing_type == 'Fixed Cost' ? 'N/A' : item.hours.to_f.round(2)
                     %td{:className => "invoice-rate"}= item.pricing_type == "Fixed Cost" ? 'N/A' : item.amount ? "$ #{item.amount}" : 'N/A'
-                    %td{:className => "invoice-amount"}="$#{item.pricing_type == 'Fixed Cost' ? item.amount.toFixed(2) : (item.amount * item.hours).toFixed(2)}"
+                    %td{:className => "invoice-amount"}="$#{item.pricing_type == 'Fixed Cost' ? item.amount.to_f.round(2) : (item.amount * item.hours).to_f.round(2)}"
               
                 %tr
                   %td{:className => "border-none p-b-n", :colSpan => "3"}
                   %td{:className => "text-right border-none font-bold p-b-n"}
                     Subtotal:
                   %td{:className => "border-none p-b-n"}
-                    ="$ #{(subTotal - invoice.gst_amount).toFixed(2)}"
+                    ="$ #{(subTotal - invoice.gst_amount).to_f.round(2)}"
                 %tr
                   %td{:className => "border-none p-t-n", :colSpan => "3"}
                   %td{:className => "text-right font-bold p-t-n"}
                     GST 10%:
                   %td{:className => "p-t-n"}
-                    ="$ #{invoice.gst_amount.toFixed(2)}"
+                    ="$ #{invoice.gst_amount.to_f.round(2)}"
                 %tr{:className => "position-rl"}
                   %td{:className => "border-none", :colSpan => "3"}
                   %td{:className => "text-right font-bold border-none"}
                     Amount Due:
                   %td{:className => "font-bold border-none"}
-                    ="$ #{subTotal.toFixed(2)}"
+                    ="$ #{subTotal.to_f.round(2)}"
                 -if invoice.service_fee == 0 || invoice.service_fee.nil?
                   %tr
                     %td{:className => "border-none", :colSpan => "3"}
@@ -158,20 +158,23 @@
         %p
           %span{:className => "font-bold"} Account Name:
           %span
-            = capitalizeText(trady.trady_company.account_name)
+            /ADD NEW METHODS HERE
+            / = capitalizeText(trady.trady_company.account_name)
         %p
           %span{:className => "font-bold"} BSB no.
           %span
-            = formatABN(trady.trady_company.bsb_number)
+            /ADD NEW METHODS HERE
+            /= formatABN(trady.trady_company.bsb_number)
         %p
           %span{:className => "font-bold"} ACC no.
           %span
-            = formatABN(trady.trady_company.bank_account_number)
+            /ADD NEW METHODS HERE
+            / = formatABN(trady.trady_company.bank_account_number)
         -if invoice.invoice_items 
           %p
             %span{:className => "font-bold"} Invoice Amount:
             %span
-              /=subTotal.toFixed(2) 
+              =subTotal.to_f.round(2) 
       
       %div{:className => "contact"}
         %div
@@ -179,9 +182,13 @@
           %p{:className => "font-bold"} Mail
         %p
           %span{:className => "font-bold"} Make your cheque payable to:
-          %span= capitalizeText(trady.trady_company.account_name)
+          %span
+            /ADD NEW METHODS HERE
+            / = capitalizeText(trady.trady_company.account_name)
         %p
           %span{:className => "font-bold"} Detach this section and mail with your cheque to:
-          %span= capitalizeText(trady.trady_company.address)
+          %span
+            /ADD NEW METHODS HERE
+            / = capitalizeText(trady.trady_company.address)
 
 
