@@ -2,9 +2,9 @@
 %html(lang="en-US")
   %head
     %title MaintenanceApp | Property Management Software
-  %style>
+  %style
     = Rails.application.assets.find_asset('application.scss').to_s 
-  
+    
   %body
     = yield
 
