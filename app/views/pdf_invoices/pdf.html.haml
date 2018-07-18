@@ -1,13 +1,17 @@
-
-/ - invoice = @invoices[0]
-- image_url = '', subTotal = 0, isShowVoidModal = invoice.paid === false && invoice.active === false
-/ - role = current_user.current_role.role
+- subTotal = 0
+-isShowVoidModal = invoice.paid == false && invoice.active == false
+- role = current_user.current_role.role
 - trady = invoice.trady
+- maintenance_request = invoice.maintenance_request
 - trady_company = trady.trady_company
-- agency = @agency || {}, property = @property || {}
-- landlord = @landlord || {}
-
-
+-if maintenance_request.agent
+  - agent = maintenance_request.agent
+  - agency = agent.agency
+-elsif maintenance_request.agency_admin
+  - agent = maintenance_request.agency_admin
+  - agency = agent.agency
+- property = maintenance_request.property
+- landlord = property.landlord
 - if trady_company && trady_company.trady_company_profile_image
   - image_url = trady_company.trady_company_profile_image.image_url
 
@@ -25,11 +29,11 @@
 / // Sum total invoice from invoice_items
 / - subTotal = 0
 / / - if @invoice.invoice_items do
-/ - invoice.invoice_items.each do |item|
-/   -if item.pricing_type == "Fixed Cost"
-/     - subTotal += item.amount
-/   - else
-/     - subTotal += (item.amount * item.hours)
+- invoice.invoice_items.each do |item|
+  -if item.pricing_type == "Fixed Cost"
+    - subTotal += item.amount
+  - else
+    - subTotal += (item.amount * item.hours)
 
 %div{:id => "view-pdf-format"}
   %div{:className => "invoice-pdf-format"}
@@ -51,14 +55,14 @@
         %p
           %span
             =trady.trady_company.format_address
-        / %p
-        /   %span
-        /     - if trady.trady_company.mobile_number 
-        /       ="Mobile:
-        / %p
-        /   %span
-        /     - if trady.trady_company.landline 
-        /       ="Landline: 
+        %p
+          %span
+            - if trady.trady_company.mobile_number 
+              ="Mobile:"
+        %p
+          %span
+            - if trady.trady_company.landline 
+              ="Landline:" 
         %p
           %span
             - if trady.trady_company.email 
@@ -154,17 +158,21 @@
           %p{:className => "font-bold"} Bank Deposit
         %p
           %span{:className => "font-bold"} Account Name:
-          %span= capitalizeText(trady.trady_company.account_name)
+          %span
+            = capitalizeText(trady.trady_company.account_name)
         %p
           %span{:className => "font-bold"} BSB no.
-          %span= formatABN(trady.trady_company.bsb_number)
+          %span
+            = formatABN(trady.trady_company.bsb_number)
         %p
           %span{:className => "font-bold"} ACC no.
-          %span= formatABN(trady.trady_company.bank_account_number)
+          %span
+            = formatABN(trady.trady_company.bank_account_number)
         -if invoice.invoice_items 
           %p
             %span{:className => "font-bold"} Invoice Amount:
-            %span=  subTotal.toFixed(2) 
+            %span=  
+              / subTotal.toFixed(2) 
       
       %div{:className => "contact"}
         %div
