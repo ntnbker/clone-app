@@ -42,6 +42,8 @@ class Trady < ApplicationRecord
     self.company_name.split.map(&:capitalize).join(' ')
   end
 
+  
+
   def name_and_company
      
     if self.trady_company != nil 
