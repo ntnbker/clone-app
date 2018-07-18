@@ -37,35 +37,36 @@
 #view-pdf-format
   %div{:class => "invoice-pdf-format"}
     %div{:class => "header"}
-      %div{:class => "logo"}
-        %span{:class => "icon-user"}
-          - if image_url
-            %img#avatar{:alt => "Avatar Image", :src => image_url}
+      %div{:class => "header-info"}
+        %div{:class => "logo"}
+          %span{:class => "icon-user"}
+            - if image_url
+              %img#avatar{:alt => "Avatar Image", :src => image_url}
 
-      %div{:class => "info-trady"}
-        %p
-          %span
-            %b{:class => "company-name"}
-              =trady.capitalize_company_name
-        %p
-          %span
-            -if trady.trady_company.abn 
-              ="ABN #{trady.trady_company.format_abn}"
-        %p
-          %span
-            =trady.trady_company.capitalize_address
-        %p
-          %span
-            - if trady.trady_company.mobile_number 
-              ="Mobile: #{trady.trady_company.format_mobile_number}"
-        %p
-          %span
-            - if trady.trady_company.landline 
-              ="Landline: #{trady.trady_company.format_landline}" 
-        %p
-          %span
-            - if trady.trady_company.email 
-              ="Email: #{trady.trady_company.email}"
+        %div{:class => "info-trady"}
+          %p
+            %span
+              %b{:class => "company-name"}
+                =trady.capitalize_company_name
+          %p
+            %span
+              -if trady.trady_company.abn 
+                ="ABN #{trady.trady_company.format_abn}"
+          %p
+            %span
+              =trady.trady_company.capitalize_address
+          %p
+            %span
+              - if trady.trady_company.mobile_number 
+                ="Mobile: #{trady.trady_company.format_mobile_number}"
+          %p
+            %span
+              - if trady.trady_company.landline 
+                ="Landline: #{trady.trady_company.format_landline}" 
+          %p
+            %span
+              - if trady.trady_company.email 
+                ="Email: #{trady.trady_company.email}"
     %div{:class => "body"}
       %div{:class => "main-content"}
         %div{:class => "main-info"}
