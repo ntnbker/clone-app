@@ -8,7 +8,13 @@ class InvoicePdf
   end
  
   def to_pdf
-    kit = PDFKit.new(as_html, page_size: 'A4')
+    kit = PDFKit.new(as_html, size: [width,height],
+     margins : {
+         top: 72, 
+         bottom: 72,
+         left: 72,
+         right: 72
+     },)
     kit.to_file("#{Rails.root}/tmp/invoice.pdf")
   end
  
