@@ -171,8 +171,8 @@
         -if invoice.invoice_items 
           %p
             %span{:className => "font-bold"} Invoice Amount:
-            %span=  
-              / subTotal.toFixed(2) 
+            %span
+              /=subTotal.toFixed(2) 
       
       %div{:className => "contact"}
         %div
