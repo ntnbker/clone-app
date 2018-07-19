@@ -271,6 +271,39 @@ var ButtonPrint = React.createClass({
   }
 });
 
+var ButtonDownload = React.createClass({
+  getInitialState() {
+    return {
+      isDownloading: false,
+    }  
+  },
+
+  download(e) {
+    e.preventDefault(); 
+    const {link} = this.props;
+    const self = this;
+    window.location.href = link;
+    this.setState({isDownloading: true});
+    setTimeout(function() {self.setState({isDownloading: false})}, 2000);
+  },
+
+  render: function() {
+    const {isDownloading} = this.state;
+
+    return (
+      <button type="button" className="btn btn-print" disabled={isDownloading} onClick={() => this.link.click()}>
+        {isDownloading ? 'Downloading' : "Download"}
+        <a 
+          className="display-none" 
+          nohref 
+          ref={e => this.link = e}
+          onClick={this.download}
+        />
+      </button>
+    );
+  }
+});
+
 var ActionQuote = React.createClass({
   getInitialState() {
     return {
