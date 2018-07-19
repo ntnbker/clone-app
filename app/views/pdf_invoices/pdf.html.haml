@@ -144,13 +144,13 @@
                     Amount Due:
                   %td{:class => "font-bold border-none"}
                     ="$ #{subTotal.to_f.round(2)}"
-                -if invoice.service_fee == 0 || invoice.service_fee.nil?
-                  %tr
-                    %td{:class => "border-none", :colSpan => "3"}
-                    %td{:class => "text-right font-bold border-none"}
-                      Service Fee:
-                    %td{:class => "font-bold border-none"}
-                      ="$ #{invoice.service_fee}"
+                -if role == "Trady" && !invoice.service_fee.nil? && invoice.service_fee > 0
+                %tr
+                  %td{:class => "border-none", :colSpan => "3"}
+                  %td{:class => "text-right font-bold border-none"}
+                    Service Fee:
+                  %td{:class => "font-bold border-none"}
+                    ="$ #{invoice.service_fee}"
     %div{:class => "footer"}
       %div{:class => "bank"}
         %div
