@@ -90,7 +90,7 @@
                 =invoice.trady_invoice_reference.nil? ? 'N/A': invoice.trady_invoice_reference
             %p
               %span{:class => "font-bold"} Issue date:
-              %span= invoice.created_at.format("LL") 
+              %span= invoice.created_at.strftime("%B  %m, %Y")
             %p
               %span{:class => "font-bold"} Due date:
               %span=invoice.due_date.strftime("%B  %m, %Y")
@@ -191,5 +191,10 @@
           %span
             /ADD NEW METHODS HERE
             = trady.trady_company.capitalize_address
+        %p
+          %span{:class => "font-bold"} Invoice Ref:
+          %span 
+            =invoice.trady_invoice_reference.nil? ? 'N/A': invoice.trady_invoice_reference
+        %p
 
 
