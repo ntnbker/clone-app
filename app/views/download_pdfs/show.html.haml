@@ -1,5 +1,5 @@
 
--logged_in_as_trady? = current_user.logged_in_as("Trady")
+-logged_in_as_trady = current_user.logged_in_as("Trady")
 - subTotal = 0
 -isShowVoidModal = invoice.paid == false && invoice.active == false
 - trady = invoice.trady
@@ -146,7 +146,7 @@
                     Amount Due:
                   %td{:class => "font-bold border-none"}
                     ="$ #{subTotal.to_f.round(2)}"
-                -if logged_in_as_trady? && invoice.service_fee > 0 && !invoice.service_fee.nil?
+                -if logged_in_as_trady && invoice.service_fee > 0 && !invoice.service_fee.nil?
                   %tr
                     %td{:class => "border-none", :colSpan => "3"}
                     %td{:class => "text-right font-bold border-none"}
