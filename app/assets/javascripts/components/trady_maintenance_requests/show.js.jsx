@@ -1027,6 +1027,7 @@ var TradyMaintenanceRequest = React.createClass({
 							 	invoices={this.state.invoices}
 								property={this.props.property}
 								viewInvoice={this.viewItem}
+								authenticity_token={this.props.authenticity_token}
 								role="Trady"
 							/>
 					);

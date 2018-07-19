@@ -1,0 +1,166 @@
+#view-pdf-format {
+  background: white;
+  .invoice-pdf-format {
+    position: relative;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    font-weight: 400;
+    font-size: 14px;
+    padding: 0 15px;
+    .font-bold {
+      font-weight: bold;
+    }
+    .border-none {
+      border: none !important;
+    }
+    .p-b-n {
+      padding-bottom: 0 !important;
+    }
+    .header {
+      padding: 15px;
+      background-color: #fff !important;
+      text-align: center;
+      
+      .header-info {
+        display: inline-block;
+
+        .logo {
+          margin: auto 0 auto 0;
+          text-align: center;
+          float: left;
+          cursor: pointer;
+
+          .icon-user img {
+            width: 120px;
+            max-height: 120px;
+            border-radius: 0;
+            height: auto;
+            margin-top: 7px;
+          }
+        }
+        .info-trady {
+          margin-left: 20px;
+          display: inline-block;
+          text-align: left;
+          p {
+            margin-bottom: 0px;
+            font-size: 12px;
+            text-transform: inherit;
+
+            span:last-child {
+              padding-left: 5px;
+            }
+          }
+        }
+      }
+    }
+    .body {
+      text-align: center;
+      border-top: 1px solid #e5e5e5;
+      width: 100%;
+      margin-top: 10px;
+
+      .main-content {
+        position: relative;
+        padding: 13px;
+        text-align: center;
+
+        .main-info {
+          font-size: 13px;
+          overflow: auto;
+          width: 100%;
+          
+          .agency-info {
+            width: 50%;
+            float: left;
+            margin-bottom: 15px;
+            margin-right: 10px;
+            word-wrap: break-word;
+            overflow: hidden;
+            p {
+              margin-bottom: 0px;
+              text-align: left;
+              text-transform: none;
+            }          
+          }
+          .invoice-info {
+            overflow: hidden;
+            word-wrap: break-word;
+            p {
+              text-align: left;
+              overflow: hidden;
+              margin-bottom: 0px;
+              span:first-child {
+                width: 140px;
+                display: inline-block;
+                text-align: right;
+                text-transform: capitalize;
+              }
+            }
+          }
+        }
+        .service-address {
+          margin-top: 10px;
+          font-size: 20px;
+        }
+        .detail {
+          margin-top: 15px;
+          .table {
+            width: 100%;
+            font-size: 13px;
+            overflow: auto;
+            th {
+              color: #404040;
+              font-size: 16px;
+              text-transform: uppercase;
+            }
+            .invoice-description {
+              width: 40%;
+            }
+            .invoice-price {
+              width: 15%;
+            }
+            .invoice-hour {
+              width: 15%;
+            }
+            .invoice-rate {
+              width: 15%;
+            }
+            .invoice-amount {
+              width: 15%;
+            }
+            tr td {
+              padding-left: 0;
+              padding: 10px 3px;
+              text-align: left;
+            }
+          }
+        }
+      }
+    }
+    .footer {
+      font-size: 12px;
+      border-top: 1px solid #ccc;
+      padding-top: 15px;
+      margin-bottom: 10px;
+      text-align: left;
+      overflow: auto;
+
+      i {
+        font-size: 36px;
+      }
+      p {
+        margin-bottom: 5px;
+      }
+      .bank {
+        width: 50%;
+        margin-right: 15px;
+        overflow: hidden;
+        float: left;
+      }
+      .contact {
+        overflow: hidden;
+      }
+    }
+  }
+}

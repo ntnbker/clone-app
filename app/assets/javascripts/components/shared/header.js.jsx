@@ -237,17 +237,34 @@ var Header = React.createClass({
     return (
       <div className={"search " + (hiddenSearch && "hidden-search")} style={style}>
         <form action="/search" className="form-search" acceptCharset="UTF-8" method="get">
-          <button type="button" type="submit" className="btn-search">
-            <i className="fa fa-search"></i>
-          </button>
-          <input
-            id="query"
-            name="query"
-            type="search"
-            className="input-search"
-            placeholder="Search..."
-            defaultValue={searchText}
-          />
+          <div className="search-input">
+            <button type="button" type="submit" className="btn-search">
+              <i className="fa fa-search"></i>
+            </button>
+            <input
+              id="query"
+              name="query"
+              type="search"
+              className="input-search"
+              placeholder="Search..."
+              defaultValue={searchText}
+            />
+          </div>
+          <div className="archived-checkbox">
+            <input 
+              type="hidden"
+              id="search_archived"
+              name="search_archived"
+              value="false"
+            />
+            <input 
+              type="checkbox"
+              id="search_archived"
+              name="search_archived"
+              value="true"
+            />
+            <span className="text">Archived Only</span>
+          </div>
         </form>
       </div>
     );

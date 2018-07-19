@@ -1057,7 +1057,7 @@ var NewMaintenanceRequestItem = React.createClass({
               onClick={() => location.href = link + "/" + id}
             >
               View
-</button>
+          </button>
           </div>
         </div>
       </div>

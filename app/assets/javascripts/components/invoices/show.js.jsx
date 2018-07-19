@@ -148,6 +148,12 @@ var ModalViewInvoice = React.createClass({
 		window.print();
 	},
 
+	download: function() {
+		const {invoice, authenticity_token} = this.props;
+
+		window.open(`/download_pdfs/${invoice.id}.pdf?invoice_id=${invoice.id}`, '_blank');
+	},
+
 	render: function() {
 		const self = this.props;
 		const {invoice} = this.state;
@@ -337,6 +343,7 @@ var ModalViewInvoice = React.createClass({
                   </button>
               }
               <ButtonPrint printQuote={this.printInvoice} />
+              <ButtonPrint printQuote={this.download} text="Download" />
             </div>
 					</div>
 				</div>

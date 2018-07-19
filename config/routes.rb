@@ -366,7 +366,15 @@ Rails.application.routes.draw do
   ##########REVENUE DASHBOARD RESOURCES#####
   ###########################################################
   resources :revenues, only:[:index]
+  ###########################################################
+  ##########DOWLOADS RESOURCES#####
+  ###########################################################
+  resources :download_pdfs, only:[:show]
 
+  ###########################################################
+  ##########PDF invoice preview for dev RESOURCES#####
+  ###########################################################
+  get "pdf_invoices" => "pdf_invoices#pdf"
   
 
 

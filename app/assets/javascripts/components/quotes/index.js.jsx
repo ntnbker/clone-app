@@ -265,7 +265,7 @@ var ButtonPrint = React.createClass({
   render: function() {
     return (
       <button type="button" className="btn btn-print" onClick={this.props.printQuote}>
-        Print
+        {this.props.text || 'Print'}
       </button>
     );
   }

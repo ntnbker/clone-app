@@ -166,19 +166,14 @@ class MaintenanceRequest < ApplicationRecord
   # end
 
 
-  # def search_data
-  # attributes.merge(
-  #   property_address: property(&:property_address),
-  #   tenants_name: tenants.map(&:name),
-  #   landlord: property.landlord(&:name)
-  # )
-  # end
+  
 
-  scope :search_import, -> { includes(:property) }
+  scope :search_import, -> { includes(:property,:action_status) }
 
  def search_data
     attributes.merge(
-      property_address: property(&:property_address)
+      property_address: property(&:property_address),
+      agent_status:self.action_status.agent_status
     )
   end
 

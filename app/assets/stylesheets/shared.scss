@@ -240,6 +240,18 @@ header {
           border-radius: 20px;
           background: #313E46;
           font-size: 12px;
+          .search-input {
+            @include flex(1);
+          }
+
+          .archived-checkbox {
+            width: 100px;
+            color: white;
+
+            .text {
+              padding-left: 5px;
+            }
+          }
         }
 
         .btn-search {
@@ -656,7 +668,7 @@ header {
       width: 180px;
     }
     .header-custom .search .input-search {
-      width: 75%;
+      width: 70%;
     }
     .menu-btn {
       top: 25%;

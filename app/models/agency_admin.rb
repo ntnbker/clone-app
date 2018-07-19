@@ -53,6 +53,9 @@ attr_accessor :perform_agency_validations
     self.email = self.email.gsub(/\s+/, "").downcase
   end
 
+  def format_full_name
+    "#{self.first_name} #{self.last_name}".split.map(&:capitalize).join(' ').trim
+  end
 
 # #########################
 #   accepts_nested_attributes_for :user, :reject_if => lambda { |a| a[:email].blank?||a[:password].blank?||a[:password_confirmation].blank? }

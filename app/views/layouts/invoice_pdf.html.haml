@@ -1,0 +1,14 @@
+!!! 5
+%html(lang="en-US")
+  %head
+    %title MaintenanceApp | Property Management Software
+  %style
+    / = Rails.application.assets.find_asset('application.scss').to_s 
+    =(Rails.application.assets || ::Sprockets::Railtie.build_environment(Rails.application)).find_asset('application.scss').to_s
+    
+  %body{:style => "background-color: white;"}
+    = yield
+
+
+
+

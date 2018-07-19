@@ -28,4 +28,7 @@ class Agent < ApplicationRecord
     self.email = self.email.gsub(/\s+/, "").downcase
   end
 
+  def format_full_name
+    "#{self.name}".split.map(&:capitalize).join(' ').trim
+  end
 end 
