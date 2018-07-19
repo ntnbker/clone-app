@@ -4,7 +4,7 @@ class DownloadPdfsController < ApplicationController
 
 
   def show
-
+    
 
     respond_to do |format|
       format.pdf { send_invoice_pdf }
@@ -15,7 +15,7 @@ class DownloadPdfsController < ApplicationController
  
   def invoice_pdf
     invoice = Invoice.find(params[:invoice_id])
-    InvoicePdf.new(invoice)
+    InvoicePdf.new(invoice, current_user)
     
   end
  

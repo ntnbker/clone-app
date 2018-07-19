@@ -3,8 +3,9 @@ require "render_anywhere"
 class InvoicePdf
   include RenderAnywhere
  
-  def initialize(invoice)
+  def initialize(invoice, current_user)
     @invoice = invoice
+    @current_user = current_user
   end
  
   def to_pdf
@@ -21,6 +22,6 @@ class InvoicePdf
     attr_reader :invoice
  
     def as_html
-      render template: "pdf_invoices/pdf", layout: "invoice_pdf", locals: { invoice: invoice }
+      render template: "download_pdfs/show", layout: "invoice_pdf", locals: { invoice: invoice, current_user:@current_user }
     end
 end
