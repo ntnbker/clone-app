@@ -20930,10 +20930,9 @@ form#terms-and-conditions .TAC-buttons .button-submit:hover {
 
 /* line 1, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
 #view-pdf-format {
-  min-height: 917.5px;
   background: white;
 }
-/* line 4, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
+/* line 3, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
 #view-pdf-format .invoice-pdf-format {
   position: relative;
   -webkit-background-clip: padding-box;
@@ -20942,36 +20941,36 @@ form#terms-and-conditions .TAC-buttons .button-submit:hover {
   font-size: 14px;
   padding: 0 15px;
 }
-/* line 11, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
+/* line 10, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
 #view-pdf-format .invoice-pdf-format .font-bold {
   font-weight: bold;
 }
-/* line 14, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
+/* line 13, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
 #view-pdf-format .invoice-pdf-format .border-none {
   border: none !important;
 }
-/* line 17, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
+/* line 16, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
 #view-pdf-format .invoice-pdf-format .p-b-n {
   padding-bottom: 0 !important;
 }
-/* line 20, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
+/* line 19, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
 #view-pdf-format .invoice-pdf-format .header {
   padding: 15px;
   background-color: #fff !important;
   text-align: center;
 }
-/* line 25, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
+/* line 24, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
 #view-pdf-format .invoice-pdf-format .header .header-info {
   display: inline-block;
 }
-/* line 28, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
+/* line 27, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
 #view-pdf-format .invoice-pdf-format .header .header-info .logo {
   margin: auto 0 auto 0;
   text-align: center;
   float: left;
   cursor: pointer;
 }
-/* line 34, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
+/* line 33, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
 #view-pdf-format .invoice-pdf-format .header .header-info .logo .icon-user img {
   width: 120px;
   max-height: 120px;
@@ -20979,42 +20978,42 @@ form#terms-and-conditions .TAC-buttons .button-submit:hover {
   height: auto;
   margin-top: 7px;
 }
-/* line 42, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
+/* line 41, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
 #view-pdf-format .invoice-pdf-format .header .header-info .info-trady {
   margin-left: 20px;
   display: inline-block;
   text-align: left;
 }
-/* line 46, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
+/* line 45, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
 #view-pdf-format .invoice-pdf-format .header .header-info .info-trady p {
   margin-bottom: 0px;
   font-size: 12px;
   text-transform: inherit;
 }
-/* line 51, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
+/* line 50, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
 #view-pdf-format .invoice-pdf-format .header .header-info .info-trady p span:last-child {
   padding-left: 5px;
 }
-/* line 58, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
+/* line 57, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
 #view-pdf-format .invoice-pdf-format .body {
   text-align: center;
   border-top: 1px solid #e5e5e5;
   width: 100%;
   margin-top: 10px;
 }
-/* line 64, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
+/* line 63, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
 #view-pdf-format .invoice-pdf-format .body .main-content {
   position: relative;
   padding: 13px;
   text-align: center;
 }
-/* line 69, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
+/* line 68, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
 #view-pdf-format .invoice-pdf-format .body .main-content .main-info {
   font-size: 13px;
   overflow: auto;
   width: 100%;
 }
-/* line 74, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
+/* line 73, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
 #view-pdf-format .invoice-pdf-format .body .main-content .main-info .agency-info {
   width: 50%;
   float: left;
@@ -21023,78 +21022,78 @@ form#terms-and-conditions .TAC-buttons .button-submit:hover {
   word-wrap: break-word;
   overflow: hidden;
 }
-/* line 81, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
+/* line 80, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
 #view-pdf-format .invoice-pdf-format .body .main-content .main-info .agency-info p {
   margin-bottom: 0px;
   text-align: left;
   text-transform: none;
 }
-/* line 87, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
+/* line 86, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
 #view-pdf-format .invoice-pdf-format .body .main-content .main-info .invoice-info {
   overflow: hidden;
   word-wrap: break-word;
 }
-/* line 90, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
+/* line 89, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
 #view-pdf-format .invoice-pdf-format .body .main-content .main-info .invoice-info p {
   text-align: left;
   overflow: hidden;
   margin-bottom: 0px;
 }
-/* line 94, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
+/* line 93, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
 #view-pdf-format .invoice-pdf-format .body .main-content .main-info .invoice-info p span:first-child {
   width: 140px;
   display: inline-block;
   text-align: right;
   text-transform: capitalize;
 }
-/* line 103, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
+/* line 102, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
 #view-pdf-format .invoice-pdf-format .body .main-content .service-address {
   margin-top: 10px;
   font-size: 20px;
 }
-/* line 107, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
+/* line 106, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
 #view-pdf-format .invoice-pdf-format .body .main-content .detail {
   margin-top: 15px;
 }
-/* line 109, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
+/* line 108, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
 #view-pdf-format .invoice-pdf-format .body .main-content .detail .table {
   width: 100%;
   font-size: 13px;
   overflow: auto;
 }
-/* line 113, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
+/* line 112, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
 #view-pdf-format .invoice-pdf-format .body .main-content .detail .table th {
   color: #404040;
   font-size: 16px;
   text-transform: uppercase;
 }
-/* line 118, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
+/* line 117, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
 #view-pdf-format .invoice-pdf-format .body .main-content .detail .table .invoice-description {
   width: 40%;
 }
-/* line 121, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
+/* line 120, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
 #view-pdf-format .invoice-pdf-format .body .main-content .detail .table .invoice-price {
   width: 15%;
 }
-/* line 124, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
+/* line 123, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
 #view-pdf-format .invoice-pdf-format .body .main-content .detail .table .invoice-hour {
   width: 15%;
 }
-/* line 127, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
+/* line 126, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
 #view-pdf-format .invoice-pdf-format .body .main-content .detail .table .invoice-rate {
   width: 15%;
 }
-/* line 130, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
+/* line 129, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
 #view-pdf-format .invoice-pdf-format .body .main-content .detail .table .invoice-amount {
   width: 15%;
 }
-/* line 133, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
+/* line 132, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
 #view-pdf-format .invoice-pdf-format .body .main-content .detail .table tr td {
   padding-left: 0;
   padding: 10px 3px;
   text-align: left;
 }
-/* line 142, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
+/* line 141, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
 #view-pdf-format .invoice-pdf-format .footer {
   font-size: 12px;
   border-top: 1px solid #ccc;
@@ -21103,22 +21102,22 @@ form#terms-and-conditions .TAC-buttons .button-submit:hover {
   text-align: left;
   overflow: auto;
 }
-/* line 150, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
+/* line 149, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
 #view-pdf-format .invoice-pdf-format .footer i {
   font-size: 36px;
 }
-/* line 153, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
+/* line 152, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
 #view-pdf-format .invoice-pdf-format .footer p {
   margin-bottom: 5px;
 }
-/* line 156, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
+/* line 155, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
 #view-pdf-format .invoice-pdf-format .footer .bank {
   width: 50%;
   margin-right: 15px;
   overflow: hidden;
   float: left;
 }
-/* line 162, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
+/* line 161, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/view_pdf.scss */
 #view-pdf-format .invoice-pdf-format .footer .contact {
   overflow: hidden;
 }
