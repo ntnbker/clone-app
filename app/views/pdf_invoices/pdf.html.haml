@@ -1,6 +1,7 @@
 -current_user
 -binding.pry
 - subTotal = 0
+- role = @current_user.nil? ? '' : @current_user.current_role.role
 -isShowVoidModal = invoice.paid == false && invoice.active == false
 - trady = invoice.trady
 - maintenance_request = invoice.maintenance_request
@@ -146,7 +147,7 @@
                     Amount Due:
                   %td{:class => "font-bold border-none"}
                     ="$ #{subTotal.to_f.round(2)}"
-                -if invoice.service_fee == 0 || invoice.service_fee.nil?
+                -if role == "Trady" && !invoice.service_fee.nil? && invoice.service_fee > 0
                   %tr
                     %td{:class => "border-none", :colSpan => "3"}
                     %td{:class => "text-right font-bold border-none"}
