@@ -252,12 +252,12 @@ header {
           }
 
           .archived-checkbox {
-            width: calc(100% - 8px);
+            width: calc(100% - 18px);
             color: white;
             position: absolute;
             top: 44px;
             border-radius: 3px;
-            left: 0px;
+            left: 3px;
             background: #313E46;
             padding: 7px 0px 2px 7px;
 
@@ -270,7 +270,7 @@ header {
             &:before {
               content: "";
               position: absolute;
-              right: 6px;
+              right: 2px;
               top: -8px;
               width: 0;
               height: 0;
