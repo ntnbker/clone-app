@@ -138,6 +138,7 @@ var Header = React.createClass({
       isShowBar: false,
       isClicked: false,
       isItems: !this.props.expanded,
+      isShowArchivedDropdown: false,
     };
   },
   showBar: function() {
@@ -190,6 +191,7 @@ var Header = React.createClass({
       event += " touchstart";
     }
     $(document).bind(event, function(e) {
+      let searchAreaIds = ['search-icon', 'archived-div', 'search_archived', 'archived-text'];
       self.clickDocument(e);
       self.closeMenu();
       if(e.target.id != "btn-menu-bar") {
@@ -198,6 +200,9 @@ var Header = React.createClass({
         if(className && className.indexOf('click')) {
           e.target.click();
         }
+      }
+      if (!searchAreaIds.includes(e.target.id)) {
+        self.setState({isShowArchivedDropdown: false});
       }
     });
   },
@@ -228,8 +233,16 @@ var Header = React.createClass({
       })
     );
   },
+
+  toggleArchivedDropdown() {
+    const { isShowArchivedDropdown } = this.state;
+
+    this.setState({isShowArchivedDropdown: !isShowArchivedDropdown});
+  },
+
   search: function(hidden) {
     const { role, searchText = '' } = this.props;
+    const { isShowArchivedDropdown } = this.state;
     const hiddenSearch = hidden || ['AgencyAdmin', 'Agent'].indexOf(role) === -1;
     const style =  hiddenSearch
                 ? { visibility: 'hidden' }
@@ -250,21 +263,34 @@ var Header = React.createClass({
               defaultValue={searchText}
             />
           </div>
-          <div className="archived-checkbox">
-            <input 
-              type="hidden"
-              id="search_archived"
-              name="search_archived"
-              value="false"
-            />
-            <input 
-              type="checkbox"
-              id="search_archived"
-              name="search_archived"
-              value="true"
-            />
-            <span className="text">Archived Only</span>
-          </div>
+          <i 
+            id="search-icon"
+            className={"fa " + (isShowArchivedDropdown ? "fa-caret-up" : "fa-caret-down")} 
+            aria-hidden="true" 
+            onClick={this.toggleArchivedDropdown}
+          />
+          <input 
+            type="hidden"
+            id="search_archived"
+            name="search_archived"
+            value="false"
+          />
+          { isShowArchivedDropdown &&
+            <div id="archived-div" className="archived-checkbox">
+              <input 
+                type="checkbox"
+                id="search_archived"
+                name="search_archived"
+                value="true"
+                ref={e => this.archived_input = e}
+              />
+              <span 
+                id="archived-text" 
+                className="text"  
+                onClick={e => this.archived_input.click()}
+              >Archived Only</span>
+            </div>
+          }
         </form>
       </div>
     );
