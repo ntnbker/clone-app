@@ -247,6 +247,8 @@ var Header = React.createClass({
     const style =  hiddenSearch
                 ? { visibility: 'hidden' }
                 : {};
+    const archivedDropdownStyle = isShowArchivedDropdown ? {} : {display: 'none'};
+
     return (
       <div className={"search " + (hiddenSearch && "hidden-search")} style={style}>
         <form action="/search" className="form-search" acceptCharset="UTF-8" method="get">
@@ -275,8 +277,12 @@ var Header = React.createClass({
             name="search_archived"
             value="false"
           />
-          { isShowArchivedDropdown &&
-            <div id="archived-div" className="archived-checkbox">
+          { 
+            <div 
+              id="archived-div" 
+              className="archived-checkbox" 
+              style={archivedDropdownStyle}
+            >
               <input 
                 type="checkbox"
                 id="search_archived"
