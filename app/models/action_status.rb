@@ -8,5 +8,16 @@ class ActionStatus < ApplicationRecord
   belongs_to :tenant
   belongs_to :trady
 
+  after_save :reindex_after_save
+  after_update :reindex_after_update
+
+  def reindex_after_save
+    self.reindex
+  end
+
+  def reindex_after_update
+    self.reindex
+  end
+
 
 end 
