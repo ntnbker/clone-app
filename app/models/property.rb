@@ -9,7 +9,16 @@ class Property < ApplicationRecord
   has_many :agencies, through: :agency_properties
 
 
-  
+  after_save :reindex_after_save
+  after_update :reindex_after_update
+
+  def reindex_after_save
+    self.reindex
+  end
+
+  def reindex_after_update
+    self.reindex
+  end
 
 
 
