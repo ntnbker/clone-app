@@ -67,6 +67,7 @@ class MaintenanceRequest < ApplicationRecord
   attr_accessor :maintenance_request_id
   after_create :create_action_status
   after_create :create_workorder_number
+  after_update :reindex_after_update
 
   def mr_tenants_array
 
@@ -175,6 +176,12 @@ class MaintenanceRequest < ApplicationRecord
       property_address: property(&:property_address),
       agent_status:self.action_status.agent_status
     )
+  end
+
+   
+
+  def reindex_after_update
+    self.reindex
   end
 
 

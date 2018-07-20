@@ -138,6 +138,8 @@ var Header = React.createClass({
       isShowBar: false,
       isClicked: false,
       isItems: !this.props.expanded,
+      isShowArchivedDropdown: false,
+      filterValue: "Active"
     };
   },
   showBar: function() {
@@ -190,6 +192,7 @@ var Header = React.createClass({
       event += " touchstart";
     }
     $(document).bind(event, function(e) {
+      let searchAreaIds = ['search-icon', 'archived-div', 'search_archived', 'archived-text'];
       self.clickDocument(e);
       self.closeMenu();
       if(e.target.id != "btn-menu-bar") {
@@ -198,6 +201,9 @@ var Header = React.createClass({
         if(className && className.indexOf('click')) {
           e.target.click();
         }
+      }
+      if (!searchAreaIds.includes(e.target.id)) {
+        self.setState({isShowArchivedDropdown: false});
       }
     });
   },
@@ -228,12 +234,25 @@ var Header = React.createClass({
       })
     );
   },
+
+  toggleArchivedDropdown() {
+    const { isShowArchivedDropdown } = this.state;
+
+    this.setState({isShowArchivedDropdown: !isShowArchivedDropdown});
+  },
+
+  chooseFilterValue(value) {
+    this.setState({filterValue: value, isShowArchivedDropdown: false});
+  },
   search: function(hidden) {
     const { role, searchText = '' } = this.props;
+    const { isShowArchivedDropdown, filterValue } = this.state;
     const hiddenSearch = hidden || ['AgencyAdmin', 'Agent'].indexOf(role) === -1;
     const style =  hiddenSearch
                 ? { visibility: 'hidden' }
                 : {};
+    const archivedDropdownStyle = isShowArchivedDropdown ? {} : {display: 'none'};
+
     return (
       <div className={"search " + (hiddenSearch && "hidden-search")} style={style}>
         <form action="/search" className="form-search" acceptCharset="UTF-8" method="get">
@@ -250,21 +269,48 @@ var Header = React.createClass({
               defaultValue={searchText}
             />
           </div>
-          <div className="archived-checkbox">
-            <input 
-              type="hidden"
-              id="search_archived"
-              name="search_archived"
-              value="false"
-            />
-            <input 
-              type="checkbox"
-              id="search_archived"
-              name="search_archived"
-              value="true"
-            />
-            <span className="text">Archived Only</span>
-          </div>
+          <span className="filter-value">{filterValue}</span>
+          <i 
+            id="search-icon"
+            className={"fa " + (isShowArchivedDropdown ? "fa-caret-up" : "fa-caret-down")} 
+            aria-hidden="true" 
+            onClick={this.toggleArchivedDropdown}
+          />
+          <input 
+            type="hidden"
+            id="search_archived"
+            name="search_archived"
+            value={filterValue}
+          />
+          { 
+            <div 
+              id="archived-div" 
+              className="archived-checkbox" 
+              style={archivedDropdownStyle}
+            >
+              {filterValue !== 'All' && 
+                <div
+                  id="archived-text" 
+                  className="text"
+                  onClick={e => this.chooseFilterValue("All")}
+                >All</div>
+              }
+              {filterValue !== 'Active' && 
+                <div 
+                  id="archived-text" 
+                  className="text"  
+                  onClick={e => this.chooseFilterValue("Active")}
+                >Active</div>
+              }
+              {filterValue !== 'Archived' && 
+                <div 
+                  id="archived-text" 
+                  className="text"  
+                  onClick={e => this.chooseFilterValue("Archived")}
+                >Archived</div>
+              }
+            </div>
+          }
         </form>
       </div>
     );
