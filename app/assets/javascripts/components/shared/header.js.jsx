@@ -139,6 +139,7 @@ var Header = React.createClass({
       isClicked: false,
       isItems: !this.props.expanded,
       isShowArchivedDropdown: false,
+      filterValue: "Active"
     };
   },
   showBar: function() {
@@ -240,9 +241,12 @@ var Header = React.createClass({
     this.setState({isShowArchivedDropdown: !isShowArchivedDropdown});
   },
 
+  chooseFilterValue(value) {
+    this.setState({filterValue: value, isShowArchivedDropdown: false});
+  },
   search: function(hidden) {
     const { role, searchText = '' } = this.props;
-    const { isShowArchivedDropdown } = this.state;
+    const { isShowArchivedDropdown, filterValue } = this.state;
     const hiddenSearch = hidden || ['AgencyAdmin', 'Agent'].indexOf(role) === -1;
     const style =  hiddenSearch
                 ? { visibility: 'hidden' }
@@ -265,6 +269,7 @@ var Header = React.createClass({
               defaultValue={searchText}
             />
           </div>
+          <span className="filter-value">{filterValue}</span>
           <i 
             id="search-icon"
             className={"fa " + (isShowArchivedDropdown ? "fa-caret-up" : "fa-caret-down")} 
@@ -275,7 +280,7 @@ var Header = React.createClass({
             type="hidden"
             id="search_archived"
             name="search_archived"
-            value="false"
+            value={filterValue}
           />
           { 
             <div 
@@ -283,18 +288,27 @@ var Header = React.createClass({
               className="archived-checkbox" 
               style={archivedDropdownStyle}
             >
-              <input 
-                type="checkbox"
-                id="search_archived"
-                name="search_archived"
-                value="true"
-                ref={e => this.archived_input = e}
-              />
-              <span 
-                id="archived-text" 
-                className="text"  
-                onClick={e => this.archived_input.click()}
-              >Archived Only</span>
+              {filterValue !== 'All' && 
+                <div
+                  id="archived-text" 
+                  className="text"
+                  onClick={e => this.chooseFilterValue("All")}
+                >All</div>
+              }
+              {filterValue !== 'Active' && 
+                <div 
+                  id="archived-text" 
+                  className="text"  
+                  onClick={e => this.chooseFilterValue("Active")}
+                >Active</div>
+              }
+              {filterValue !== 'Archived' && 
+                <div 
+                  id="archived-text" 
+                  className="text"  
+                  onClick={e => this.chooseFilterValue("Archived")}
+                >Archived</div>
+              }
             </div>
           }
         </form>
